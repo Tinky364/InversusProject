@@ -1,24 +1,29 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Inversus.Game
 {
-    [Serializable]
+    public enum SideType { White, Black }
+    
     public class Side
     {
-        private LayerMask _layer;
-        private Color _tileColor;
-        private Color _playerColor;
+        public SideType SideType { get; }
+        public int Layer { get; }
+        public Color TileColor{ get; }
+        public Color PlayerColor { get; }
+        public Color BulletColor { get; }
+        public Vector2 SpawnPosition { get; }
 
-        public LayerMask Layer => _layer;
-        public Color TileColor => _tileColor;
-        public Color PlayerColor => _playerColor;
-
-        public Side(LayerMask layer, Color tileColor, Color playerColor)
+        public Side(
+            SideType sideType, int layer, Color tileColor, Color playerColor, Color bulletColor,
+            Vector2 spawnPosition
+        )
         {
-            _layer = layer;
-            _tileColor = tileColor;
-            _playerColor = playerColor;
+            SideType = sideType;
+            Layer = layer;
+            TileColor = tileColor;
+            PlayerColor = playerColor;
+            BulletColor = bulletColor;
+            SpawnPosition = spawnPosition;
         }
     }
 }

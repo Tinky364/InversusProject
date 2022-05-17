@@ -2,6 +2,7 @@
 
 using Inversus.Helper;
 using Inversus.Attribute;
+using Inversus.Game;
 
 namespace Inversus.Manager
 {
@@ -12,7 +13,9 @@ namespace Inversus.Manager
         [ReadOnly] 
         public UnityEvent LoadSceneEnded;
         [ReadOnly]
-        public UnityEvent GameCreated;
+        public UnityEvent GameCreated; 
+        [ReadOnly]
+        public UnityEvent<Player> PlayerHit;
 
         protected override void Awake()
         {
@@ -21,6 +24,7 @@ namespace Inversus.Manager
             LoadSceneStarted = new UnityEvent();
             LoadSceneEnded = new UnityEvent();
             GameCreated = new UnityEvent();
+            PlayerHit = new UnityEvent<Player>();
         }
     }
 }

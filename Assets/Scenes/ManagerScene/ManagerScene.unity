@@ -379,7 +379,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   subManager: {fileID: 0}
-  _editorMode: 0
+  _editorMode: 1
   _startingSceneData: {fileID: 11400000, guid: b19991d069d6adc49b0708e7a9c69d01, type: 2}
 --- !u!4 &1678546554
 Transform:

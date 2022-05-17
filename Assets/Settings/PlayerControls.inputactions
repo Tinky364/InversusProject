@@ -15,9 +15,36 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Fire",
+                    "name": "RightFire",
                     "type": "Button",
                     "id": "190e39a9-9d43-4db4-823f-3201f0a893e4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftFire",
+                    "type": "Button",
+                    "id": "bbbf9384-b4b1-4276-a472-966eab9098c8",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "UpFire",
+                    "type": "Button",
+                    "id": "dcb729c7-52bd-4db8-b8aa-83a651fe6369",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "DownFire",
+                    "type": "Button",
+                    "id": "a9b1c01e-bc7e-45ac-a509-91664ffd587b",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -27,45 +54,12 @@
             "bindings": [
                 {
                     "name": "",
-                    "id": "032771bc-d8ec-4d4a-a4d0-3f5c14a838ab",
-                    "path": "<Keyboard>/upArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Fire",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "658ab534-0cab-43e5-bd63-20a30862bf38",
-                    "path": "<Keyboard>/downArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Fire",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "1a8cb5cd-2351-4e8f-856d-cde2b7b5f808",
-                    "path": "<Keyboard>/leftArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Fire",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "063af872-2186-4fb5-b79d-e75660d6e512",
                     "path": "<Keyboard>/rightArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Fire",
+                    "action": "RightFire",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -123,6 +117,39 @@
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "bfb47995-2d97-4d10-8710-9e3a95d841ea",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftFire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3642d295-40da-48c9-bee2-0127688877e4",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UpFire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1b83ca07-259f-41f7-bae3-d4b15a5d1406",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DownFire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

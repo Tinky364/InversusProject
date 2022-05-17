@@ -4,10 +4,11 @@ namespace Inversus.Helper
 {
     public static class HelperMethods
     {
-        public static int LayerMaskToLayer (int bitmask)
+        public static int LayerMaskToLayer(int bitmask)
         {
             int result = bitmask>0 ? 0 : 31;
-            while( bitmask>1 ) {
+            while( bitmask>1 ) 
+            {
                 bitmask = bitmask>>1;
                 result++;
             }

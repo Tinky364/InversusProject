@@ -6,17 +6,18 @@ namespace Inversus.Game
     public class Map : MonoBehaviour
     {
         [SerializeField]
-        private Vector2 _startingPositionWhite;
+        private Vector2 _startingPositionOfWhiteSide;
         [SerializeField]
-        private Vector2 _startingPositionBlack;
+        private Vector2 _startingPositionOfBlackSide;
 
-        public Vector2 StartingPositionWhite => _startingPositionWhite;
-        public Vector2 StartingPositionBlack => _startingPositionBlack;
-       
-        private readonly Dictionary<string, GroundTile> _tiles = new();
+        public Vector2 StartingPositionOfWhiteSide => _startingPositionOfWhiteSide;
+        public Vector2 StartingPositionOfBlackSide => _startingPositionOfBlackSide;
+
+        private Dictionary<string, GroundTile> _tiles;
 
         public void Initialize(Side sideWhite, Side sideBlack)
         {
+            _tiles = new Dictionary<string, GroundTile>();
             foreach (GroundTile tile in GetComponentsInChildren<GroundTile>())
             {
                 Vector2 pos = tile.transform.localPosition;

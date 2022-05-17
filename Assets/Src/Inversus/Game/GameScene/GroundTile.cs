@@ -1,20 +1,18 @@
 ﻿using UnityEngine;
 
-using Inversus.Helper;
+using static Inversus.Manager.ManagerFacade;
 
 namespace Inversus.Game
 {
     public class GroundTile : MonoBehaviour
     {
-        private string _key;
-        public string Key => _key;
-
+        public string Key { get; private set; }
+        
+        public Side Side { get; private set; }
+        
         private SpriteRenderer _spriteRenderer;
         private Rigidbody2D _rig;
         private BoxCollider2D _collider;
-        
-        private Color _color;
-        private LayerMask _layer;
 
         public void Initialize(string keyString, Side sideWhite, Side sideBlack)
         {
@@ -22,24 +20,46 @@ namespace Inversus.Game
             _rig = GetComponent<Rigidbody2D>();
             _collider = GetComponent<BoxCollider2D>();
             
-            _key = keyString;
+            Key = keyString;
             gameObject.name = keyString;
-            if (HelperMethods.IsInLayerMask(gameObject, sideWhite.Layer))
-                ChangeColor(sideWhite.TileColor);
-            if (HelperMethods.IsInLayerMask(gameObject, sideBlack.Layer))
-                ChangeColor(sideBlack.TileColor);
-        }
-        
-        public void ChangeLayer(LayerMask layer)
-        {
-            _layer = layer;
-            gameObject.layer = HelperMethods.LayerMaskToLayer(_layer);
+
+            if (gameObject.layer == sideWhite.Layer)
+            {
+                Side = sideWhite;
+                SetColor(sideWhite.TileColor);
+            }
+            else if (gameObject.layer == sideBlack.Layer)
+            {
+                Side = sideBlack;
+                SetColor(sideBlack.TileColor);
+            }
         }
 
-        public void ChangeColor(Color newColor)
+        private void OnTriggerEnter2D(Collider2D col)
         {
-            _color = newColor;
-            _spriteRenderer.color = _color;
+            if (SSubSceneManager is not GameSubSceneManager gameSubSceneManager) return;
+            if (!col.CompareTag("Bullet")) return;
+            
+            switch (Side.SideType)
+            {
+                case SideType.White: 
+                    SetSide(gameSubSceneManager.GameManager.SideBlack);
+                    break;
+                case SideType.Black: 
+                    SetSide(gameSubSceneManager.GameManager.SideWhite);
+                    break;
+            }
         }
+
+        private void SetSide(Side newSide)
+        {
+            Side = newSide;
+            SetLayer(Side.Layer);
+            SetColor(Side.TileColor);
+        }
+        
+        private void SetLayer(int layer) => gameObject.layer = layer;
+
+        private void SetColor(Color color) => _spriteRenderer.color = color;
     }
 }
