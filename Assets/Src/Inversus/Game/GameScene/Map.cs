@@ -39,5 +39,10 @@ namespace Inversus.Game
         {
             return GetTile($"{cellX},{cellY}");
         }
+
+        public static Vector2 GetTilePos(Vector2 pos)
+        {
+            return new Vector2(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y));
+        }
     }
 }

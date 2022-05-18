@@ -19,15 +19,11 @@ namespace Inversus.Game
         public GameManager GameManager => _gameManager;
         public BulletPool BulletPool => _bulletPool;
         
-        protected override void Awake()
+        protected override void OnSceneLoaded()
         {
-            base.Awake();
-
             _bulletPool.Initialize();
-            
-            _gameManager.CreateGame(_mapId);
-            Debug.Log("GameCreated Event => Invoke()");
-            SEventBus?.GameCreated?.Invoke();
+            _gameManager.Initialize();
+            _gameManager.CreateGame(_mapId, 5);
         }
     }
 }

@@ -8,18 +8,35 @@ using static Inversus.Manager.ManagerFacade;
 
 namespace Inversus.Manager
 {
+    public enum States { MainMenu, Loading, InGame, GamePauseMenu }
+    
     public class MainManager : SingletonMonoBehaviour<MainManager>
     {
-        [ReadOnly] public SubSceneManager subManager;
+        [SerializeField, ReadOnly] 
+        private SubSceneManager _subManager;
+        [SerializeField] 
+        private bool _editorMode;
+        [SerializeField] 
+        private SceneData _startingSceneData;
 
-        [SerializeField] private bool _editorMode;
-        [SerializeField] private SceneData _startingSceneData;
+        public States _state;
+        public States State { get => _state;
+            set
+            {
+                if (value == _state) return;
+                
+                _state = value;
+                Debug.Log($"STATE: {State}");
+            } 
+        }        
 
         public bool EditorMode => _editorMode;
 
         protected override void Awake()
         {
             base.Awake();
+
+            State = States.Loading;
 
 #if UNITY_EDITOR
             Debug.Log("Editor Mode: On");
@@ -80,8 +97,8 @@ namespace Inversus.Manager
                 Debug.LogError("Initializing Sub Manager failed!");
                 return false;
             }
-            subManager = SSubSceneManager;
-            SSubSceneCreator.SetActiveScene(subManager.SceneData);
+            _subManager = SSubSceneManager;
+            SSubSceneCreator.SetActiveScene(_subManager.SceneData);
             return true;
         }
     }

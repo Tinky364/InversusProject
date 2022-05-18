@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Inversus.Manager;
+using UnityEngine;
 
 using static Inversus.Manager.ManagerFacade;
 
@@ -23,40 +24,42 @@ namespace Inversus.Game
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _rig = GetComponent<Rigidbody2D>();
             _collider = GetComponent<BoxCollider2D>();
+            
+            SEventBus.RoundEnded.AddListener(UnSpawn);
         }
 
         private void FixedUpdate()
         {
-            if (HasSpawned) MoveBullet();
+            if (SMainManager.State == States.InGame)
+            {
+                if (HasSpawned) MoveBullet();
+            }
         }
         
         private void OnTriggerEnter2D(Collider2D col)
         {
+            if (SMainManager.State != States.InGame) return;
             if (SSubSceneManager is not GameSubSceneManager gameSubSceneManager) return;
             
-            // Wall
-            if (col.gameObject.layer == gameSubSceneManager.GameManager.LayerWall)
+            if (col.CompareTag("Wall"))
             {
                 UnSpawn();
-                gameSubSceneManager.BulletPool.Push(this);
                 return;
             }
-            
-            // Enemy bullet
+
             if (col.CompareTag("Bullet"))
             {
                 Side oppositeSide = gameSubSceneManager.GameManager.ReturnOppositeSide(Side);
                 if (col.gameObject.layer != oppositeSide.Layer) return;
                 
-                Debug.Log("sa");
                 UnSpawn();
-                gameSubSceneManager.BulletPool.Push(this);
             }
         }
 
         public void Spawn(Vector2 position, Vector2 direction, Side side)
         {
             transform.position = position;
+            _collider.offset = Map.GetTilePos(position) - position;
             _moveDirection = direction;
             SetSide(side);
             HasSpawned = true;
@@ -65,8 +68,13 @@ namespace Inversus.Game
 
         public void UnSpawn()
         {
+            if (!HasSpawned) return;
+            
+            gameObject.SetActive(false);
             HasSpawned = false;
             _rig.velocity = Vector2.zero;
+            if (SSubSceneManager is not GameSubSceneManager gameSubSceneManager) return;
+            gameSubSceneManager.BulletPool.Push(this);
         }
 
         private void SetSide(Side newSide)
@@ -84,6 +92,11 @@ namespace Inversus.Game
         { 
             _velocity = _moveDirection * _speed;
             _rig.velocity = _velocity;
+        }
+        
+        private void OnDestroy()
+        {
+            SEventBus.RoundEnded.RemoveListener(UnSpawn);
         }
     }
 }

@@ -15,7 +15,13 @@ namespace Inversus.Manager
         [ReadOnly]
         public UnityEvent GameCreated; 
         [ReadOnly]
+        public UnityEvent RoundStarted;
+        [ReadOnly]
+        public UnityEvent RoundEnded;
+        [ReadOnly]
         public UnityEvent<Player> PlayerHit;
+        [ReadOnly]
+        public UnityEvent GameEnded;
 
         protected override void Awake()
         {
@@ -24,6 +30,9 @@ namespace Inversus.Manager
             LoadSceneStarted = new UnityEvent();
             LoadSceneEnded = new UnityEvent();
             GameCreated = new UnityEvent();
+            RoundStarted = new UnityEvent();
+            RoundEnded = new UnityEvent();
+            GameEnded = new UnityEvent();
             PlayerHit = new UnityEvent<Player>();
         }
     }

@@ -16,23 +16,18 @@ namespace Inversus.Manager
         protected override void Awake()
         {
             base.Awake();
-
-            Debug.Log($"{nameof(SubSceneManager)} => Awake()");
+            
+            SEventBus.LoadSceneEnded.AddListener(OnSceneLoaded);
         }
 
-        protected virtual void Start()
+        protected virtual void OnDestroy()
         {
-            Debug.Log($"{nameof(SubSceneManager)} => Start()");
+            SEventBus.LoadSceneEnded.RemoveListener(OnSceneLoaded);
         }
 
-        protected virtual void OnEnable()
+        protected virtual void OnSceneLoaded()
         {
-            Debug.Log($"{nameof(SubSceneManager)} => OnEnable()");
-        }
-
-        protected virtual void OnDisable()
-        {
-            Debug.Log($"{nameof(SubSceneManager)} => OnDisable()");
+            
         }
 
         public void LoadScene(SceneData targetSceneData)

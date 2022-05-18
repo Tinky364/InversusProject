@@ -127,6 +127,7 @@ namespace Inversus.Manager
 
         private IEnumerator LoadSceneCorWithMode(SceneData sceneData, SubSceneLoadMode subSceneLoadMode)
         {
+            SMainManager.State = States.Loading;
             Debug.Log("LoadSceneStarted Event => Invoke()");
             SEventBus.LoadSceneStarted?.Invoke();
 

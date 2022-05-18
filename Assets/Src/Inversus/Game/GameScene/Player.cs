@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Inversus.Manager;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 using static Inversus.Manager.ManagerFacade;
@@ -7,24 +8,12 @@ namespace Inversus.Game
 {
     public class Player : MonoBehaviour
     {
-        [SerializeField]
-        private int _maxHealth = 3;
         [Header("Movement")]
         [SerializeField, Min(0)]
         private float _acceleration = 50f;
         [SerializeField, Min(0)]
         private float _maxSpeed = 6f;
 
-        public int Health
-        {
-            get => _health;
-            set
-            {
-                if (value < 0) _health = 0;
-                else if (value > _maxHealth) _health = _maxHealth;
-                else _health = value;
-            }
-        }
         public Side Side { get; private set; }
         
         private SpriteRenderer _spriteRenderer;
@@ -39,30 +28,25 @@ namespace Inversus.Game
         private Vector2 _moveInputAxis;
         private Vector2 _desiredVelocity;
         private Vector2 _velocity;
-        private int _health;
-
-        private void OnDisable()
-        {
-            _moveAction.Disable();
-            _rightFireAction.Disable();
-            _leftFireAction.Disable();
-            _upFireAction.Disable();
-            _downFireAction.Disable();
-        }
 
         private void Update()
         {
-            GetInputAxis();
-            GetFireInputs();
+            if (SMainManager.State == States.InGame)
+            {
+                GetInputAxis();
+                GetFireInputs();
+            }
         }
 
         private void FixedUpdate()
         {
-            MovePlayer();
+            if (SMainManager.State == States.InGame)
+                MovePlayer();
         }
 
         private void OnTriggerEnter2D(Collider2D col)
         {
+            if (SMainManager.State != States.InGame) return;
             if (SSubSceneManager is not GameSubSceneManager gameSubSceneManager) return;
 
             if (col.CompareTag("Bullet"))
@@ -70,10 +54,7 @@ namespace Inversus.Game
                 Side oppositeSide = gameSubSceneManager.GameManager.ReturnOppositeSide(Side);
                 if (col.gameObject.layer != oppositeSide.Layer) return;
 
-                Bullet bullet = col.GetComponent<Bullet>();
-                bullet.UnSpawn();
-                gameSubSceneManager.BulletPool.Push(bullet);
-                Health -= 1;
+                col.GetComponent<Bullet>().UnSpawn();
                 SEventBus.PlayerHit?.Invoke(this);
             }
         }
@@ -100,8 +81,6 @@ namespace Inversus.Game
             Side = side;
             gameObject.layer = Side.Layer;
             _spriteRenderer.color = Side.PlayerColor;
-            transform.position = Side.SpawnPosition;
-            Health = _maxHealth;
         }
         
         private void GetInputAxis()
@@ -135,6 +114,9 @@ namespace Inversus.Game
             );
         }
 
+        /// <summary>
+        /// It is for not spawning a bullet between 2 tiles.
+        /// </summary>
         private Vector2 CalculateSpawnPositionOfBullet(Vector2 direction)
         {
             Vector2 pos = transform.position;
@@ -143,8 +125,8 @@ namespace Inversus.Game
                 float yDec = pos.y % 1;
                 switch (yDec)
                 {
-                    case > 0.35f and <= 0.5f: return new Vector2(pos.x, (int)pos.y + 0.35f);
-                    case > 0.5f and < 0.65f: return new Vector2(pos.x, (int)pos.y + 0.65f);
+                    case >= 0.35f and <= 0.5f: return new Vector2(pos.x, (int)pos.y + 0.35f);
+                    case > 0.5f and <= 0.65f: return new Vector2(pos.x, (int)pos.y + 0.65f);
                 }
             }
             else
@@ -152,12 +134,20 @@ namespace Inversus.Game
                 float xDec = pos.x % 1;
                 switch (xDec)
                 {
-                    case > 0.35f and <= 0.5f: return new Vector2((int)pos.x + 0.35f, pos.y);
-                    case > 0.5f and < 0.65f: return new Vector2((int)pos.x + 0.65f, pos.y);
+                    case >= 0.35f and <= 0.5f: return new Vector2((int)pos.x + 0.35f, pos.y);
+                    case > 0.5f and <= 0.65f: return new Vector2((int)pos.x + 0.65f, pos.y);
                 }
             }
-
             return pos;
+        }
+        
+        private void OnDisable()
+        {
+            _moveAction.Disable();
+            _rightFireAction.Disable();
+            _leftFireAction.Disable();
+            _upFireAction.Disable();
+            _downFireAction.Disable();
         }
     }
 }

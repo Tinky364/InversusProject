@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Inversus.Manager;
+using UnityEngine;
 
 using static Inversus.Manager.ManagerFacade;
 
@@ -7,7 +8,6 @@ namespace Inversus.Game
     public class GroundTile : MonoBehaviour
     {
         public string Key { get; private set; }
-        
         public Side Side { get; private set; }
         
         private SpriteRenderer _spriteRenderer;
@@ -19,7 +19,7 @@ namespace Inversus.Game
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _rig = GetComponent<Rigidbody2D>();
             _collider = GetComponent<BoxCollider2D>();
-            
+
             Key = keyString;
             gameObject.name = keyString;
 
@@ -37,9 +37,10 @@ namespace Inversus.Game
 
         private void OnTriggerEnter2D(Collider2D col)
         {
+            if (SMainManager.State != States.InGame) return;
             if (SSubSceneManager is not GameSubSceneManager gameSubSceneManager) return;
             if (!col.CompareTag("Bullet")) return;
-            
+
             switch (Side.SideType)
             {
                 case SideType.White: 

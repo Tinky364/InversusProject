@@ -13,14 +13,13 @@ namespace Inversus.Game
         public void Initialize()
         {
             _pool = new Queue<Bullet>();
-            for (int i = 0; i < 20; i++) 
+            for (int i = 0; i < 40; i++) 
                 ExpandPool();
         }
 
         public void Push(Bullet bullet)
         {
             bullet.transform.position = new Vector2(-1000, -1000);
-            bullet.gameObject.SetActive(false);
             _pool.Enqueue(bullet);
         }
 
@@ -34,8 +33,8 @@ namespace Inversus.Game
         {
             Bullet bullet = Instantiate(_prefabBullet, transform, true);
             bullet.transform.position = new Vector2(-1000, -1000);
-            bullet.gameObject.SetActive(false);
             _pool.Enqueue(bullet);
+            bullet.gameObject.SetActive(false);
         }
     }
 }
