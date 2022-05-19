@@ -10,6 +10,11 @@ namespace Inversus.Game
         {
             SMainManager.State = States.MainMenu;
         }
+
+        public void Quit()
+        {
+            SMainManager.Quit();
+        }
     }
 }
 

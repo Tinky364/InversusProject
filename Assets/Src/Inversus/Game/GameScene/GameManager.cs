@@ -3,14 +3,13 @@ using UnityEngine;
 
 using Inversus.Attribute;
 using Inversus.Manager;
+
 using static Inversus.Manager.ManagerFacade;
 
 namespace Inversus.Game
 {
     public class GameManager : MonoBehaviour
     {
-        [SerializeField]
-        private Player _prefabPlayer;
         [SerializeField]
         private Camera _mainCam;
         [Header("ALL GAME MAPS")]
@@ -26,8 +25,8 @@ namespace Inversus.Game
         
         public Side SideWhite { get; private set; }
         public Side SideBlack { get; private set; }
-        public Player PlayerWhite { get; private set; }
-        public Player PlayerBlack { get; private set; }
+        public Player PlayerWhite { get; private set; } // TODO
+        public Player PlayerBlack { get; private set; } // TODO
         public int CurrentMapId { get; private set; }
         public Map CurrentMap { get; private set; }
         public int LayerWall { get; private set; }
@@ -83,9 +82,17 @@ namespace Inversus.Game
             );
             
             _mainCam.backgroundColor = _colorOfBackground;
-            
-            PlayerWhite = CreatePlayer("PlayerWhite", SideWhite);
-            PlayerBlack = CreatePlayer("PlayerBlack", SideBlack);
+
+            PlayerWhite = SInputManager.Players[1];
+            PlayerBlack = SInputManager.Players[2];
+            SSceneCreator.MoveGameObjectToScene(
+                PlayerWhite.gameObject, SSceneCreator.GetActiveScene()
+            );
+            SSceneCreator.MoveGameObjectToScene(
+                PlayerBlack.gameObject, SSceneCreator.GetActiveScene()
+            );
+            InitializePlayer(PlayerWhite, SideWhite);
+            InitializePlayer(PlayerBlack, SideBlack);
 
             Debug.Log("GameCreated Event => Invoke()");
             SEventBus.GameCreated?.Invoke();
@@ -100,10 +107,10 @@ namespace Inversus.Game
             Round += 1;
             
             if (CurrentMap != null) Destroy(CurrentMap.gameObject);
-            CurrentMap = CreateMap(CurrentMapId, SideWhite, SideBlack);
+            CurrentMap = InitializeMap(CurrentMapId, SideWhite, SideBlack);
 
-            PlayerWhite.transform.position = SideWhite.SpawnPosition;
-            PlayerBlack.transform.position = SideBlack.SpawnPosition;
+            PlayerWhite.PlayerController.transform.position = SideWhite.SpawnPosition;
+            PlayerBlack.PlayerController.transform.position = SideBlack.SpawnPosition;
 
             Debug.Log("RoundStarted Event => Invoke()");
             SEventBus.RoundStarted?.Invoke();
@@ -152,18 +159,16 @@ namespace Inversus.Game
             SEventBus.GameEnded?.Invoke();
         }
         
-        private Map CreateMap(int mapId, Side sideWhite, Side sideBlack)
+        private Map InitializeMap(int mapId, Side sideWhite, Side sideBlack)
         {
             Map map = Instantiate(_maps[mapId], Vector2.zero, Quaternion.identity);
             map.Initialize(sideWhite, sideBlack);
             return map;
         }
 
-        private Player CreatePlayer(string playerName, Side side)
+        private void InitializePlayer(Player player, Side side)
         {
-            Player player = Instantiate(_prefabPlayer);
-            player.Initialize(playerName, side);
-            return player;
+            player.InitializePlayerController(side);
         }
 
         public Side ReturnOppositeSide(Side side)

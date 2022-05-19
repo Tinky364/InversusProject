@@ -11,13 +11,9 @@ using static Inversus.Manager.ManagerFacade;
 
 namespace Inversus.Manager
 {
-    public enum SubSceneLoadMode
-    {
-        Single,
-        Additive
-    }
+    public enum SubSceneLoadMode { Single, Additive }
 
-    public class SubSceneCreator : SingletonMonoBehaviour<SubSceneCreator>
+    public class SceneCreator : SingletonMonoBehaviour<SceneCreator>
     {
         [SerializeField, ReadOnly] 
         private SceneData _currentActiveSceneData;
@@ -41,6 +37,26 @@ namespace Inversus.Manager
         private void Start()
         {
             _currentActiveSceneData = _sceneDataList[SceneManager.GetActiveScene().buildIndex];
+        }
+        
+        public Scene GetSceneBySceneData(SceneData sceneData)
+        {
+            return SceneManager.GetSceneByBuildIndex(sceneData.BuildIndex);
+        }
+
+        public void MoveGameObjectToScene(GameObject go, Scene scene)
+        {
+            SceneManager.MoveGameObjectToScene(go, scene);
+        }
+
+        public Scene GetManagerScene()
+        {
+            return SceneManager.GetSceneByBuildIndex(ManagerSceneData.BuildIndex);
+        }
+        
+        public Scene GetActiveScene()
+        {
+            return SceneManager.GetActiveScene();
         }
 
         public void LoadScene(string sceneName, SubSceneLoadMode subSceneLoadMode)

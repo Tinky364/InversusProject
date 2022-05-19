@@ -29,10 +29,5 @@ namespace Inversus.Manager
         {
             
         }
-
-        public void LoadScene(SceneData targetSceneData)
-        {
-            SSubSceneCreator.LoadScene(targetSceneData, SubSceneLoadMode.Single);
-        }
     }
 }

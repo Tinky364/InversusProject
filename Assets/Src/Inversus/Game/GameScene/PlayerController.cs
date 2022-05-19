@@ -1,12 +1,15 @@
-﻿using Inversus.Manager;
-using UnityEngine;
-using UnityEngine.InputSystem;
+﻿using UnityEngine;
+
+using Inversus.Manager;
 
 using static Inversus.Manager.ManagerFacade;
 
 namespace Inversus.Game
 {
-    public class Player : MonoBehaviour
+    [RequireComponent(typeof(SpriteRenderer))]
+    [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(BoxCollider2D))]
+    public class PlayerController : MonoBehaviour
     {
         [Header("Movement")]
         [SerializeField, Min(0)]
@@ -19,12 +22,7 @@ namespace Inversus.Game
         private SpriteRenderer _spriteRenderer;
         private Rigidbody2D _rig;
         private BoxCollider2D _collider;
-        private PlayerInput _playerInput;
-        private InputAction _moveAction;
-        private InputAction _rightFireAction;
-        private InputAction _leftFireAction;
-        private InputAction _upFireAction;
-        private InputAction _downFireAction;
+        private Player _player;
         private Vector2 _moveInputAxis;
         private Vector2 _desiredVelocity;
         private Vector2 _velocity;
@@ -33,7 +31,7 @@ namespace Inversus.Game
         {
             if (SMainManager.State == States.InGame)
             {
-                GetInputAxis();
+                GetMoveInputAxis();
                 GetFireInputs();
             }
         }
@@ -41,7 +39,9 @@ namespace Inversus.Game
         private void FixedUpdate()
         {
             if (SMainManager.State == States.InGame)
+            {
                 MovePlayer();
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D col)
@@ -55,45 +55,35 @@ namespace Inversus.Game
                 if (col.gameObject.layer != oppositeSide.Layer) return;
 
                 col.GetComponent<Bullet>().UnSpawn();
-                SEventBus.PlayerHit?.Invoke(this);
+                SEventBus.PlayerHit?.Invoke(_player);
             }
         }
 
-        public void Initialize(string playerName, Side side)
+        public void Initialize(Side side)
         {
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _rig = GetComponent<Rigidbody2D>();
             _collider = GetComponent<BoxCollider2D>();
-            _playerInput = GetComponent<PlayerInput>();
+            _player = GetComponentInParent<Player>();
 
-            _moveAction = _playerInput.actions["Movement"];
-            _rightFireAction = _playerInput.actions["RightFire"];
-            _leftFireAction = _playerInput.actions["LeftFire"];
-            _upFireAction = _playerInput.actions["UpFire"];
-            _downFireAction = _playerInput.actions["DownFire"];
-            _moveAction.Enable();
-            _rightFireAction.Enable();
-            _leftFireAction.Enable();
-            _upFireAction.Enable();
-            _downFireAction.Enable();
-
-            gameObject.name = playerName;
+            _player.EnableInGameInputs();
+            
             Side = side;
             gameObject.layer = Side.Layer;
             _spriteRenderer.color = Side.PlayerColor;
         }
         
-        private void GetInputAxis()
+        private void GetMoveInputAxis()
         {
-            _moveInputAxis = _moveAction.ReadValue<Vector2>();
+            _moveInputAxis = _player.MoveAction.ReadValue<Vector2>();
         }
 
         private void GetFireInputs()
         {
-            if (_rightFireAction.WasPerformedThisFrame()) FireBullet(Vector2.right);
-            else if (_leftFireAction.WasPerformedThisFrame()) FireBullet(Vector2.left);
-            else if (_upFireAction.WasPerformedThisFrame()) FireBullet(Vector2.up);
-            else if (_downFireAction.WasPerformedThisFrame()) FireBullet(Vector2.down);
+            if (_player.RightFireAction.WasPerformedThisFrame()) FireBullet(Vector2.right);
+            else if (_player.LeftFireAction.WasPerformedThisFrame()) FireBullet(Vector2.left);
+            else if (_player.UpFireAction.WasPerformedThisFrame()) FireBullet(Vector2.up);
+            else if (_player.DownFireAction.WasPerformedThisFrame()) FireBullet(Vector2.down);
         }
 
         private void MovePlayer()
@@ -143,11 +133,7 @@ namespace Inversus.Game
         
         private void OnDisable()
         {
-            _moveAction.Disable();
-            _rightFireAction.Disable();
-            _leftFireAction.Disable();
-            _upFireAction.Disable();
-            _downFireAction.Disable();
+            _player.DisableInGameInputs();
         }
     }
 }

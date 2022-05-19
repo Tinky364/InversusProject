@@ -1,17 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-using Inversus.Attribute;
-
 namespace Inversus.UI
 {
     public class Panel : MonoBehaviour
     {
-        [ReadOnly] 
-        public UnityEvent Displayed;
-        [ReadOnly] 
-        public UnityEvent Hided;
-
+        public UnityEvent Displayed = new();
+        public UnityEvent Hided = new();
+        
         public void SetDisplay(bool value)
         {
             if (value)

@@ -8,7 +8,7 @@ using static Inversus.Manager.ManagerFacade;
 
 namespace Inversus.Manager
 {
-    public enum States { MainMenu, Loading, InGame, GamePauseMenu }
+    public enum States { MainMenu, PlayLocallyMenu, Loading, InGame, GamePauseMenu }
     
     public class MainManager : SingletonMonoBehaviour<MainManager>
     {
@@ -19,7 +19,7 @@ namespace Inversus.Manager
         [SerializeField] 
         private SceneData _startingSceneData;
 
-        public States _state;
+        private States _state;
         public States State { get => _state;
             set
             {
@@ -63,29 +63,29 @@ namespace Inversus.Manager
         {
             if (EditorMode)
             {
-                if (SSubSceneCreator.LoadedSceneCount == 1)
+                if (SSceneCreator.LoadedSceneCount == 1)
                 {
-                    SSubSceneCreator.LoadScene(_startingSceneData, SubSceneLoadMode.Single);
+                    SSceneCreator.LoadScene(_startingSceneData, SubSceneLoadMode.Single);
                 }
-                else if (SSubSceneCreator.LoadedSceneCount == 2)
+                else if (SSceneCreator.LoadedSceneCount == 2)
                 {
-                    SSubSceneCreator.SetActiveScene(SSubSceneManager.SceneData); // Because LoadScene method will unload active scene.
-                    SSubSceneCreator.LoadScene(SSubSceneManager.SceneData, SubSceneLoadMode.Single);
+                    SSceneCreator.SetActiveScene(SSubSceneManager.SceneData); // Because LoadScene method will unload active scene.
+                    SSceneCreator.LoadScene(SSubSceneManager.SceneData, SubSceneLoadMode.Single);
                 }
                 else
                 {
-                    SSubSceneCreator.LoadManagerScene();
+                    SSceneCreator.LoadManagerScene();
                 }
             }
             else
             {
-                if (SSubSceneCreator.LoadedSceneCount == 1)
+                if (SSceneCreator.LoadedSceneCount == 1)
                 {
-                    SSubSceneCreator.LoadScene(_startingSceneData, SubSceneLoadMode.Single);
+                    SSceneCreator.LoadScene(_startingSceneData, SubSceneLoadMode.Single);
                 }
                 else
                 {
-                    SSubSceneCreator.LoadManagerScene();
+                    SSceneCreator.LoadManagerScene();
                 }
             }
         }
@@ -98,8 +98,17 @@ namespace Inversus.Manager
                 return false;
             }
             _subManager = SSubSceneManager;
-            SSubSceneCreator.SetActiveScene(_subManager.SceneData);
+            SSceneCreator.SetActiveScene(_subManager.SceneData);
             return true;
+        }
+
+        public void Quit()
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
         }
     }
 }

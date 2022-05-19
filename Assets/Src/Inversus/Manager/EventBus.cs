@@ -1,4 +1,5 @@
 ﻿using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 using Inversus.Helper;
 using Inversus.Attribute;
@@ -22,6 +23,10 @@ namespace Inversus.Manager
         public UnityEvent<Player> PlayerHit;
         [ReadOnly]
         public UnityEvent GameEnded;
+        [ReadOnly]
+        public UnityEvent<Player> PlayerJoinedGame;
+        [ReadOnly]
+        public UnityEvent<Player> PlayerLeftGame;
 
         protected override void Awake()
         {
@@ -34,6 +39,8 @@ namespace Inversus.Manager
             RoundEnded = new UnityEvent();
             GameEnded = new UnityEvent();
             PlayerHit = new UnityEvent<Player>();
+            PlayerJoinedGame = new UnityEvent<Player>();
+            PlayerLeftGame = new UnityEvent<Player>();
         }
     }
 }
