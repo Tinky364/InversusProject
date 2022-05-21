@@ -256,6 +256,9 @@ MonoBehaviour:
   RoundStarted:
     m_PersistentCalls:
       m_Calls: []
+  RoundStartRequested:
+    m_PersistentCalls:
+      m_Calls: []
   RoundEnded:
     m_PersistentCalls:
       m_Calls: []
@@ -271,13 +274,16 @@ MonoBehaviour:
   PlayerLeftGame:
     m_PersistentCalls:
       m_Calls: []
-  PlayLocallyStartGameButtonClicked:
-    m_PersistentCalls:
-      m_Calls: []
   GamePaused:
     m_PersistentCalls:
       m_Calls: []
   GameResumed:
+    m_PersistentCalls:
+      m_Calls: []
+  PlayLocallyStartGameButtonClicked:
+    m_PersistentCalls:
+      m_Calls: []
+  GameEndRetryButtonClicked:
     m_PersistentCalls:
       m_Calls: []
 --- !u!4 &381360517

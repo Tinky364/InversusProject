@@ -52,8 +52,9 @@ namespace Inversus.Manager
 #if UNITY_EDITOR
             StartInEditor();
 #else
-            SceneManager.Instance.LoadScene(_startingSceneData, LoadSceneMode.SINGLE);
+            SSceneCreator.LoadScene(_startingSceneData, SubSceneLoadMode.Single);
 #endif
+
             Debug.Log("Manager Scene => Start()");
         }
 
