@@ -2,28 +2,21 @@
 
 namespace Inversus.Game
 {
-    public enum SideType { White, Black }
-    
     public class Side
     {
-        public SideType SideType { get; }
+        public int Id { get; }
         public int Layer { get; }
-        public Color TileColor{ get; }
         public Color PlayerColor { get; }
         public Color BulletColor { get; }
-        public Vector2 SpawnPosition { get; }
+        public Color TileColor{ get; }
 
-        public Side(
-            SideType sideType, int layer, Color tileColor, Color playerColor, Color bulletColor,
-            Vector2 spawnPosition
-        )
+        public Side(int id, int layer, Color playerColor, Color bulletColor, Color tileColor)
         {
-            SideType = sideType;
+            Id = id;
             Layer = layer;
-            TileColor = tileColor;
             PlayerColor = playerColor;
             BulletColor = bulletColor;
-            SpawnPosition = spawnPosition;
+            TileColor = tileColor;
         }
     }
 }

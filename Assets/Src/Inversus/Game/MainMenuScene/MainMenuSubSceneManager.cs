@@ -1,6 +1,6 @@
 using Inversus.Manager;
 
-using static Inversus.Manager.ManagerFacade;
+using static Inversus.Facade;
 
 namespace Inversus.Game
 {

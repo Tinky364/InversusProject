@@ -9,19 +9,19 @@ namespace Inversus.Game
     {
         [Header("PANELS")]
         [SerializeField]
-        private Panel MainMenuPanel;
+        private Panel _mainMenuPanel;
         [SerializeField]
-        private Panel PlayPanel;
+        private Panel _playPanel;
         [SerializeField]
-        private Panel PlayLocallyPanel;
+        private Panel _playLocallyPanel;
 
         protected override void Awake()
         {
             base.Awake();
             
-            MainMenuPanel.SetDisplay(true);
-            PlayPanel.SetDisplay(false);
-            PlayLocallyPanel.SetDisplay(false);
+            _mainMenuPanel.SetDisplay(true);
+            _playPanel.SetDisplay(false);
+            _playLocallyPanel.SetDisplay(false);
         }
     }
 }

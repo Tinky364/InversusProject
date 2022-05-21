@@ -2,25 +2,21 @@
 using UnityEngine;
 
 using Inversus.Helper;
-using Inversus.Manager.Data;
+using Inversus.Data;
 
 namespace Inversus.Manager
 {
     public class SettingManager : SingletonMonoBehaviour<SettingManager>
     {
-        private enum FrameRate
-        {
-            Default = 0, Rate30 = 30, Rate45 = 45,
-            Rate60 = 60, Rate100 = 100, Rate120 = 120
-        }
-
-        [SerializeField] private FrameRate _frameRate = FrameRate.Default;
-        [SerializeField] private DisplayData displayData;
-
+        [SerializeField] 
+        private FrameRate _frameRate = FrameRate.Default;
+        [SerializeField] 
+        private DisplayData displayData;
+        
         protected override void Awake()
         {
             base.Awake();
-
+            
             ChangeFrameRate(_frameRate);
             Screen.SetResolution(
                 displayData.Resolution.x, displayData.Resolution.y, displayData.FullScreenMode

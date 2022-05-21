@@ -2,14 +2,12 @@
 
 using Inversus.Helper;
 using Inversus.Attribute;
-using Inversus.Manager.Data;
+using Inversus.Data;
 
-using static Inversus.Manager.ManagerFacade;
+using static Inversus.Facade;
 
 namespace Inversus.Manager
 {
-    public enum States { MainMenu, PlayLocallyMenu, Loading, InGame, GamePauseMenu }
-    
     public class MainManager : SingletonMonoBehaviour<MainManager>
     {
         [SerializeField, ReadOnly] 

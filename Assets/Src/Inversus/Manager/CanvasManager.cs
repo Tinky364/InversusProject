@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 
 using Inversus.Helper;
-using Inversus.Manager.Data;
+using Inversus.Data;
 
-using static Inversus.Manager.ManagerFacade;
+using static Inversus.Facade;
 
 namespace Inversus.Manager
 {
@@ -13,17 +14,20 @@ namespace Inversus.Manager
     {
         [SerializeField]
         private EventSystem _eventSystem;
-        
-        private GraphicRaycaster _graphicRaycaster;
-
+       
         public EventSystem EventSystem => _eventSystem;
         public GraphicRaycaster GraphicRaycaster => _graphicRaycaster;
+        public InputSystemUIInputModule InputSystemUIInputModule => _inputSystemUIInputModule;
 
+        private GraphicRaycaster _graphicRaycaster;
+        private InputSystemUIInputModule _inputSystemUIInputModule;
+        
         protected override void Awake()
         {
             base.Awake();
 
             _graphicRaycaster = GetComponent<GraphicRaycaster>();
+            _inputSystemUIInputModule = _eventSystem.GetComponent<InputSystemUIInputModule>();
         }
 
         public void ActivateUiInput(bool value)
@@ -33,6 +37,7 @@ namespace Inversus.Manager
 
         public void SetSelectedGameObject(GameObject element)
         {
+            if (EventSystem == null) return;
             EventSystem.SetSelectedGameObject(element);
         }
         

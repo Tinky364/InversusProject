@@ -1,53 +1,45 @@
-﻿using Inversus.Manager;
-using UnityEngine;
+﻿using UnityEngine;
 
-using static Inversus.Manager.ManagerFacade;
+using static Inversus.Facade;
 
 namespace Inversus.Game
 {
     public class GroundTile : MonoBehaviour
     {
-        public string Key { get; private set; }
         public Side Side { get; private set; }
         
         private SpriteRenderer _spriteRenderer;
-        private Rigidbody2D _rig;
-        private BoxCollider2D _collider;
 
-        public void Initialize(string keyString, Side sideWhite, Side sideBlack)
+        public void Initialize(string tileName, Side side1, Side side2)
         {
             _spriteRenderer = GetComponent<SpriteRenderer>();
-            _rig = GetComponent<Rigidbody2D>();
-            _collider = GetComponent<BoxCollider2D>();
 
-            Key = keyString;
-            gameObject.name = keyString;
+            gameObject.name = tileName;
 
-            if (gameObject.layer == sideWhite.Layer)
+            if (gameObject.layer == side1.Layer)
             {
-                Side = sideWhite;
-                SetColor(sideWhite.TileColor);
+                Side = side1;
+                SetColor(side1.TileColor);
             }
-            else if (gameObject.layer == sideBlack.Layer)
+            else if (gameObject.layer == side2.Layer)
             {
-                Side = sideBlack;
-                SetColor(sideBlack.TileColor);
+                Side = side2;
+                SetColor(side2.TileColor);
             }
         }
 
         private void OnTriggerEnter2D(Collider2D col)
         {
             if (SMainManager.State != States.InGame) return;
-            if (SSubSceneManager is not GameSubSceneManager gameSubSceneManager) return;
             if (!col.CompareTag("Bullet")) return;
 
-            switch (Side.SideType)
+            switch (Side.Id)
             {
-                case SideType.White: 
-                    SetSide(gameSubSceneManager.GameManager.SideBlack);
+                case 1: 
+                    SetSide(SGameCreator.Side2);
                     break;
-                case SideType.Black: 
-                    SetSide(gameSubSceneManager.GameManager.SideWhite);
+                case 2: 
+                    SetSide(SGameCreator.Side1);
                     break;
             }
         }

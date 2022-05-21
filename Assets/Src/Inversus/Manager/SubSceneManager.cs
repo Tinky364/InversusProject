@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 
 using Inversus.Helper;
-using Inversus.Manager.Data;
+using Inversus.Data;
 
-using static Inversus.Manager.ManagerFacade;
+using static Inversus.Facade;
 
 namespace Inversus.Manager
 {

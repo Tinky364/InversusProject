@@ -1,7 +1,6 @@
-﻿using Inversus.Manager;
-using UnityEngine;
+﻿using UnityEngine;
 
-using static Inversus.Manager.ManagerFacade;
+using static Inversus.Facade;
 
 namespace Inversus.Game
 {
@@ -26,6 +25,7 @@ namespace Inversus.Game
             _collider = GetComponent<BoxCollider2D>();
             
             SEventBus.RoundEnded.AddListener(UnSpawn);
+            SEventBus.GameEnded.AddListener(UnSpawn);
         }
 
         private void FixedUpdate()
@@ -39,7 +39,6 @@ namespace Inversus.Game
         private void OnTriggerEnter2D(Collider2D col)
         {
             if (SMainManager.State != States.InGame) return;
-            if (SSubSceneManager is not GameSubSceneManager gameSubSceneManager) return;
             
             if (col.CompareTag("Wall"))
             {
@@ -49,7 +48,7 @@ namespace Inversus.Game
 
             if (col.CompareTag("Bullet"))
             {
-                Side oppositeSide = gameSubSceneManager.GameManager.ReturnOppositeSide(Side);
+                Side oppositeSide = SGameCreator.ReturnOppositeSide(Side);
                 if (col.gameObject.layer != oppositeSide.Layer) return;
                 
                 UnSpawn();
@@ -66,7 +65,7 @@ namespace Inversus.Game
             gameObject.SetActive(true);
         }
 
-        public void UnSpawn()
+        public void UnSpawn(int player1Score = 0, int player2Score = 0, string roundWinnerName = "")
         {
             if (!HasSpawned) return;
             
@@ -97,6 +96,7 @@ namespace Inversus.Game
         private void OnDestroy()
         {
             SEventBus.RoundEnded.RemoveListener(UnSpawn);
+            SEventBus.GameEnded.RemoveListener(UnSpawn);
         }
     }
 }

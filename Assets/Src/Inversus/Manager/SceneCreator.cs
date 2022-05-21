@@ -4,39 +4,27 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 using Inversus.Attribute;
-using Inversus.Manager.Data;
+using Inversus.Data;
 using Inversus.Helper;
 
-using static Inversus.Manager.ManagerFacade;
+using static Inversus.Facade;
 
 namespace Inversus.Manager
 {
-    public enum SubSceneLoadMode { Single, Additive }
-
     public class SceneCreator : SingletonMonoBehaviour<SceneCreator>
     {
         [SerializeField, ReadOnly] 
         private SceneData _currentActiveSceneData;
-        [SerializeField, Expandable] 
-        private List<SceneData> _sceneDataList = new();
-
-        public SceneData ManagerSceneData => _sceneDataList[0];
+        
+        public SceneData ManagerSceneData => SDatabase.GetSceneData(0);
         public SceneData CurrentActiveSceneData => _currentActiveSceneData;
         public int LoadedSceneCount => SceneManager.sceneCount;
         public float CurrentOperationProgress { get; private set; } = 0f;
 
-        private Dictionary<string, SceneData> _sceneDataDictionary;
-
-        protected override void Awake()
-        {
-            base.Awake();
-
-            InitializeScenesDataDictionary();
-        }
-
         private void Start()
         {
-            _currentActiveSceneData = _sceneDataList[SceneManager.GetActiveScene().buildIndex];
+            _currentActiveSceneData =
+                SDatabase.GetSceneData(SceneManager.GetActiveScene().buildIndex);
         }
         
         public Scene GetSceneBySceneData(SceneData sceneData)
@@ -61,13 +49,13 @@ namespace Inversus.Manager
 
         public void LoadScene(string sceneName, SubSceneLoadMode subSceneLoadMode)
         {
-            SceneData sceneData = GetSceneDataByName(sceneName);
+            SceneData sceneData = GetSceneData(sceneName);
             StartCoroutine(LoadSceneCorWithMode(sceneData, subSceneLoadMode));
         }
         
         public void LoadScene(int buildIndex, SubSceneLoadMode subSceneLoadMode)
         {
-            SceneData sceneData = GetSceneDataByIndex(buildIndex);
+            SceneData sceneData = GetSceneData(buildIndex);
             StartCoroutine(LoadSceneCorWithMode(sceneData, subSceneLoadMode));
         }
         
@@ -83,13 +71,13 @@ namespace Inversus.Manager
 
         public void UnloadScene(string sceneName)
         {
-            SceneData sceneData = GetSceneDataByName(sceneName);
+            SceneData sceneData = GetSceneData(sceneName);
             StartCoroutine(UnloadSceneCor(sceneData));
         }
         
         public void UnloadScene(int buildIndex)
         {
-            SceneData sceneData = GetSceneDataByIndex(buildIndex);
+            SceneData sceneData = GetSceneData(buildIndex);
             StartCoroutine(UnloadSceneCor(sceneData));
         }
         
@@ -100,13 +88,13 @@ namespace Inversus.Manager
 
         public void SetActiveScene(string sceneName)
         {
-            SceneData sceneData = GetSceneDataByName(sceneName);
+            SceneData sceneData = GetSceneData(sceneName);
             SetActiveScene(sceneData);
         }
         
         public void SetActiveScene(int buildIndex)
         {
-            SceneData sceneData = GetSceneDataByIndex(buildIndex);
+            SceneData sceneData = GetSceneData(buildIndex);
             SetActiveScene(sceneData);
         }
         
@@ -123,23 +111,9 @@ namespace Inversus.Manager
                 Debug.LogWarning($"Setting {sceneData.Name} scene as active scene failed.");
         }
 
-        public SceneData GetSceneDataByName(string sceneName)
-        {
-            if (_sceneDataDictionary.TryGetValue(sceneName, out SceneData value))
-                return value;
-
-            Debug.LogError($"Getting scene data of {sceneName} scene failed.");
-            return null;
-        }
-
-        public SceneData GetSceneDataByIndex(int index)
-        {
-            if (index < _sceneDataList.Count && index >= 0)
-                return _sceneDataList[index];
-
-            Debug.LogError($"Getting scene data of scene with index {index} failed.");
-            return null;
-        }
+        public SceneData GetSceneData(string sceneName) => SDatabase.GetSceneData(sceneName);
+        
+        public SceneData GetSceneData(int index) => SDatabase.GetSceneData(index);
 
         private IEnumerator LoadSceneCorWithMode(SceneData sceneData, SubSceneLoadMode subSceneLoadMode)
         {
@@ -198,15 +172,6 @@ namespace Inversus.Manager
             }
             else
                 Debug.LogWarning($"Unloading {sceneData.name} scene failed.");
-        }
-
-        private void InitializeScenesDataDictionary()
-        {
-            _sceneDataDictionary = new Dictionary<string, SceneData>();
-            foreach (var sceneData in _sceneDataList)
-            {
-                _sceneDataDictionary.Add(sceneData.Name, sceneData);
-            }
         }
     }
 }

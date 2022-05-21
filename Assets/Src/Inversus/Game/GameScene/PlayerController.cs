@@ -2,7 +2,7 @@
 
 using Inversus.Manager;
 
-using static Inversus.Manager.ManagerFacade;
+using static Inversus.Facade;
 
 namespace Inversus.Game
 {
@@ -18,7 +18,7 @@ namespace Inversus.Game
         private float _maxSpeed = 6f;
 
         public Side Side { get; private set; }
-        
+
         private SpriteRenderer _spriteRenderer;
         private Rigidbody2D _rig;
         private BoxCollider2D _collider;
@@ -33,6 +33,7 @@ namespace Inversus.Game
             {
                 GetMoveInputAxis();
                 GetFireInputs();
+                GetPauseInput();
             }
         }
 
@@ -47,11 +48,10 @@ namespace Inversus.Game
         private void OnTriggerEnter2D(Collider2D col)
         {
             if (SMainManager.State != States.InGame) return;
-            if (SSubSceneManager is not GameSubSceneManager gameSubSceneManager) return;
 
             if (col.CompareTag("Bullet"))
             {
-                Side oppositeSide = gameSubSceneManager.GameManager.ReturnOppositeSide(Side);
+                Side oppositeSide = SGameCreator.ReturnOppositeSide(Side);
                 if (col.gameObject.layer != oppositeSide.Layer) return;
 
                 col.GetComponent<Bullet>().UnSpawn();
@@ -67,8 +67,9 @@ namespace Inversus.Game
             _player = GetComponentInParent<Player>();
 
             _player.EnableInGameInputs();
-            
+
             Side = side;
+            gameObject.name = "PlayerController";
             gameObject.layer = Side.Layer;
             _spriteRenderer.color = Side.PlayerColor;
         }
@@ -84,6 +85,24 @@ namespace Inversus.Game
             else if (_player.LeftFireAction.WasPerformedThisFrame()) FireBullet(Vector2.left);
             else if (_player.UpFireAction.WasPerformedThisFrame()) FireBullet(Vector2.up);
             else if (_player.DownFireAction.WasPerformedThisFrame()) FireBullet(Vector2.down);
+        }
+
+        private void GetPauseInput()
+        {
+            if (_player.PauseAction.WasPerformedThisFrame())
+            {
+                Debug.Log("GamePaused Event => Invoke()");
+                SEventBus.GamePaused?.Invoke(_player);
+            }
+        }
+
+        public void ResetMovement(Vector2 spawnPos)
+        {
+            _rig.velocity = Vector2.zero;
+            _moveInputAxis = Vector2.zero;
+            _desiredVelocity = Vector2.zero;
+            _velocity = Vector2.zero;
+            transform.position = spawnPos;
         }
 
         private void MovePlayer()
