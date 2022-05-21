@@ -9,6 +9,7 @@ namespace Inversus.Game
         public Color PlayerColor { get; }
         public Color BulletColor { get; }
         public Color TileColor{ get; }
+        public int Score { get; set; }
 
         public Side(int id, int layer, Color playerColor, Color bulletColor, Color tileColor)
         {
@@ -17,6 +18,7 @@ namespace Inversus.Game
             PlayerColor = playerColor;
             BulletColor = bulletColor;
             TileColor = tileColor;
+            Score = 0;
         }
     }
 }

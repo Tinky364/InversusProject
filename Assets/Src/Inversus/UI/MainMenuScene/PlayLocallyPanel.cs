@@ -59,6 +59,7 @@ namespace Inversus.UI
                     _playerInputGrid1.Display(
                         player.Name, player.PlayerInput.devices[0].displayName
                     );
+                    SCanvasManager.SetSelectedGameObject(_mapIdDropdown.gameObject);
                     break;
                 case 2:
                     _playerInputGrid2.Display(

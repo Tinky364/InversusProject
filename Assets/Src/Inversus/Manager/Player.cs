@@ -17,7 +17,6 @@ namespace Inversus.Manager
         public PlayerInput PlayerInput => _playerInput;
         public int Id { get; private set; }
         public string Name { get; private set; }
-        public int Score { get; set; }
         public InputAction MoveAction { get; private set; }
         public InputAction RightFireAction { get; private set; }
         public InputAction LeftFireAction { get; private set; }
@@ -26,6 +25,14 @@ namespace Inversus.Manager
         public InputAction PauseAction { get; private set; }
 
         private PlayerInput _playerInput;
+
+        private void Update()
+        {
+            if (SMainManager.State == States.InGame)
+            {
+                GetPauseInput();
+            }
+        }
 
         public void Initialize(int id)
         {
@@ -70,6 +77,15 @@ namespace Inversus.Manager
             UpFireAction.Disable();
             DownFireAction.Disable();
             PauseAction.Disable();
+        }
+        
+        private void GetPauseInput()
+        {
+            if (PauseAction.WasPerformedThisFrame())
+            {
+                Debug.Log("GamePaused Event => Invoke()");
+                SEventBus.GamePaused?.Invoke(this);
+            }
         }
     }
 }

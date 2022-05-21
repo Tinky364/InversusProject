@@ -9,6 +9,7 @@ namespace Inversus.Game
     [RequireComponent(typeof(SpriteRenderer))]
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(BoxCollider2D))]
+    [RequireComponent(typeof(Gun))]
     public class PlayerController : MonoBehaviour
     {
         [Header("Movement")]
@@ -16,13 +17,20 @@ namespace Inversus.Game
         private float _acceleration = 50f;
         [SerializeField, Min(0)]
         private float _maxSpeed = 6f;
+        [Header("Gun")]
+        [SerializeField, Min(0)]
+        private int _maxAmmo = 5;
+        [SerializeField, Min(0)]
+        private float _ammoLoadDuration = 0.6f;
 
         public Side Side { get; private set; }
 
+        private Player _player;
         private SpriteRenderer _spriteRenderer;
         private Rigidbody2D _rig;
         private BoxCollider2D _collider;
-        private Player _player;
+        private Gun _gun;
+        
         private Vector2 _moveInputAxis;
         private Vector2 _desiredVelocity;
         private Vector2 _velocity;
@@ -33,7 +41,7 @@ namespace Inversus.Game
             {
                 GetMoveInputAxis();
                 GetFireInputs();
-                GetPauseInput();
+                _gun.LoadAmmoEverySecond(_ammoLoadDuration);
             }
         }
 
@@ -51,21 +59,19 @@ namespace Inversus.Game
 
             if (col.CompareTag("Bullet"))
             {
-                Side oppositeSide = SGameCreator.ReturnOppositeSide(Side);
-                if (col.gameObject.layer != oppositeSide.Layer) return;
-
-                col.GetComponent<Bullet>().UnSpawn();
                 SEventBus.PlayerHit?.Invoke(_player);
             }
         }
 
         public void Initialize(Side side)
         {
+            _player = GetComponentInParent<Player>();
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _rig = GetComponent<Rigidbody2D>();
             _collider = GetComponent<BoxCollider2D>();
-            _player = GetComponentInParent<Player>();
-
+            _gun = GetComponent<Gun>();
+            
+            _gun.Initialize(_maxAmmo);
             _player.EnableInGameInputs();
 
             Side = side;
@@ -81,28 +87,24 @@ namespace Inversus.Game
 
         private void GetFireInputs()
         {
-            if (_player.RightFireAction.WasPerformedThisFrame()) FireBullet(Vector2.right);
-            else if (_player.LeftFireAction.WasPerformedThisFrame()) FireBullet(Vector2.left);
-            else if (_player.UpFireAction.WasPerformedThisFrame()) FireBullet(Vector2.up);
-            else if (_player.DownFireAction.WasPerformedThisFrame()) FireBullet(Vector2.down);
+            if (_player.RightFireAction.WasPerformedThisFrame()) 
+                _gun.FireBullet(transform.position, Vector2Int.right, Side);
+            else if (_player.LeftFireAction.WasPerformedThisFrame()) 
+                _gun.FireBullet(transform.position, Vector2Int.left, Side);
+            else if (_player.UpFireAction.WasPerformedThisFrame()) 
+                _gun.FireBullet(transform.position, Vector2Int.up, Side);
+            else if (_player.DownFireAction.WasPerformedThisFrame())
+                _gun.FireBullet(transform.position, Vector2Int.down, Side);
         }
 
-        private void GetPauseInput()
-        {
-            if (_player.PauseAction.WasPerformedThisFrame())
-            {
-                Debug.Log("GamePaused Event => Invoke()");
-                SEventBus.GamePaused?.Invoke(_player);
-            }
-        }
-
-        public void ResetMovement(Vector2 spawnPos)
+        public void ResetThis(Vector2 spawnPos)
         {
             _rig.velocity = Vector2.zero;
             _moveInputAxis = Vector2.zero;
             _desiredVelocity = Vector2.zero;
             _velocity = Vector2.zero;
             transform.position = spawnPos;
+            _gun.ResetThis();
         }
 
         private void MovePlayer()
@@ -112,42 +114,6 @@ namespace Inversus.Game
                 _velocity, _desiredVelocity, _acceleration * Time.fixedDeltaTime
             );
             _rig.velocity = _velocity;
-        }
-
-        private void FireBullet(Vector2 direction)
-        {
-            if (SSubSceneManager is not GameSubSceneManager gameSubSceneManager) return;
-
-            gameSubSceneManager.BulletPool.Pull().Spawn(
-                CalculateSpawnPositionOfBullet(direction), direction, Side
-            );
-        }
-
-        /// <summary>
-        /// It is for not spawning a bullet between 2 tiles.
-        /// </summary>
-        private Vector2 CalculateSpawnPositionOfBullet(Vector2 direction)
-        {
-            Vector2 pos = transform.position;
-            if (direction == Vector2.right || direction == Vector2.left)
-            {
-                float yDec = pos.y % 1;
-                switch (yDec)
-                {
-                    case >= 0.35f and <= 0.5f: return new Vector2(pos.x, (int)pos.y + 0.35f);
-                    case > 0.5f and <= 0.65f: return new Vector2(pos.x, (int)pos.y + 0.65f);
-                }
-            }
-            else
-            {
-                float xDec = pos.x % 1;
-                switch (xDec)
-                {
-                    case >= 0.35f and <= 0.5f: return new Vector2((int)pos.x + 0.35f, pos.y);
-                    case > 0.5f and <= 0.65f: return new Vector2((int)pos.x + 0.65f, pos.y);
-                }
-            }
-            return pos;
         }
         
         private void OnDisable()

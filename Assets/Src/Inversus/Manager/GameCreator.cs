@@ -83,8 +83,8 @@ namespace Inversus.Manager
             );
             CurrentMap.Initialize(Side1, Side2);
             
-            Player1.PlayerController.ResetMovement(CurrentMap.SpawnPosition1);
-            Player2.PlayerController.ResetMovement(CurrentMap.SpawnPosition2);
+            Player1.PlayerController.ResetThis(CurrentMap.SpawnPosition1);
+            Player2.PlayerController.ResetThis(CurrentMap.SpawnPosition2);
 
             Debug.Log("RoundStarted Event => Invoke()");
             SEventBus.RoundStarted?.Invoke();
@@ -111,32 +111,41 @@ namespace Inversus.Manager
             if (player == Player1)
             {
                 roundWinnerName = Player2.name;
-                Player2.Score += 1;
+                Player2.PlayerController.Side.Score += 1;
             }
             else if (player == Player2)
             {
                 roundWinnerName = Player1.name;
-                Player1.Score += 1;
+                Player1.PlayerController.Side.Score += 1;
             }
             Debug.Log($"Round Winner: {roundWinnerName}");
 
             string winnerName;
-            if (Player1.Score == VictoryScore)
+            if (Player1.PlayerController.Side.Score == VictoryScore)
             {
                 winnerName = Player1.Name;
                 Debug.Log($"Game Winner: {winnerName}");
-                GameEnded(Player1.Score, Player2.Score, winnerName);
+                GameEnded(
+                    Player1.PlayerController.Side.Score, Player2.PlayerController.Side.Score,
+                    winnerName
+                );
             }
-            else if (Player2.Score == VictoryScore)
+            else if (Player2.PlayerController.Side.Score == VictoryScore)
             {
                 winnerName = Player2.Name;
                 Debug.Log($"Game Winner: {winnerName}");
-                GameEnded(Player1.Score, Player2.Score, winnerName);
+                GameEnded(
+                    Player1.PlayerController.Side.Score, Player2.PlayerController.Side.Score,
+                    winnerName
+                );
             }
             else
             {
                 Debug.Log("RoundEnded Event => Invoke()");
-                SEventBus.RoundEnded?.Invoke(Player1.Score, Player2.Score, roundWinnerName);
+                SEventBus.RoundEnded?.Invoke(
+                    Player1.PlayerController.Side.Score, Player2.PlayerController.Side.Score,
+                    roundWinnerName
+                );
             }
         }
 
@@ -148,8 +157,8 @@ namespace Inversus.Manager
 
         private void RetryGame()
         {
-            Player1.Score = 0;
-            Player2.Score = 0;
+            Player1.PlayerController.Side.Score = 0;
+            Player2.PlayerController.Side.Score = 0;
             Round = 0;
             CreateRound();
         }

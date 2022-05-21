@@ -34,6 +34,8 @@ namespace Inversus.Manager
         {
             base.Awake();
 
+            Debug.unityLogger.logEnabled = Debug.isDebugBuild;
+            
             State = States.Loading;
 
 #if UNITY_EDITOR
@@ -43,7 +45,6 @@ namespace Inversus.Manager
                 _editorMode = false;
             Debug.Log("Editor Mode: Off");
 #endif
-
             Debug.Log("Manager Scene => Awake()");
         }
 
@@ -54,7 +55,6 @@ namespace Inversus.Manager
 #else
             SSceneCreator.LoadScene(_startingSceneData, SubSceneLoadMode.Single);
 #endif
-
             Debug.Log("Manager Scene => Start()");
         }
 
