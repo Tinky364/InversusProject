@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
 
 using Inversus.Helper;
 using Inversus.Data;
+using Inversus.UI;
 
 using static Inversus.Facade;
 
@@ -14,25 +14,21 @@ namespace Inversus.Manager
     {
         [SerializeField]
         private EventSystem _eventSystem;
-       
         public EventSystem EventSystem => _eventSystem;
-        public GraphicRaycaster GraphicRaycaster => _graphicRaycaster;
+
+        [SerializeField]
+        protected Panel _foregroundPanel;
+       
+        private InputSystemUIInputModule _inputSystemUIInputModule;
         public InputSystemUIInputModule InputSystemUIInputModule => _inputSystemUIInputModule;
 
-        private GraphicRaycaster _graphicRaycaster;
-        private InputSystemUIInputModule _inputSystemUIInputModule;
+        private GameObject _lastSelectedGameObject;
         
         protected override void Awake()
         {
             base.Awake();
 
-            _graphicRaycaster = GetComponent<GraphicRaycaster>();
             _inputSystemUIInputModule = _eventSystem.GetComponent<InputSystemUIInputModule>();
-        }
-
-        public void ActivateUiInput(bool value)
-        {
-            _graphicRaycaster.enabled = value;
         }
 
         public void SetSelectedGameObject(GameObject element)
@@ -44,6 +40,21 @@ namespace Inversus.Manager
         public void LoadScene(SceneData targetSceneData)
         {
             SSceneCreator.LoadScene(targetSceneData, SubSceneLoadMode.Single);
+        }
+        
+        public void SetUiInput(bool isActive)
+        {
+            if (isActive)
+            {
+               EventSystem.SetSelectedGameObject(_lastSelectedGameObject);
+                _foregroundPanel.SetDisplay(false);
+            }
+            else
+            {
+                _lastSelectedGameObject = EventSystem.currentSelectedGameObject;
+                EventSystem.SetSelectedGameObject(null);
+                _foregroundPanel.SetDisplay(true);
+            }
         }
     }
 }

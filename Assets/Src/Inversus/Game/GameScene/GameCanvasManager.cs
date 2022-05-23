@@ -109,7 +109,7 @@ namespace Inversus.Game
             _backgroundPanel.SetDisplay(true);
             yield return _waitForSecondsRealtime1;
             Debug.Log("GameEndRetryButtonClicked Event => Invoke()");
-            SEventBus.GameEndRetryButtonClicked?.Invoke();
+            SEventBus.RetryLocalGameRequested?.Invoke();
             _backgroundPanel.SetDisplay(false);
         }
         

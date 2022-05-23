@@ -8,8 +8,8 @@
 
     public enum States
     {
-        MainMenu, PlayLocallyMenu, Loading,
-        InGame, GamePauseMenu
+        MainMenu, PlayLocallyMenu, PlayOnlineMenu,
+        Loading, InGame, GamePauseMenu
     }
 
     public enum SubSceneLoadMode

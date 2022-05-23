@@ -32,28 +32,37 @@ namespace Inversus.Manager
         [ReadOnly]
         public UnityEvent GameResumed;
         [ReadOnly]
-        public UnityEvent<int, int, int> PlayLocallyStartGameButtonClicked;
+        public UnityEvent<int, int, int> StartLocalGameRequested;
         [ReadOnly]
-        public UnityEvent GameEndRetryButtonClicked;
+        public UnityEvent RetryLocalGameRequested;
+        
+        [ReadOnly]
+        public UnityEvent ServerConnectionRequested;
+        [ReadOnly]
+        public UnityEvent ServerConnected;
+        [ReadOnly]
+        public UnityEvent ServerDisconnected;
+        
+        [ReadOnly]
+        public UnityEvent<string, int> CreateRoomRequested;
+        [ReadOnly]
+        public UnityEvent<string> RoomCreated;
+        [ReadOnly]
+        public UnityEvent RoomCreateFailed;
 
-        protected override void Awake()
-        {
-            base.Awake();
-
-            LoadSceneStarted = new UnityEvent();
-            LoadSceneEnded = new UnityEvent();
-            GameCreated = new UnityEvent();
-            RoundStarted = new UnityEvent();
-            RoundStartRequested = new UnityEvent();
-            RoundEnded = new UnityEvent<int, int, string>();
-            GameEnded = new UnityEvent<int, int, string>();
-            PlayerHit = new UnityEvent<Player>();
-            PlayerJoinedGame = new UnityEvent<Player>();
-            PlayerLeftGame = new UnityEvent<Player>();
-            GamePaused = new UnityEvent<Player>();
-            GameResumed = new UnityEvent();
-            PlayLocallyStartGameButtonClicked = new UnityEvent<int, int, int>();
-            GameEndRetryButtonClicked = new UnityEvent();
-        }
+        [ReadOnly]
+        public UnityEvent JoinRoomRequested;
+        [ReadOnly]
+        public UnityEvent RoomJoined;
+        [ReadOnly]
+        public UnityEvent RoomJoinFailed;
+        
+        [ReadOnly]
+        public UnityEvent LeaveRoomRequested;
+        [ReadOnly]
+        public UnityEvent RoomLeft;
+        [ReadOnly]
+        public UnityEvent RoomLeaveFailed;
+        
     }
 }

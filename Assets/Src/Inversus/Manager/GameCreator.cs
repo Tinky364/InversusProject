@@ -32,9 +32,9 @@ namespace Inversus.Manager
             LayerSide2 = LayerMask.NameToLayer("Side2");
             
             SEventBus.PlayerHit.AddListener(OnPlayerHit);
-            SEventBus.PlayLocallyStartGameButtonClicked.AddListener(SetGameSettings);
+            SEventBus.StartLocalGameRequested.AddListener(SetGameSettings);
             SEventBus.RoundStartRequested.AddListener(OnRoundStartRequested);
-            SEventBus.GameEndRetryButtonClicked.AddListener(RetryGame);
+            SEventBus.RetryLocalGameRequested.AddListener(RetryGame);
         }
 
         private void SetGameSettings(int mapId, int victoryScore, int colorThemeId)
@@ -59,8 +59,8 @@ namespace Inversus.Manager
                 2, LayerSide2, ColorTheme.Side2Color, ColorTheme.Side2Color, ColorTheme.Side1Color
             );
 
-            Player1 = SInputManager.Players[1];
-            Player2 = SInputManager.Players[2];
+            Player1 = SLocalGameManager.Players[1];
+            Player2 = SLocalGameManager.Players[2];
             SSceneCreator.MoveGameObjectToScene(Player1.gameObject, SSceneCreator.GetActiveScene());
             SSceneCreator.MoveGameObjectToScene(Player2.gameObject, SSceneCreator.GetActiveScene());
             Player1.InitializePlayerController(Side1);
@@ -178,9 +178,9 @@ namespace Inversus.Manager
         private void OnDestroy()
         {
             SEventBus.PlayerHit.RemoveListener(OnPlayerHit);
-            SEventBus.PlayLocallyStartGameButtonClicked.RemoveListener(SetGameSettings);
+            SEventBus.StartLocalGameRequested.RemoveListener(SetGameSettings);
             SEventBus.RoundStartRequested.RemoveListener(OnRoundStartRequested);
-            SEventBus.GameEndRetryButtonClicked.RemoveListener(RetryGame);
+            SEventBus.RetryLocalGameRequested.RemoveListener(RetryGame);
         }
     }
 }

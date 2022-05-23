@@ -27,9 +27,6 @@ namespace Inversus.UI
 
         private void Awake()
         {
-            SEventBus.PlayerJoinedGame.AddListener(OnPlayerJoined);
-            SEventBus.PlayerLeftGame.AddListener(OnPlayerLeft);
-            
             _mapIdDropdown.ClearOptions();
             _mapIdDropdown.AddOptions(new List<string> {"1", "2"});
             
@@ -42,10 +39,13 @@ namespace Inversus.UI
 
         private void OnEnable()
         {
-            _startGameButton.interactable = SInputManager.PlayersCount >= 2;
+            SEventBus.PlayerJoinedGame.AddListener(OnPlayerJoined);
+            SEventBus.PlayerLeftGame.AddListener(OnPlayerLeft);
+            
+            _startGameButton.interactable = SLocalGameManager.PlayersCount >= 2;
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             SEventBus.PlayerJoinedGame.RemoveListener(OnPlayerJoined);
             SEventBus.PlayerLeftGame.RemoveListener(OnPlayerLeft);
@@ -68,7 +68,7 @@ namespace Inversus.UI
                     break;
             }
 
-            if (SInputManager.PlayersCount >= 2) _startGameButton.interactable = true;
+            if (SLocalGameManager.PlayersCount >= 2) _startGameButton.interactable = true;
         }
 
         private void OnPlayerLeft(Player player)
@@ -83,25 +83,15 @@ namespace Inversus.UI
                     break;
             }
 
-            if (SInputManager.PlayersCount < 2) _startGameButton.interactable = false;
-        }
-
-        public void SetStatePlayLocallyMenu()
-        {
-            SMainManager.State = States.PlayLocallyMenu;
-        }
-
-        public void SetStateMainMenu()
-        {
-            SMainManager.State = States.MainMenu;
+            if (SLocalGameManager.PlayersCount < 2) _startGameButton.interactable = false;
         }
 
         public void RemoveAllLocallyPlayers()
         {
-            SInputManager.RemoveAllPlayers();
+            SLocalGameManager.RemoveAllPlayers();
         }
 
-        public void OnStartGameButtonClick(SceneData sceneData)
+        public void StartGameButton_Click(SceneData sceneData)
         {
             Debug.Log("PlayLocallyStartGameButtonClicked Event => Invoke()");
 
@@ -113,14 +103,14 @@ namespace Inversus.UI
                     out int victoryScore
                 ))
             {
-                SEventBus.PlayLocallyStartGameButtonClicked?.Invoke(
+                SEventBus.StartLocalGameRequested?.Invoke(
                     startingMapId, victoryScore, _colorsDropdown.value + 1
                 );
             }
             else
             {
                 Debug.LogWarning("Parsing Failed");
-                SEventBus.PlayLocallyStartGameButtonClicked?.Invoke(1, 1, 1);
+                SEventBus.StartLocalGameRequested?.Invoke(1, 1, 1);
             }
             
             SSceneCreator.LoadScene(sceneData, SubSceneLoadMode.Single);

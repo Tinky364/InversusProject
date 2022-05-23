@@ -165,7 +165,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &132051674
 GameObject:
@@ -199,7 +199,7 @@ MonoBehaviour:
   _frameRate: 60
   displayData:
     _resolution: {x: 1600, y: 900}
-    _fullScreenMode: 1
+    _fullScreenMode: 3
 --- !u!4 &132051676
 Transform:
   m_ObjectHideFlags: 0
@@ -280,10 +280,46 @@ MonoBehaviour:
   GameResumed:
     m_PersistentCalls:
       m_Calls: []
-  PlayLocallyStartGameButtonClicked:
+  StartLocalGameRequested:
     m_PersistentCalls:
       m_Calls: []
-  GameEndRetryButtonClicked:
+  RetryLocalGameRequested:
+    m_PersistentCalls:
+      m_Calls: []
+  ServerConnectionRequested:
+    m_PersistentCalls:
+      m_Calls: []
+  ServerConnected:
+    m_PersistentCalls:
+      m_Calls: []
+  ServerDisconnected:
+    m_PersistentCalls:
+      m_Calls: []
+  CreateRoomRequested:
+    m_PersistentCalls:
+      m_Calls: []
+  RoomCreated:
+    m_PersistentCalls:
+      m_Calls: []
+  RoomCreateFailed:
+    m_PersistentCalls:
+      m_Calls: []
+  JoinRoomRequested:
+    m_PersistentCalls:
+      m_Calls: []
+  RoomJoined:
+    m_PersistentCalls:
+      m_Calls: []
+  RoomJoinFailed:
+    m_PersistentCalls:
+      m_Calls: []
+  LeaveRoomRequested:
+    m_PersistentCalls:
+      m_Calls: []
+  RoomLeft:
+    m_PersistentCalls:
+      m_Calls: []
+  RoomLeaveFailed:
     m_PersistentCalls:
       m_Calls: []
 --- !u!4 &381360517
@@ -313,7 +349,7 @@ GameObject:
   - component: {fileID: 1017554830}
   - component: {fileID: 1017554828}
   m_Layer: 0
-  m_Name: InputManager
+  m_Name: LocalGameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -376,7 +412,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1017554830
 MonoBehaviour:
@@ -609,3 +645,47 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2025717174
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2025717175}
+  - component: {fileID: 2025717176}
+  m_Layer: 0
+  m_Name: OnlineGameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2025717175
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2025717174}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2025717176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2025717174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c70c5002fc8c4ffebcb49c2c3c1cbf3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
