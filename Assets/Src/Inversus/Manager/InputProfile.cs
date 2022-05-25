@@ -8,12 +8,8 @@ using static Inversus.Facade;
 namespace Inversus.Manager
 {
     [RequireComponent(typeof(PlayerInput))]
-    public class Player : MonoBehaviour
+    public class InputProfile : MonoBehaviour
     {
-        [SerializeField]
-        private PlayerController _prefabPlayerController;
-
-        public PlayerController PlayerController { get; private set; }
         public PlayerInput PlayerInput => _playerInput;
         public int Id { get; private set; }
         public string Name { get; private set; }
@@ -34,12 +30,12 @@ namespace Inversus.Manager
             }
         }
 
-        public void Initialize(int id)
+        public void Initialize(int id, string profileName)
         {
             _playerInput = GetComponent<PlayerInput>();
 
             Id = id;
-            Name = $"Player{Id}";
+            Name = profileName;
             gameObject.name = Name;
             transform.position = Vector2.zero;
 
@@ -51,14 +47,6 @@ namespace Inversus.Manager
             PauseAction = _playerInput.actions["Pause"];
         }
         
-        public void InitializePlayerController(Side side)
-        {
-            PlayerController = Instantiate(
-                _prefabPlayerController, Vector2.zero, Quaternion.identity, transform
-            );
-            PlayerController.Initialize(side);
-        }
-
         public void EnableInGameInputs()
         {
             MoveAction.Enable();

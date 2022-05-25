@@ -1,7 +1,10 @@
 ﻿using UnityEngine.Events;
+using Photon.Realtime;
 
 using Inversus.Helper;
 using Inversus.Attribute;
+using Inversus.Data;
+using Inversus.Game;
 
 namespace Inversus.Manager
 {
@@ -10,32 +13,34 @@ namespace Inversus.Manager
         [ReadOnly] 
         public UnityEvent LoadSceneStarted;
         [ReadOnly] 
-        public UnityEvent LoadSceneEnded;
+        public UnityEvent<SceneData> LoadSceneEnded;
+        
         [ReadOnly]
         public UnityEvent GameCreated; 
         [ReadOnly]
-        public UnityEvent RoundStarted;
-        [ReadOnly]
         public UnityEvent RoundStartRequested;
+        [ReadOnly]
+        public UnityEvent RoundStarted;
         [ReadOnly]
         public UnityEvent<int, int, string> RoundEnded;
         [ReadOnly]
-        public UnityEvent<Player> PlayerHit;
-        [ReadOnly]
         public UnityEvent<int, int, string> GameEnded;
         [ReadOnly]
-        public UnityEvent<Player> PlayerJoinedGame;
-        [ReadOnly]
-        public UnityEvent<Player> PlayerLeftGame;
-        [ReadOnly]
-        public UnityEvent<Player> GamePaused;
+        public UnityEvent<InputProfile> GamePaused;
         [ReadOnly]
         public UnityEvent GameResumed;
         [ReadOnly]
-        public UnityEvent<int, int, int> StartLocalGameRequested;
-        [ReadOnly]
         public UnityEvent RetryLocalGameRequested;
+        [ReadOnly]
+        public UnityEvent<PlayerController> PlayerHit;
         
+        [ReadOnly]
+        public UnityEvent<InputProfile> InputProfileJoined;
+        [ReadOnly]
+        public UnityEvent<InputProfile> InputProfileLeft;
+        [ReadOnly]
+        public UnityEvent<int, int, int> StartLocalGameRequested;
+
         [ReadOnly]
         public UnityEvent ServerConnectionRequested;
         [ReadOnly]
@@ -63,6 +68,7 @@ namespace Inversus.Manager
         public UnityEvent RoomLeft;
         [ReadOnly]
         public UnityEvent RoomLeaveFailed;
-        
+        [ReadOnly]
+        public UnityEvent<Player> MasterClientSwitched;
     }
 }

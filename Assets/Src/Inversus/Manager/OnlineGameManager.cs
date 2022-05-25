@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.InputSystem;
 
 using static Inversus.Facade;
 
@@ -17,7 +18,7 @@ namespace Inversus.Manager
         public bool InRoom => _inRoom && PhotonNetwork.InRoom;
 
         public bool IsMasterClient => PhotonNetwork.IsMasterClient;
-        
+
         private void SetSingleton()
         {
             if (Instance != null && Instance != this)
@@ -41,7 +42,7 @@ namespace Inversus.Manager
             SEventBus.JoinRoomRequested.AddListener(JoinRoom);
             SEventBus.LeaveRoomRequested.AddListener(LeaveRoom);
         }
-
+        
         private void OnDestroy()
         {
             SEventBus.ServerConnectionRequested.RemoveListener(ConnectToServer);
@@ -52,8 +53,9 @@ namespace Inversus.Manager
 
         public void ConnectToServer()
         {
-            if (PhotonNetwork.IsConnected) return;
-            
+            if (IsConnected) return;
+
+            PhotonNetwork.NickName = $"User{Random.Range(0, 9999)}";
             PhotonNetwork.ConnectUsingSettings();
         }
 
@@ -64,11 +66,15 @@ namespace Inversus.Manager
 
         public void CreateRoom(string roomName, int maxPlayers)
         {
+            if (!IsConnected) return;
+            
             PhotonNetwork.CreateRoom(null, CreateRoomOptions((byte)maxPlayers));
         }
 
         public void JoinRoom()
         {
+            if (!IsConnected) return;
+
             //PhotonNetwork.JoinRoom(roomName);
             PhotonNetwork.JoinRandomRoom();
         }
@@ -90,14 +96,14 @@ namespace Inversus.Manager
 #region Callbacks
         public override void OnConnectedToMaster()
         {
-            Debug.Log("Connect to the server: Success");
+            Debug.Log("Client connected to the server.");
 
             JoinLobby();
         }
         
         public override void OnDisconnected(DisconnectCause cause)
         {
-            Debug.Log("Disconnected from the server");
+            Debug.Log("Client disconnected from the server.");
             
             _isConnected = false;
             SEventBus.ServerDisconnected?.Invoke();
@@ -105,7 +111,7 @@ namespace Inversus.Manager
 
         public override void OnJoinedLobby()
         {
-            Debug.Log("Join the lobby: Success");
+            Debug.Log($"Client joined the lobby.");
             
             _isConnected = true;
             SEventBus.ServerConnected?.Invoke();
@@ -113,7 +119,10 @@ namespace Inversus.Manager
         
         public override void OnCreatedRoom()
         {
-            Debug.Log($"Create the room named {PhotonNetwork.CurrentRoom.Name}: Success");
+            Debug.Log(
+                $"Client named {PhotonNetwork.NickName} created the room named" +
+                $" {PhotonNetwork.CurrentRoom.Name}."
+            );
 
             _inRoom = true;
             SEventBus.RoomCreated?.Invoke(PhotonNetwork.CurrentRoom.Name);
@@ -121,12 +130,34 @@ namespace Inversus.Manager
 
         public override void OnCreateRoomFailed(short returnCode, string message)
         {
-            Debug.Log($"Create the room: Fail, {message}");
+            Debug.Log($"Client could not create the room. {message}");
 
             _inRoom = false;
             SEventBus.RoomCreateFailed?.Invoke();
         }
 
+        public override void OnJoinedRoom()
+        {
+            Debug.Log($"Client joined the room named {PhotonNetwork.CurrentRoom.Name}.");
+            
+            _inRoom = true;
+            SEventBus.RoomJoined?.Invoke();
+
+            // Player = PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity)
+            //                       .GetComponent<Player>();
+            // Player.Initialize(PhotonNetwork.LocalPlayer.ActorNumber);
+            // SCanvasManager.InputSystemUIInputModule.actionsAsset = Player.PlayerInput.actions;
+            //SSceneCreator.MoveGameObjectToScene(Player.gameObject, SSceneCreator.GetManagerScene());
+        }
+
+        public override void OnJoinRoomFailed(short returnCode, string message)
+        {
+            Debug.Log($"Client could not join the room. {message}");
+            
+            _inRoom = false;
+            SEventBus.RoomJoinFailed?.Invoke();
+        }
+        
         public override void OnLeftRoom()
         {
             Debug.Log("Left the room");
@@ -134,21 +165,22 @@ namespace Inversus.Manager
             _inRoom = false;
             SEventBus.RoomLeft?.Invoke();
         }
-
-        public override void OnJoinedRoom()
+        
+        public override void OnPlayerEnteredRoom(Player newPlayer)
         {
-            Debug.Log($"Join the room named {PhotonNetwork.CurrentRoom.Name}: Success");
-            
-            _inRoom = true;
-            SEventBus.RoomJoined?.Invoke();
+            Debug.Log($"Player named {newPlayer.NickName} entered the room.");
         }
 
-        public override void OnJoinRoomFailed(short returnCode, string message)
+        public override void OnPlayerLeftRoom(Player otherPlayer)
         {
-            Debug.Log("Join the room: Fail");
+            Debug.Log($"Player named {otherPlayer.NickName} left the room.");
+        }
+
+        public override void OnMasterClientSwitched(Player newMasterClient)
+        {
+            Debug.Log("Client left!!!!!!!!!");
             
-            _inRoom = false;
-            SEventBus.RoomJoinFailed?.Invoke();
+            SEventBus.MasterClientSwitched?.Invoke(newMasterClient);
         }
 #endregion
     }

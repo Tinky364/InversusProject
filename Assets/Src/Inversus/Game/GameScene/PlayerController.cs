@@ -24,8 +24,9 @@ namespace Inversus.Game
         private float _ammoLoadDuration = 0.6f;
 
         public Side Side { get; private set; }
-
-        private Player _player;
+        public InputProfile InputProfile { get; private set; }
+        
+        
         private SpriteRenderer _spriteRenderer;
         private Rigidbody2D _rig;
         private BoxCollider2D _collider;
@@ -59,20 +60,20 @@ namespace Inversus.Game
 
             if (col.CompareTag("Bullet"))
             {
-                SEventBus.PlayerHit?.Invoke(_player);
+                SEventBus.PlayerHit?.Invoke(this);
             }
         }
 
-        public void Initialize(Side side)
+        public void Initialize(Side side, InputProfile inputProfile)
         {
-            _player = GetComponentInParent<Player>();
+            InputProfile = inputProfile;
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _rig = GetComponent<Rigidbody2D>();
             _collider = GetComponent<BoxCollider2D>();
             _gun = GetComponent<Gun>();
             
             _gun.Initialize(_maxAmmo);
-            _player.EnableInGameInputs();
+            InputProfile.EnableInGameInputs();
 
             Side = side;
             gameObject.name = "PlayerController";
@@ -82,18 +83,18 @@ namespace Inversus.Game
         
         private void GetMoveInputAxis()
         {
-            _moveInputAxis = _player.MoveAction.ReadValue<Vector2>();
+            _moveInputAxis = InputProfile.MoveAction.ReadValue<Vector2>();
         }
 
         private void GetFireInputs()
         {
-            if (_player.RightFireAction.WasPerformedThisFrame()) 
+            if (InputProfile.RightFireAction.WasPerformedThisFrame()) 
                 _gun.FireBullet(transform.position, Vector2Int.right, Side);
-            else if (_player.LeftFireAction.WasPerformedThisFrame()) 
+            else if (InputProfile.LeftFireAction.WasPerformedThisFrame()) 
                 _gun.FireBullet(transform.position, Vector2Int.left, Side);
-            else if (_player.UpFireAction.WasPerformedThisFrame()) 
+            else if (InputProfile.UpFireAction.WasPerformedThisFrame()) 
                 _gun.FireBullet(transform.position, Vector2Int.up, Side);
-            else if (_player.DownFireAction.WasPerformedThisFrame())
+            else if (InputProfile.DownFireAction.WasPerformedThisFrame())
                 _gun.FireBullet(transform.position, Vector2Int.down, Side);
         }
 
@@ -118,7 +119,7 @@ namespace Inversus.Game
         
         private void OnDisable()
         {
-            _player.DisableInGameInputs();
+            InputProfile.DisableInGameInputs();
         }
     }
 }

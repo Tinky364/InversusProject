@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
+using Inversus.Data;
 using Inversus.Manager;
 
 using static Inversus.Facade;
@@ -31,14 +32,14 @@ namespace Inversus.Game
             SEventBus.RoundEnded.AddListener(OnRoundEnded);
         }
 
-        protected override void OnSceneLoaded()
+        protected override void OnSceneLoaded(SceneData sceneData)
         {
             _bulletPool.Initialize();
-            SGameCreator.CreateGame();
             _camera.backgroundColor = SGameCreator.ColorTheme.BackgroundColor;
+            SGameCreator.CreateGame();
         }
 
-        private void OnGamePaused(Player player)
+        private void OnGamePaused(InputProfile inputProfile)
         {
             SMainManager.State = States.GamePauseMenu;
             Time.timeScale = 0;

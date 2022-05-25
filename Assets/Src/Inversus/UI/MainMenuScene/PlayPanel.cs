@@ -21,9 +21,9 @@ namespace Inversus.UI
             {
                 if (SOnlineGameManager.IsConnected)
                 {
+                    SCanvasManager.SetUiInput(true);
                     SMainMenuCanvasManager.PlayOnlinePanel.SetDisplay(true);
                     SetDisplay(false);
-                    SCanvasManager.SetUiInput(true);
                     yield break;
                 }
                 duration += Time.deltaTime;

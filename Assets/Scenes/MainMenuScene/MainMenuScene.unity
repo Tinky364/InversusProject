@@ -742,7 +742,7 @@ GameObject:
   - component: {fileID: 72111277}
   - component: {fileID: 72111276}
   m_Layer: 5
-  m_Name: PlayerInputGrid2
+  m_Name: PlayerConnectionGrid2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1473,8 +1473,8 @@ GameObject:
   m_Component:
   - component: {fileID: 220777103}
   - component: {fileID: 220777106}
-  - component: {fileID: 220777105}
   - component: {fileID: 220777104}
+  - component: {fileID: 220777105}
   m_Layer: 5
   m_Name: ForegroundPanel
   m_TagString: Untagged
@@ -3988,6 +3988,7 @@ GameObject:
   - component: {fileID: 496879540}
   - component: {fileID: 496879543}
   - component: {fileID: 496879539}
+  - component: {fileID: 496879544}
   - component: {fileID: 496879542}
   - component: {fileID: 496879541}
   m_Layer: 5
@@ -4012,14 +4013,14 @@ MonoBehaviour:
   Displayed:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2037758684}
-        m_TargetAssemblyTypeName: Inversus.Manager.CanvasManager, Assembly-CSharp
-        m_MethodName: SetSelectedGameObject
-        m_Mode: 2
+      - m_Target: {fileID: 496879539}
+        m_TargetAssemblyTypeName: Inversus.UI.RoomPanel, Assembly-CSharp
+        m_MethodName: EnableInputProfileManager
+        m_Mode: 3
         m_Arguments:
-          m_ObjectArgument: {fileID: 2136290979}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-          m_IntArgument: 0
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -4027,6 +4028,10 @@ MonoBehaviour:
   Hided:
     m_PersistentCalls:
       m_Calls: []
+  _playerCountText: {fileID: 692586665}
+  _playerConnectionGrids:
+  - {fileID: 762331355}
+  - {fileID: 72111278}
   _startGameButton: {fileID: 1543236416}
   _mapIdDropdown: {fileID: 1021024113}
   _victoryScoreDropdown: {fileID: 1016910304}
@@ -4045,6 +4050,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 877256407}
+  - {fileID: 692586664}
   - {fileID: 2005984852}
   - {fileID: 2041387454}
   m_Father: {fileID: 2037758683}
@@ -4053,7 +4059,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -200}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &496879541
 MonoBehaviour:
@@ -4106,8 +4112,8 @@ MonoBehaviour:
   m_Spacing: 5
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
-  m_ChildControlWidth: 1
-  m_ChildControlHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
@@ -4119,6 +4125,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 496879538}
   m_CullTransparentMesh: 1
+--- !u!114 &496879544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 496879538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 1
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &503367071
 GameObject:
   m_ObjectHideFlags: 0
@@ -5402,7 +5430,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Rooms
+  m_text: Room List
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5905,6 +5933,141 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &692586663
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 692586664}
+  - component: {fileID: 692586666}
+  - component: {fileID: 692586665}
+  m_Layer: 5
+  m_Name: PlayerCountText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &692586664
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 692586663}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 496879540}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1477.4991, y: 41.2364}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &692586665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 692586663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: 'Player Count: 0/2'
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 32
+  m_fontSizeBase: 32
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &692586666
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 692586663}
+  m_CullTransparentMesh: 1
 --- !u!1 &732752898
 GameObject:
   m_ObjectHideFlags: 0
@@ -6255,7 +6418,7 @@ GameObject:
   - component: {fileID: 762331354}
   - component: {fileID: 762331353}
   m_Layer: 5
-  m_Name: PlayerInputGrid1
+  m_Name: PlayerConnectionGrid1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7515,7 +7678,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 1599.9999, y: 86.5297}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &877256408
 MonoBehaviour:
@@ -7564,8 +7727,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 42
+  m_fontSizeBase: 42
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -10050,18 +10213,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2037758684}
-        m_TargetAssemblyTypeName: Inversus.Manager.CanvasManager, Assembly-CSharp
-        m_MethodName: SetSelectedGameObject
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 494509031}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2037758684}
         m_TargetAssemblyTypeName: Inversus.Game.MainMenuCanvasManager, Assembly-CSharp
         m_MethodName: SetStatePlayLocallyMenu
         m_Mode: 1
@@ -10073,11 +10224,23 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1132851656}
+        m_TargetAssemblyTypeName: Inversus.UI.PlayLocallyPanel, Assembly-CSharp
+        m_MethodName: EnableInputProfileManager
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   Hided:
     m_PersistentCalls:
       m_Calls: []
-  _playerInputGrid1: {fileID: 1207852820}
-  _playerInputGrid2: {fileID: 1455845744}
+  _playerConnectionGrid1: {fileID: 1207852820}
+  _playerConnectionGrid2: {fileID: 1455845744}
   _startGameButton: {fileID: 777637224}
   _mapIdDropdown: {fileID: 494509033}
   _victoryScoreDropdown: {fileID: 263248406}
@@ -10602,7 +10765,7 @@ GameObject:
   - component: {fileID: 1207852819}
   - component: {fileID: 1207852817}
   m_Layer: 5
-  m_Name: PlayerInputGrid1
+  m_Name: PlayerConnectionGrid1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11721,7 +11884,7 @@ GameObject:
   - component: {fileID: 1345681376}
   - component: {fileID: 1345681375}
   m_Layer: 5
-  m_Name: JoinRoomsPanel
+  m_Name: RoomListPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12856,7 +13019,7 @@ GameObject:
   - component: {fileID: 1455845741}
   - component: {fileID: 1455845742}
   m_Layer: 5
-  m_Name: PlayerInputGrid2
+  m_Name: PlayerConnectionGrid2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13240,7 +13403,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1132851656}
         m_TargetAssemblyTypeName: Inversus.UI.PlayLocallyPanel, Assembly-CSharp
-        m_MethodName: RemoveAllLocallyPlayers
+        m_MethodName: DisableInputProfileManager
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -15333,9 +15496,10 @@ GameObject:
   m_Component:
   - component: {fileID: 1714166449}
   - component: {fileID: 1714166451}
+  - component: {fileID: 1714166452}
   - component: {fileID: 1714166450}
   m_Layer: 5
-  m_Name: Background
+  m_Name: BackgroundPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15399,6 +15563,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1714166448}
   m_CullTransparentMesh: 1
+--- !u!114 &1714166452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1714166448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7b701273dbb4c2eb895ca40bf54d353, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Displayed:
+    m_PersistentCalls:
+      m_Calls: []
+  Hided:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1726792617
 GameObject:
   m_ObjectHideFlags: 0
@@ -17527,12 +17709,12 @@ RectTransform:
   - {fileID: 762331352}
   - {fileID: 72111275}
   m_Father: {fileID: 496879540}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 1599.9999, y: 299.61575}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2005984853
 MonoBehaviour:
@@ -17823,7 +18005,7 @@ MonoBehaviour:
   _playLocallyPanel: {fileID: 1132851656}
   _playOnlinePanel: {fileID: 1411660467}
   _roomPanel: {fileID: 496879539}
-  _joinRoomsPanel: {fileID: 1345681373}
+  _roomListPanel: {fileID: 1345681373}
 --- !u!1 &2039721907
 GameObject:
   m_ObjectHideFlags: 0
@@ -17933,12 +18115,12 @@ RectTransform:
   - {fileID: 671942063}
   - {fileID: 2136290983}
   m_Father: {fileID: 496879540}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 1600, y: 405.38132}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2041387455
 MonoBehaviour:

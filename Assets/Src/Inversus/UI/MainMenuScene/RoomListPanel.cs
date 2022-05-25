@@ -5,7 +5,7 @@ using static Inversus.Facade;
 
 namespace Inversus.UI
 {
-    public class JoinRoomsPanel : Panel
+    public class RoomListPanel : Panel
     {
         private void OnEnable()
         {
@@ -39,9 +39,9 @@ namespace Inversus.UI
             {
                 if (SOnlineGameManager.InRoom)
                 {
+                    SCanvasManager.SetUiInput(true);
                     SMainMenuCanvasManager.RoomPanel.SetDisplay(true);
                     SetDisplay(false);
-                    SCanvasManager.SetUiInput(true);
                     yield break;
                 }
                 duration += Time.deltaTime;

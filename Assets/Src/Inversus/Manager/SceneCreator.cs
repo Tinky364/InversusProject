@@ -138,7 +138,7 @@ namespace Inversus.Manager
             if (!SMainManager.InitializeSubManager()) yield break;
             
             Debug.Log("LoadSceneEnded Event => Invoke()");
-            SEventBus.LoadSceneEnded?.Invoke();
+            SEventBus.LoadSceneEnded?.Invoke(sceneData);
         }
 
         private IEnumerator LoadSceneCor(SceneData sceneData)

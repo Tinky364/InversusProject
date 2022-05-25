@@ -13,9 +13,9 @@ namespace Inversus.UI
     public class PlayLocallyPanel : Panel
     {
         [SerializeField]
-        private PlayerInputGrid _playerInputGrid1;
+        private PlayerConnectionGrid _playerConnectionGrid1;
         [SerializeField]
-        private PlayerInputGrid _playerInputGrid2;
+        private PlayerConnectionGrid _playerConnectionGrid2;
         [SerializeField]
         private Button _startGameButton;
         [SerializeField]
@@ -39,61 +39,66 @@ namespace Inversus.UI
 
         private void OnEnable()
         {
-            SEventBus.PlayerJoinedGame.AddListener(OnPlayerJoined);
-            SEventBus.PlayerLeftGame.AddListener(OnPlayerLeft);
-            
-            _startGameButton.interactable = SLocalGameManager.PlayersCount >= 2;
-        }
+            SEventBus.InputProfileJoined.AddListener(OnInputProfileJoined);
+            SEventBus.InputProfileLeft.AddListener(OnInputProfileLeft);
 
+            _startGameButton.interactable = false;
+        }
+        
         private void OnDisable()
         {
-            SEventBus.PlayerJoinedGame.RemoveListener(OnPlayerJoined);
-            SEventBus.PlayerLeftGame.RemoveListener(OnPlayerLeft);
+            SEventBus.InputProfileJoined.RemoveListener(OnInputProfileJoined);
+            SEventBus.InputProfileLeft.RemoveListener(OnInputProfileLeft);
+            _playerConnectionGrid1.Hide();
+            _playerConnectionGrid2.Hide();
         }
 
-        private void OnPlayerJoined(Player player)
+        private void OnInputProfileJoined(InputProfile inputProfile)
         {
-            switch (player.Id)
+            switch (inputProfile.Id)
             {
                 case 1:
-                    _playerInputGrid1.Display(
-                        player.Name, player.PlayerInput.devices[0].displayName
+                    _playerConnectionGrid1.Display(
+                        inputProfile.Name, inputProfile.PlayerInput.devices[0].displayName
                     );
                     SCanvasManager.SetSelectedGameObject(_mapIdDropdown.gameObject);
                     break;
                 case 2:
-                    _playerInputGrid2.Display(
-                        player.Name, player.PlayerInput.devices[0].displayName
+                    _playerConnectionGrid2.Display(
+                        inputProfile.Name, inputProfile.PlayerInput.devices[0].displayName
                     );
                     break;
             }
 
-            if (SLocalGameManager.PlayersCount >= 2) _startGameButton.interactable = true;
+            if (SInputProfileManager.InputProfileCount >= 2) _startGameButton.interactable = true;
         }
 
-        private void OnPlayerLeft(Player player)
+        private void OnInputProfileLeft(InputProfile inputProfile)
         {
-            switch (player.Id)
+            switch (inputProfile.Id)
             {
-                case 1: 
-                    _playerInputGrid1.Hide();
+                case 1: _playerConnectionGrid1.Hide();
                     break;
-                case 2: 
-                    _playerInputGrid2.Hide();
+                case 2: _playerConnectionGrid2.Hide();
                     break;
             }
 
-            if (SLocalGameManager.PlayersCount < 2) _startGameButton.interactable = false;
+            if (SInputProfileManager.InputProfileCount < 2) _startGameButton.interactable = false;
         }
 
-        public void RemoveAllLocallyPlayers()
+        public void EnableInputProfileManager(int maxPlayerCount)
         {
-            SLocalGameManager.RemoveAllPlayers();
+            SInputProfileManager.Enable(maxPlayerCount);
+        }
+        
+        public void DisableInputProfileManager()
+        {
+            SInputProfileManager.Disable();
         }
 
         public void StartGameButton_Click(SceneData sceneData)
         {
-            Debug.Log("PlayLocallyStartGameButtonClicked Event => Invoke()");
+            Debug.Log("StartLocalGameRequested Event => Invoke()");
 
             if (int.TryParse(
                     _mapIdDropdown.options[_mapIdDropdown.value].text, out int startingMapId

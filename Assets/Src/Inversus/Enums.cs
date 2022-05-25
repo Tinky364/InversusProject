@@ -8,7 +8,7 @@
 
     public enum States
     {
-        MainMenu, PlayLocallyMenu, PlayOnlineMenu,
+        MainMenu, PlayLocallyMenu, PlayOnlineMenu, 
         Loading, InGame, GamePauseMenu
     }
 

@@ -21,14 +21,14 @@ namespace Inversus.Game
         [SerializeField]
         private RoomPanel _roomPanel;
         [SerializeField]
-        private JoinRoomsPanel _joinRoomsPanel;
+        private RoomListPanel _roomListPanel;
         
         public Panel MainMenuPanel => _mainMenuPanel;
         public PlayPanel PlayPanel => _playPanel;
         public PlayLocallyPanel PlayLocallyPanel => _playLocallyPanel;
         public PlayOnlinePanel PlayOnlinePanel => _playOnlinePanel;
         public RoomPanel RoomPanel => _roomPanel;
-        public JoinRoomsPanel JoinRoomsPanel => _joinRoomsPanel;
+        public RoomListPanel RoomListPanel => _roomListPanel;
         
         protected override void Awake()
         {
@@ -40,7 +40,7 @@ namespace Inversus.Game
             PlayLocallyPanel.SetDisplay(false);
             PlayOnlinePanel.SetDisplay(false);
             RoomPanel.SetDisplay(false);
-            JoinRoomsPanel.SetDisplay(false);
+            RoomListPanel.SetDisplay(false);
         }
         
         public void SetStatePlayLocallyMenu()

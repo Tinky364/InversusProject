@@ -17,6 +17,7 @@ namespace Inversus.Manager
         [SerializeField] 
         private SceneData _startingSceneData;
 
+        [SerializeField, ReadOnly]
         private States _state;
         public States State { get => _state;
             set

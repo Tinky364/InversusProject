@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Inversus.UI
 {
-    public class PlayerInputGrid : MonoBehaviour
+    public class PlayerConnectionGrid : MonoBehaviour
     {
         [SerializeField]
         private TextMeshProUGUI _nameText;

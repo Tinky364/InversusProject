@@ -25,7 +25,7 @@ namespace Inversus.Manager
             SEventBus.LoadSceneEnded.RemoveListener(OnSceneLoaded);
         }
 
-        protected virtual void OnSceneLoaded()
+        protected virtual void OnSceneLoaded(SceneData sceneData)
         {
             
         }

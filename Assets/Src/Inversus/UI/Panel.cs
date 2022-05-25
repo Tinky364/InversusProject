@@ -10,14 +10,9 @@ namespace Inversus.UI
         
         public void SetDisplay(bool value)
         {
-            if (value)
-            {
-                Displayed?.Invoke();
-            }
-            else
-            {
-                Hided?.Invoke();
-            }
+            if (value) Displayed?.Invoke();
+            else Hided?.Invoke();
+            
             gameObject.SetActive(value);
         }
     }

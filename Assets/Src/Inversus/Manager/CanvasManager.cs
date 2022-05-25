@@ -5,7 +5,7 @@ using UnityEngine.InputSystem.UI;
 using Inversus.Helper;
 using Inversus.Data;
 using Inversus.UI;
-
+using UnityEngine.InputSystem;
 using static Inversus.Facade;
 
 namespace Inversus.Manager
@@ -18,17 +18,21 @@ namespace Inversus.Manager
 
         [SerializeField]
         protected Panel _foregroundPanel;
-       
-        private InputSystemUIInputModule _inputSystemUIInputModule;
-        public InputSystemUIInputModule InputSystemUIInputModule => _inputSystemUIInputModule;
+
+        public InputSystemUIInputModule InputSystemUIInputModule { get; private set; }
 
         private GameObject _lastSelectedGameObject;
         
         protected override void Awake()
         {
             base.Awake();
+            
+            InputSystemUIInputModule = _eventSystem.GetComponent<InputSystemUIInputModule>();
+        }
 
-            _inputSystemUIInputModule = _eventSystem.GetComponent<InputSystemUIInputModule>();
+        public void SetUiInputModule(PlayerInput playerInput)
+        {
+            playerInput.uiInputModule = InputSystemUIInputModule;
         }
 
         public void SetSelectedGameObject(GameObject element)

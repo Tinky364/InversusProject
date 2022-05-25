@@ -24,7 +24,7 @@ namespace Inversus.UI
             SetDisplay(false);
             SMainMenuCanvasManager.PlayPanel.SetDisplay(true);
         }
-
+        
 #region Create Room
         public void CreateRoomButton_Click()
         {
@@ -40,9 +40,9 @@ namespace Inversus.UI
             {
                 if (SOnlineGameManager.InRoom)
                 {
+                    SCanvasManager.SetUiInput(true);
                     SMainMenuCanvasManager.RoomPanel.SetDisplay(true);
                     SetDisplay(false);
-                    SCanvasManager.SetUiInput(true);
                     yield break;
                 }
                 duration += Time.deltaTime;
@@ -55,7 +55,7 @@ namespace Inversus.UI
 #region Join Room
         public void JoinRoomButton_Click()
         {
-            SMainMenuCanvasManager.JoinRoomsPanel.SetDisplay(true);
+            SMainMenuCanvasManager.RoomListPanel.SetDisplay(true);
             SetDisplay(false);
         }
 #endregion
