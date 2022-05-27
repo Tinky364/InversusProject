@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Photon.Pun;
+using UnityEngine;
 
 using static Inversus.Facade;
 
@@ -35,11 +36,11 @@ namespace Inversus.Game
 
             switch (Side.Id)
             {
-                case 1: 
-                    SetSide(SGameCreator.Side2);
+                case 0:
+                    SetSide(SGameCreator.Sides[1]);
                     break;
-                case 2: 
-                    SetSide(SGameCreator.Side1);
+                case 1:
+                    SetSide(SGameCreator.Sides[0]);
                     break;
             }
         }
@@ -50,7 +51,7 @@ namespace Inversus.Game
             SetLayer(Side.Layer);
             SetColor(Side.TileColor);
         }
-        
+
         private void SetLayer(int layer) => gameObject.layer = layer;
 
         private void SetColor(Color color) => _spriteRenderer.color = color;

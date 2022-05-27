@@ -65,8 +65,8 @@ namespace Inversus.Game
             _roundEndPanel.SetDisplay(true);
             _roundEndPanel.SetRoundEndPanel(
                 SGameCreator.Round, SGameCreator.VictoryScore, player1Score, player2Score,
-                SGameCreator.PlayerController1.InputProfile.Name,
-                SGameCreator.PlayerController2.InputProfile.Name,
+                SGameCreator.PlayerControllers[0].InputProfile.Name,
+                SGameCreator.PlayerControllers[1].InputProfile.Name,
                 roundWinnerName
             );
             StartCoroutine(OnRoundEndedCor());
@@ -95,8 +95,8 @@ namespace Inversus.Game
         {
             _gameEndPanel.SetDisplay(true);
             _gameEndPanel.SetGameEndPanel(
-                player1Score, player2Score, SGameCreator.PlayerController1.InputProfile.Name,
-                SGameCreator.PlayerController2.InputProfile.Name,
+                player1Score, player2Score, SGameCreator.PlayerControllers[0].InputProfile.Name,
+                SGameCreator.PlayerControllers[1].InputProfile.Name,
                 winnerName
             );
         }

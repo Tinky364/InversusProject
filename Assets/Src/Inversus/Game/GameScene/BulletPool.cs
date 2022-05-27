@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+
+using static Inversus.Facade;
 
 namespace Inversus.Game
 {
@@ -7,34 +10,123 @@ namespace Inversus.Game
     {
         [SerializeField]
         private Bullet _prefabBullet;
+        [SerializeField, Min(0)]
+        private int _poolSize = 20;
         
-        private Queue<Bullet> _pool;
+        public PhotonView PhotonView { get; private set; }
 
+        private Dictionary<int, Bullet> _pool;
+        
         public void Initialize()
         {
-            _pool = new Queue<Bullet>();
-            for (int i = 0; i < 40; i++) 
-                ExpandPool();
+            _pool = new Dictionary<int, Bullet>();
+
+            switch (SGameCreator.GameType)
+            {
+                case GameType.Local:
+                {
+                    for (int i = 0; i < _poolSize; i++) 
+                       ExpandPoolLocal(i);
+                    break;
+                }
+                case GameType.Online:
+                {
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                       for (int i = 0; i < _poolSize; i++) 
+                           ExpandPoolOnline();
+                    }
+                    break;
+                }
+            }
         }
 
-        public void Push(Bullet bullet)
+        private void Awake()
+        {
+            PhotonView = GetComponent<PhotonView>();
+        }
+        
+        public void UnSpawn(Bullet bullet)
         {
             bullet.transform.position = new Vector2(-1000, -1000);
-            _pool.Enqueue(bullet);
         }
 
-        public Bullet Pull()
+        public Bullet Spawn(Vector2 position, Vector2Int direction, Side side)
         {
-            if (_pool.Count <= 0) ExpandPool();
-            return _pool.Dequeue();
+            switch (SGameCreator.GameType)
+            {
+                case GameType.Local:
+                    return SpawnLocal(position, direction, side);
+                case GameType.Online:
+                    return SpawnOnline(position, direction, side);
+            }
+            return null;
         }
 
-        private void ExpandPool()
+        private Bullet SpawnLocal(Vector2 position, Vector2Int direction, Side side)
+        {
+            foreach (var bulletPair in _pool)
+            {
+                if (bulletPair.Value.HasSpawned) continue;
+
+                bulletPair.Value.SpawnLocal(position, direction, side);
+                return bulletPair.Value;
+            }
+
+            Debug.LogWarning("Increase bullet pool size!");
+            return null; // TODO fix if needed
+        }
+
+        private Bullet SpawnOnline(Vector2 position, Vector2Int direction, Side side)
+        {
+            foreach (var bulletPair in _pool)
+            {
+                if (bulletPair.Value.HasSpawned) continue;
+
+                bulletPair.Value.SpawnOnline(position, direction, side);
+                return bulletPair.Value;
+            }
+
+            Debug.LogWarning("Increase bullet pool size!");
+            return null; // TODO fix if needed
+        }
+
+        private void ExpandPoolLocal(int id)
         {
             Bullet bullet = Instantiate(_prefabBullet, transform, true);
             bullet.transform.position = new Vector2(-1000, -1000);
-            _pool.Enqueue(bullet);
+            bullet.Initialize(id);
             bullet.gameObject.SetActive(false);
+            
+            _pool.Add(bullet.Id, bullet);
+        }
+
+        private void ExpandPoolOnline()
+        {
+            if (!PhotonNetwork.IsMasterClient) return;
+
+            Bullet bullet = PhotonNetwork.Instantiate(
+                "Bullet", new Vector2(-1000, -1000), Quaternion.identity
+            ).GetComponent<Bullet>();
+            bullet.transform.SetParent(transform, true);
+            bullet.Initialize(bullet.PhotonView.ViewID);
+            bullet.gameObject.SetActive(false);
+            
+            _pool.Add(bullet.Id, bullet);
+
+            object[] data = {bullet.PhotonView.ViewID};
+            PhotonView.RPC("Send_ExpandPool", RpcTarget.Others, data as object);
+        }
+
+        [PunRPC]
+        private void Send_ExpandPool(object[] data)
+        {
+            Bullet bullet = PhotonView.Find((int)data[0]).GetComponent<Bullet>();
+            bullet.transform.SetParent(transform, true);
+            bullet.Initialize(bullet.PhotonView.ViewID);
+            bullet.gameObject.SetActive(false);
+            
+            _pool.Add(bullet.Id, bullet);
         }
     }
 }

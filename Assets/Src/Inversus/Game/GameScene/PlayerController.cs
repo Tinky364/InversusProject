@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Photon.Pun;
 
 using Inversus.Manager;
 
@@ -10,7 +11,7 @@ namespace Inversus.Game
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(BoxCollider2D))]
     [RequireComponent(typeof(Gun))]
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : MonoBehaviour, IPunObservable
     {
         [Header("Movement")]
         [SerializeField, Min(0)]
@@ -25,7 +26,7 @@ namespace Inversus.Game
 
         public Side Side { get; private set; }
         public InputProfile InputProfile { get; private set; }
-        
+        public PhotonView PhotonView { get; private set; }
         
         private SpriteRenderer _spriteRenderer;
         private Rigidbody2D _rig;
@@ -35,22 +36,94 @@ namespace Inversus.Game
         private Vector2 _moveInputAxis;
         private Vector2 _desiredVelocity;
         private Vector2 _velocity;
+        
+        private Vector3 _networkPosition;
+
+        public float LerpValue = 2f;
+
+        public void Initialize(Side side, InputProfile inputProfile)
+        {
+            InputProfile = inputProfile;
+            
+            _gun.Initialize(_maxAmmo);
+            InputProfile.EnableInGameInputs();
+            Side = side;
+            gameObject.name = "PlayerController";
+            gameObject.layer = Side.Layer;
+            _spriteRenderer.color = Side.PlayerColor;
+        }
+        
+        private void Awake()
+        {
+            PhotonView = GetComponent<PhotonView>();
+            _spriteRenderer = GetComponent<SpriteRenderer>();
+            _rig = GetComponent<Rigidbody2D>();
+            _collider = GetComponent<BoxCollider2D>();
+            _gun = GetComponent<Gun>();
+            
+            PhotonNetwork.SerializationRate = 30;
+        }
 
         private void Update()
         {
-            if (SMainManager.State == States.InGame)
+            if (SMainManager.State != States.InGame) return;
+
+            switch (SGameCreator.GameType)
             {
-                GetMoveInputAxis();
-                GetFireInputs();
-                _gun.LoadAmmoEverySecond(_ammoLoadDuration);
+                case GameType.Local:
+                    GetMoveInputAxis();
+                    GetFireInputs();
+                    _gun.LoadAmmoEverySecond(_ammoLoadDuration);
+                    break;
+                case GameType.Online:
+                {
+                    if (PhotonView.IsMine)
+                    {
+                        GetMoveInputAxis();
+                        GetFireInputs();
+                        _gun.LoadAmmoEverySecond(_ammoLoadDuration);
+                    }
+                    break;
+                }
             }
         }
 
         private void FixedUpdate()
         {
-            if (SMainManager.State == States.InGame)
+            if (SMainManager.State != States.InGame) return;
+
+            switch (SGameCreator.GameType)
             {
-                MovePlayer();
+                case GameType.Local:
+                    MovePlayer();
+                    break;
+                case GameType.Online:
+                    if (PhotonView.IsMine) 
+                        MovePlayer();
+                    else 
+                        SyncMovePlayer();
+                    break;
+            }
+        }
+        
+        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        {
+            if (stream.IsWriting)
+            {
+                Vector3 pos = _rig.position;
+                stream.SendNext(pos);
+                Vector3 vel = _rig.velocity;
+                stream.SendNext(vel);
+            }
+            else
+            {
+                Vector3 pos = (Vector3)stream.ReceiveNext();
+                _networkPosition = pos;
+                Vector3 vel = (Vector3)stream.ReceiveNext();
+                _rig.velocity = vel;
+                
+                float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime));
+                _networkPosition += (Vector3)_rig.velocity * lag;
             }
         }
 
@@ -64,23 +137,6 @@ namespace Inversus.Game
             }
         }
 
-        public void Initialize(Side side, InputProfile inputProfile)
-        {
-            InputProfile = inputProfile;
-            _spriteRenderer = GetComponent<SpriteRenderer>();
-            _rig = GetComponent<Rigidbody2D>();
-            _collider = GetComponent<BoxCollider2D>();
-            _gun = GetComponent<Gun>();
-            
-            _gun.Initialize(_maxAmmo);
-            InputProfile.EnableInGameInputs();
-
-            Side = side;
-            gameObject.name = "PlayerController";
-            gameObject.layer = Side.Layer;
-            _spriteRenderer.color = Side.PlayerColor;
-        }
-        
         private void GetMoveInputAxis()
         {
             _moveInputAxis = InputProfile.MoveAction.ReadValue<Vector2>();
@@ -97,7 +153,7 @@ namespace Inversus.Game
             else if (InputProfile.DownFireAction.WasPerformedThisFrame())
                 _gun.FireBullet(transform.position, Vector2Int.down, Side);
         }
-
+        
         public void ResetThis(Vector2 spawnPos)
         {
             _rig.velocity = Vector2.zero;
@@ -117,6 +173,13 @@ namespace Inversus.Game
             _rig.velocity = _velocity;
         }
         
+        private void SyncMovePlayer()
+        {
+            _rig.position = Vector2.MoveTowards(
+                _rig.position, _networkPosition, Time.fixedDeltaTime * LerpValue
+            );
+        }
+
         private void OnDisable()
         {
             InputProfile.DisableInGameInputs();

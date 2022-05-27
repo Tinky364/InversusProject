@@ -49,10 +49,9 @@ namespace Inversus.Game
         public void FireBullet(Vector2 spawnerPos, Vector2Int direction, Side side)
         {
             if (CurrentAmmo <= 0) return;
-            if (SSubSceneManager is not GameSubSceneManager gameSubSceneManager) return;
 
             _currentAmmo -= 1;
-            gameSubSceneManager.BulletPool.Pull().Spawn(
+            SGameSubSceneManager.BulletPool.Spawn(
                 CalculateSpawnPositionOfBullet(spawnerPos, direction), direction, side
             );
         }

@@ -173,5 +173,7 @@ namespace Inversus.Manager
             else
                 Debug.LogWarning($"Unloading {sceneData.name} scene failed.");
         }
+
+       
     }
 }

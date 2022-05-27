@@ -39,7 +39,7 @@ namespace Inversus.Manager
         [ReadOnly]
         public UnityEvent<InputProfile> InputProfileLeft;
         [ReadOnly]
-        public UnityEvent<int, int, int> StartLocalGameRequested;
+        public UnityEvent<int, int, int, GameType> StartGameRequested;
 
         [ReadOnly]
         public UnityEvent ServerConnectionRequested;

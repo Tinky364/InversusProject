@@ -16,4 +16,9 @@
     {
         Single, Additive
     }
+
+    public enum GameType
+    {
+        Local, Online
+    }
 }

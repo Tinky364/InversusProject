@@ -3,7 +3,7 @@ using UnityEngine;
 
 using Inversus.Data;
 using Inversus.Manager;
-
+using Photon.Pun;
 using static Inversus.Facade;
 
 namespace Inversus.Game

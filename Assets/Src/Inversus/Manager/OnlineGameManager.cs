@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEngine.InputSystem;
 
 using static Inversus.Facade;
 
@@ -16,8 +15,6 @@ namespace Inversus.Manager
 
         private bool _inRoom;
         public bool InRoom => _inRoom && PhotonNetwork.InRoom;
-
-        public bool IsMasterClient => PhotonNetwork.IsMasterClient;
 
         private void SetSingleton()
         {
@@ -92,7 +89,7 @@ namespace Inversus.Manager
             };
             return roomOptions;
         }
-
+        
 #region Callbacks
         public override void OnConnectedToMaster()
         {
@@ -106,6 +103,7 @@ namespace Inversus.Manager
             Debug.Log("Client disconnected from the server.");
             
             _isConnected = false;
+            _inRoom = false;
             SEventBus.ServerDisconnected?.Invoke();
         }
 
@@ -142,12 +140,6 @@ namespace Inversus.Manager
             
             _inRoom = true;
             SEventBus.RoomJoined?.Invoke();
-
-            // Player = PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity)
-            //                       .GetComponent<Player>();
-            // Player.Initialize(PhotonNetwork.LocalPlayer.ActorNumber);
-            // SCanvasManager.InputSystemUIInputModule.actionsAsset = Player.PlayerInput.actions;
-            //SSceneCreator.MoveGameObjectToScene(Player.gameObject, SSceneCreator.GetManagerScene());
         }
 
         public override void OnJoinRoomFailed(short returnCode, string message)
@@ -178,10 +170,13 @@ namespace Inversus.Manager
 
         public override void OnMasterClientSwitched(Player newMasterClient)
         {
-            Debug.Log("Client left!!!!!!!!!");
+            Debug.Log(
+                $"Master client left the room. New master client name is {newMasterClient.NickName}"
+            );
             
             SEventBus.MasterClientSwitched?.Invoke(newMasterClient);
         }
+        
 #endregion
     }
 }

@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Photon.Pun;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
-using Inversus.Manager;
+using Photon.Pun;
 using Photon.Realtime;
+
+using Inversus.Data;
+using Inversus.Manager;
+
 using static Inversus.Facade;
 
 namespace Inversus.UI
@@ -56,7 +57,7 @@ namespace Inversus.UI
             _victoryScoreDropdown.onValueChanged.AddListener(VictoryScoreDropdown_ValueChange);
             _colorsDropdown.onValueChanged.AddListener(ColorsDropdown_ValueChange);
            
-            SetUiElementsInteractable(SOnlineGameManager.IsMasterClient);
+            SetUiElementsInteractable(PhotonNetwork.IsMasterClient);
             _startGameButton.interactable = false;
         }
 
@@ -105,47 +106,47 @@ namespace Inversus.UI
         {
             _photonView.RPC(
                 "PlayerConnectionGridDisplay", RpcTarget.AllBuffered,
-                SOnlineGameManager.IsMasterClient ? 0 : 1,
+                PhotonNetwork.IsMasterClient ? 0 : 1,
                 PhotonNetwork.LocalPlayer.NickName,
                 inputProfile.PlayerInput.devices[0].displayName
             );
-
-            SCanvasManager.SetSelectedGameObject(
-                SOnlineGameManager.IsMasterClient
-                    ? _mapIdDropdown.gameObject
-                    : _backButton.gameObject
-            );
-
-            if (PhotonNetwork.CurrentRoom.PlayerCount >= 2 && SOnlineGameManager.IsMasterClient)
-                _startGameButton.interactable = true;
         }
         
         [PunRPC]
         public void PlayerConnectionGridDisplay(int id, string username, string deviceName)
         {
             _playerConnectionGrids[id].Display(username, deviceName);
+            SCanvasManager.SetSelectedGameObject(
+                PhotonNetwork.IsMasterClient
+                    ? _mapIdDropdown.gameObject
+                    : _backButton.gameObject
+            );
+            if (PhotonNetwork.CurrentRoom.PlayerCount >= 2 && PhotonNetwork.IsMasterClient)
+                _startGameButton.interactable = true;
         }
 
         private void OnInputProfileLeft(InputProfile inputProfile)
         {
             _photonView.RPC(
                 "PlayerConnectionGridHide", RpcTarget.AllBuffered,
-                SOnlineGameManager.IsMasterClient ? 0 : 1
+                PhotonNetwork.IsMasterClient ? 0 : 1
             );
-
-            if (PhotonNetwork.CurrentRoom.PlayerCount < 2 && SOnlineGameManager.IsMasterClient)
-                _startGameButton.interactable = false;
         }
 
         [PunRPC]
         public void PlayerConnectionGridHide(int id)
         { 
             _playerConnectionGrids[id].Hide();
+            
+            if (PhotonNetwork.CurrentRoom.PlayerCount < 2 && PhotonNetwork.IsMasterClient)
+                _startGameButton.interactable = false;
         }
 
         private void OnMasterClientSwitched(Player newMasterClient)
         {
-            OnServerDisconnected();
+            SInputProfileManager.RemoveAllInputProfiles();
+            SCanvasManager.SetUiInput(false);
+            SEventBus.LeaveRoomRequested?.Invoke();
         }
         
         private void OnServerDisconnected()
@@ -170,7 +171,7 @@ namespace Inversus.UI
 #region DROPDOWNS
         private void MapIdDropdown_ValueChange(int value)
         {
-            if (!SOnlineGameManager.IsMasterClient) return;
+            if (!PhotonNetwork.IsMasterClient) return;
             
             _photonView.RPC("MapIdDropdownUpdate", RpcTarget.OthersBuffered, value);
         }
@@ -183,7 +184,7 @@ namespace Inversus.UI
         
         private void VictoryScoreDropdown_ValueChange(int value)
         {
-            if (!SOnlineGameManager.IsMasterClient) return;
+            if (!PhotonNetwork.IsMasterClient) return;
             
             _photonView.RPC("VictoryScoreDropdownUpdate", RpcTarget.OthersBuffered, value);
         }
@@ -196,7 +197,7 @@ namespace Inversus.UI
         
         private void ColorsDropdown_ValueChange(int value)
         {
-            if (!SOnlineGameManager.IsMasterClient) return;
+            if (!PhotonNetwork.IsMasterClient) return;
             
             _photonView.RPC("ColorsDropdownUpdate", RpcTarget.OthersBuffered, value);
         }
@@ -209,6 +210,37 @@ namespace Inversus.UI
 #endregion
 
 #region BUTTONS
+        public void StartGameButton_Click(SceneData sceneData)
+        {
+            _photonView.RPC("LoadScene", RpcTarget.All, sceneData.Name);
+        }
+
+        [PunRPC]
+        public void LoadScene(string sceneName)
+        {
+            Debug.Log("StartGameRequested Event => Invoke()");
+
+            if (int.TryParse(
+                    _mapIdDropdown.options[_mapIdDropdown.value].text, out int startingMapId
+                ) &&
+                int.TryParse(
+                    _victoryScoreDropdown.options[_victoryScoreDropdown.value].text, 
+                    out int victoryScore
+                ))
+            {
+                SEventBus.StartGameRequested?.Invoke(
+                    startingMapId, victoryScore, _colorsDropdown.value + 1, GameType.Online
+                );
+            }
+            else
+            {
+                Debug.LogWarning("Parsing Failed");
+                SEventBus.StartGameRequested?.Invoke(1, 1, 1, GameType.Online);
+            }
+            
+            SSceneCreator.LoadScene(sceneName, SubSceneLoadMode.Single);
+        }
+        
         public void BackButton_Click()
         {
             SInputProfileManager.RemoveAllInputProfiles();
@@ -216,6 +248,5 @@ namespace Inversus.UI
             SEventBus.LeaveRoomRequested?.Invoke();
         }
 #endregion
-        
     }
 }

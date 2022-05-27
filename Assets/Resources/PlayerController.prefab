@@ -50,6 +50,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _acceleration: 70
   _maxSpeed: 10
+  _maxAmmo: 5
+  _ammoLoadDuration: 0.6
 --- !u!114 &6552692025624883969
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62,8 +64,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 719c4a8521c34bf9a1366583b54bb141, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxAmmo: 5
-  _ammoLoadTime: 0.5
 --- !u!212 &93683449977991891
 SpriteRenderer:
   m_ObjectHideFlags: 0

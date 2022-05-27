@@ -15,7 +15,9 @@ namespace Inversus
 
         public static SubSceneManager SSubSceneManager => SubSceneManager.Instance;
         public static MainMenuSubSceneManager SMainMenuSubSceneManager => 
-            SubSceneManager.Instance as MainMenuSubSceneManager;
+            SubSceneManager.Instance as MainMenuSubSceneManager; 
+        public static GameSubSceneManager SGameSubSceneManager => 
+            SubSceneManager.Instance as GameSubSceneManager;
         
         public static CanvasManager SCanvasManager => CanvasManager.Instance;
         public static MainMenuCanvasManager SMainMenuCanvasManager =>

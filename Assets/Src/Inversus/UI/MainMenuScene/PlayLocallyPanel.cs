@@ -98,7 +98,7 @@ namespace Inversus.UI
 
         public void StartGameButton_Click(SceneData sceneData)
         {
-            Debug.Log("StartLocalGameRequested Event => Invoke()");
+            Debug.Log("StartGameRequested Event => Invoke()");
 
             if (int.TryParse(
                     _mapIdDropdown.options[_mapIdDropdown.value].text, out int startingMapId
@@ -108,14 +108,14 @@ namespace Inversus.UI
                     out int victoryScore
                 ))
             {
-                SEventBus.StartLocalGameRequested?.Invoke(
-                    startingMapId, victoryScore, _colorsDropdown.value + 1
+                SEventBus.StartGameRequested?.Invoke(
+                    startingMapId, victoryScore, _colorsDropdown.value + 1, GameType.Local
                 );
             }
             else
             {
                 Debug.LogWarning("Parsing Failed");
-                SEventBus.StartLocalGameRequested?.Invoke(1, 1, 1);
+                SEventBus.StartGameRequested?.Invoke(1, 1, 1, GameType.Local);
             }
             
             SSceneCreator.LoadScene(sceneData, SubSceneLoadMode.Single);

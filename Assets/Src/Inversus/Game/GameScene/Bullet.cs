@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Photon.Pun;
 using UnityEngine;
 
 using static Inversus.Facade;
@@ -9,7 +10,10 @@ namespace Inversus.Game
     {
         [SerializeField]
         private float _speed = 12;
+
+        public int Id { get; private set; }
         
+        public PhotonView PhotonView { get; private set; }
         public Side Side { get; private set; }
         public bool HasSpawned { get; private set; }
         
@@ -22,9 +26,15 @@ namespace Inversus.Game
         private Vector2 _moveDirection;
         private Vector2 _velocity;
         private float _lineRendererTailPosition;
+
+        public void Initialize(int id)
+        {
+            Id = id;
+        }
         
         private void Awake()
         {
+            PhotonView = GetComponent<PhotonView>();
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _rig = GetComponent<Rigidbody2D>();
             _collider = GetComponent<BoxCollider2D>();
@@ -54,14 +64,42 @@ namespace Inversus.Game
                 StartCoroutine(UnSpawnOnCollision());
         }
 
-        public void Spawn(Vector2 position, Vector2Int direction, Side side)
+        public void SpawnLocal(Vector2 position, Vector2Int direction, Side side)
         {
+            HasSpawned = true;
+            
             transform.position = position;
             _moveDirection = direction;
             _collider.offset = CalculateColliderOffset(position, direction);
             _lineRenderer.transform.eulerAngles = CalculateLineRendererRotation(direction);
             SetSide(side);
+            gameObject.SetActive(true);
+            
+            if (_displayLineRendererCor != null) StopCoroutine(_displayLineRendererCor);
+            _displayLineRendererCor = DisplayLineRendererTail(0, -4, 0.4f);
+            StartCoroutine(_displayLineRendererCor);
+        }
+
+        public void SpawnOnline(Vector2 position, Vector2Int direction, Side side)
+        {
+            object[] data = {position, (Vector2)direction, side.Id};
+            PhotonView.RPC("SpawnRPC", RpcTarget.All, data as object);
+        }
+
+        [PunRPC]
+        private void SpawnRPC(object[] data)
+        {
             HasSpawned = true;
+
+            Vector2 position = (Vector2)data[0];
+            Vector2Int direction = Vector2Int.RoundToInt((Vector2)data[1]);
+            Side side = SGameCreator.Sides[(int)data[2]];
+            
+            transform.position = position;
+            _moveDirection = direction;
+            _collider.offset = CalculateColliderOffset(position, direction);
+            _lineRenderer.transform.eulerAngles = CalculateLineRendererRotation(direction);
+            SetSide(side);
             gameObject.SetActive(true);
             
             if (_displayLineRendererCor != null) StopCoroutine(_displayLineRendererCor);
@@ -78,8 +116,7 @@ namespace Inversus.Game
             if (_displayLineRendererCor != null) StopCoroutine(_displayLineRendererCor);
             gameObject.SetActive(false);
             
-            if (SSubSceneManager is not GameSubSceneManager gameSubSceneManager) return;
-            gameSubSceneManager.BulletPool.Push(this);
+            SGameSubSceneManager.BulletPool.UnSpawn(this);
         }
 
         private IEnumerator UnSpawnOnCollision()
@@ -98,8 +135,7 @@ namespace Inversus.Game
 
             gameObject.SetActive(false);
             
-            if (SSubSceneManager is not GameSubSceneManager gameSubSceneManager) yield break;
-            gameSubSceneManager.BulletPool.Push(this);
+            SGameSubSceneManager.BulletPool.UnSpawn(this);
         }
 
         private Vector2 CalculateColliderOffset(Vector2 position, Vector2Int direction)

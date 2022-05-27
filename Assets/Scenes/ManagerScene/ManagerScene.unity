@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 105657199}
   - component: {fileID: 105657198}
+  - component: {fileID: 105657200}
   m_Layer: 0
   m_Name: GameCreator
   m_TagString: Untagged
@@ -168,6 +169,28 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &105657200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 105657197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 2
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &132051674
 GameObject:
   m_ObjectHideFlags: 0
@@ -254,25 +277,16 @@ MonoBehaviour:
   GameCreated:
     m_PersistentCalls:
       m_Calls: []
-  RoundStarted:
+  RoundStartRequested:
     m_PersistentCalls:
       m_Calls: []
-  RoundStartRequested:
+  RoundStarted:
     m_PersistentCalls:
       m_Calls: []
   RoundEnded:
     m_PersistentCalls:
       m_Calls: []
-  PlayerHit:
-    m_PersistentCalls:
-      m_Calls: []
   GameEnded:
-    m_PersistentCalls:
-      m_Calls: []
-  InputProfileJoined:
-    m_PersistentCalls:
-      m_Calls: []
-  InputProfileLeft:
     m_PersistentCalls:
       m_Calls: []
   GamePaused:
@@ -281,10 +295,19 @@ MonoBehaviour:
   GameResumed:
     m_PersistentCalls:
       m_Calls: []
-  StartLocalGameRequested:
+  RetryLocalGameRequested:
     m_PersistentCalls:
       m_Calls: []
-  RetryLocalGameRequested:
+  PlayerHit:
+    m_PersistentCalls:
+      m_Calls: []
+  InputProfileJoined:
+    m_PersistentCalls:
+      m_Calls: []
+  InputProfileLeft:
+    m_PersistentCalls:
+      m_Calls: []
+  StartGameRequested:
     m_PersistentCalls:
       m_Calls: []
   ServerConnectionRequested:
@@ -321,6 +344,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   RoomLeaveFailed:
+    m_PersistentCalls:
+      m_Calls: []
+  MasterClientSwitched:
     m_PersistentCalls:
       m_Calls: []
 --- !u!4 &381360517
@@ -475,6 +501,7 @@ MonoBehaviour:
   _subManager: {fileID: 0}
   _editorMode: 0
   _startingSceneData: {fileID: 11400000, guid: b19991d069d6adc49b0708e7a9c69d01, type: 2}
+  _state: 0
 --- !u!4 &1678546554
 Transform:
   m_ObjectHideFlags: 0
@@ -534,24 +561,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c70c5002fc8c4ffebcb49c2c3c1cbf3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _joinAction:
-    m_Name: Join
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 78a83610-84b2-4a33-b7a5-bb78467bb52c
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
-  _leaveAction:
-    m_Name: Leave
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 3acf7437-c8ac-472c-b9df-fce6f58f08a9
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
 --- !u!114 &8551757185623881136
 MonoBehaviour:
   m_ObjectHideFlags: 0

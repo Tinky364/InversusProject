@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
+
+using static Inversus.Facade;
 
 namespace Inversus.Game
 {
@@ -12,11 +15,17 @@ namespace Inversus.Game
         [SerializeField]
         private Vector2 _spawnPosition2;
 
+        public PhotonView PhotonView { get; private set; }
         public int Id => _id;
         public Vector2 SpawnPosition1 => _spawnPosition1;
         public Vector2 SpawnPosition2 => _spawnPosition2;
 
         private Dictionary<string, GroundTile> _tiles;
+
+        private void Awake()
+        {
+            PhotonView = GetComponent<PhotonView>();
+        }
 
         public void Initialize(Side side1, Side side2)
         {
@@ -29,7 +38,7 @@ namespace Inversus.Game
                 _tiles.Add(tileName, tile);
             }
         }
-        
+
         public GroundTile GetTile(string key)
         {
             if (_tiles.TryGetValue(key, out GroundTile tile)) return tile;

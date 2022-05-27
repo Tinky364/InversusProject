@@ -45,6 +45,21 @@ MonoBehaviour:
   - VictoryScoreDropdownUpdate
   - PlayerConnectionGridDisplay
   - PlayerConnectionGridHide
+  - LoadScene
+  - InitializeOnlineRPC
+  - InitializeRPC
+  - ResetThisRPC
+  - SetSideRPC
+  - SendCreateGameData
+  - SendCreateRoundData
+  - SendClientReadyData
+  - InformClientReady
+  - Send_CreateGameData
+  - Send_CreateRound
+  - Send_CreateGame
+  - Inform_ClientReady
+  - Send_ExpandPool
+  - SpawnRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
