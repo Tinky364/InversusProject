@@ -8,7 +8,7 @@ using Inversus.Data;
 
 using static Inversus.Facade;
 
-namespace Inversus.UI
+namespace Inversus.UI.MainMenuScene
 {
     public class PlayLocallyPanel : Panel
     {

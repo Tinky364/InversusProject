@@ -7,7 +7,7 @@ namespace Inversus.Data
     public class DisplayData
     {
         [SerializeField] 
-        private Vector2Int _resolution = new Vector2Int(1600, 900);
+        private Vector2Int _resolution = new(1600, 900);
         [SerializeField] 
         private FullScreenMode _fullScreenMode = FullScreenMode.FullScreenWindow;
 

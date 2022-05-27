@@ -1,5 +1,6 @@
 ﻿using Inversus.Game;
 using Inversus.Manager;
+using Inversus.UI;
 
 namespace Inversus
 {
@@ -11,7 +12,7 @@ namespace Inversus
         public static InputProfileManager SInputProfileManager => InputProfileManager.Instance;
         public static GameCreator SGameCreator => GameCreator.Instance;
         public static Database SDatabase => Database.Instance;
-        public static OnlineGameManager SOnlineGameManager => OnlineGameManager.Instance;
+        public static OnlineManager SOnlineManager => OnlineManager.Instance;
 
         public static SubSceneManager SSubSceneManager => SubSceneManager.Instance;
         public static MainMenuSubSceneManager SMainMenuSubSceneManager => 
@@ -22,5 +23,7 @@ namespace Inversus
         public static CanvasManager SCanvasManager => CanvasManager.Instance;
         public static MainMenuCanvasManager SMainMenuCanvasManager =>
             CanvasManager.Instance as MainMenuCanvasManager;
+        public static GameCanvasManager SGameCanvasManager =>
+            CanvasManager.Instance as GameCanvasManager;
     }
 }

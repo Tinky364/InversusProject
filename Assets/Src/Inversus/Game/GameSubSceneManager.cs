@@ -3,7 +3,7 @@ using UnityEngine;
 
 using Inversus.Data;
 using Inversus.Manager;
-using Photon.Pun;
+
 using static Inversus.Facade;
 
 namespace Inversus.Game
@@ -17,15 +17,15 @@ namespace Inversus.Game
         
         public BulletPool BulletPool => _bulletPool;
 
-        private WaitForSecondsRealtime _waitForSecondsRealtime1;
-        private WaitForSecondsRealtime _waitForSecondsRealtime5;
+        private WaitForSeconds _waitForSeconds1;
+        private WaitForSeconds _waitForSeconds5;
 
         protected override void Awake()
         {
             base.Awake();
             
-            _waitForSecondsRealtime1 = new WaitForSecondsRealtime(1);
-            _waitForSecondsRealtime5 = new WaitForSecondsRealtime(5);
+            _waitForSeconds1 = new WaitForSeconds(1);
+            _waitForSeconds5 = new WaitForSeconds(5);
             
             SEventBus.GamePaused.AddListener(OnGamePaused);
             SEventBus.GameResumed.AddListener(OnGameResumed);
@@ -34,15 +34,16 @@ namespace Inversus.Game
 
         protected override void OnSceneLoaded(SceneData sceneData)
         {
-            _bulletPool.Initialize();
             _camera.backgroundColor = SGameCreator.ColorTheme.BackgroundColor;
             SGameCreator.CreateGame();
+            _bulletPool.Initialize();
         }
 
         private void OnGamePaused(InputProfile inputProfile)
         {
+            SGameCreator.PlayerControllers[0].Pause();
+            SGameCreator.PlayerControllers[1].Pause();
             SMainManager.State = States.GamePauseMenu;
-            Time.timeScale = 0;
         }
 
         private void OnGameResumed()
@@ -52,9 +53,8 @@ namespace Inversus.Game
 
         private IEnumerator OnGameResumedCor()
         {
-            yield return _waitForSecondsRealtime1;
+            yield return _waitForSeconds1;
             SMainManager.State = States.InGame;
-            Time.timeScale = 1;
         }
         
         private void OnRoundEnded(int player1Score, int player2Score, string roundWinnerName)
@@ -64,7 +64,7 @@ namespace Inversus.Game
 
         private IEnumerator OnRoundEndedCor()
         {
-            yield return _waitForSecondsRealtime5;
+            yield return _waitForSeconds5;
             Debug.Log("RoundStartRequested Event => Invoke()");
             SEventBus.RoundStartRequested?.Invoke();
         }
@@ -76,8 +76,6 @@ namespace Inversus.Game
             SEventBus.GamePaused.RemoveListener(OnGamePaused);
             SEventBus.GameResumed.RemoveListener(OnGameResumed);
             SEventBus.RoundEnded.RemoveListener(OnRoundEnded);
-            
-            Time.timeScale = 1;
         }
     }
 }

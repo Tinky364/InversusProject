@@ -11,7 +11,7 @@ namespace Inversus.Helper
             SetSingleton();
         }
 
-        protected void SetSingleton()
+        private void SetSingleton()
         {
             if (Instance != null && Instance != this)
             {

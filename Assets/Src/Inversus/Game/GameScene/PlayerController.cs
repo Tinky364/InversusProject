@@ -27,41 +27,49 @@ namespace Inversus.Game
         public Side Side { get; private set; }
         public InputProfile InputProfile { get; private set; }
         public PhotonView PhotonView { get; private set; }
-        
+        public string PlayerName
+        {
+            get
+            {
+                if (SGameCreator == null) 
+                    return "null";
+                if (SGameCreator.GameType == GameType.Local)
+                    return InputProfile == null ? "null" : InputProfile.Name;
+                if (SGameCreator.GameType == GameType.Online)
+                    return PhotonView == null ? "null" : PhotonView.Controller.NickName;
+                return "null";
+            }
+        }
+
         private SpriteRenderer _spriteRenderer;
         private Rigidbody2D _rig;
-        private BoxCollider2D _collider;
         private Gun _gun;
-        
         private Vector2 _moveInputAxis;
         private Vector2 _desiredVelocity;
         private Vector2 _velocity;
-        
         private Vector3 _networkPosition;
+        private float _networkPositionLerpSpeed = 2f;
 
-        public float LerpValue = 2f;
-
-        public void Initialize(Side side, InputProfile inputProfile)
-        {
-            InputProfile = inputProfile;
-            
-            _gun.Initialize(_maxAmmo);
-            InputProfile.EnableInGameInputs();
-            Side = side;
-            gameObject.name = "PlayerController";
-            gameObject.layer = Side.Layer;
-            _spriteRenderer.color = Side.PlayerColor;
-        }
-        
         private void Awake()
         {
             PhotonView = GetComponent<PhotonView>();
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _rig = GetComponent<Rigidbody2D>();
-            _collider = GetComponent<BoxCollider2D>();
             _gun = GetComponent<Gun>();
             
             PhotonNetwork.SerializationRate = 30;
+        }
+        
+        public void Initialize(Side side, InputProfile inputProfile)
+        {
+            InputProfile = inputProfile;
+            InputProfile.EnableInGameInputs();
+
+            _gun.Initialize(_maxAmmo);
+            Side = side;
+            gameObject.name = "PlayerController";
+            gameObject.layer = Side.Layer;
+            _spriteRenderer.color = Side.PlayerColor;
         }
 
         private void Update()
@@ -71,6 +79,7 @@ namespace Inversus.Game
             switch (SGameCreator.GameType)
             {
                 case GameType.Local:
+                    GetPauseInput();
                     GetMoveInputAxis();
                     GetFireInputs();
                     _gun.LoadAmmoEverySecond(_ammoLoadDuration);
@@ -154,14 +163,30 @@ namespace Inversus.Game
                 _gun.FireBullet(transform.position, Vector2Int.down, Side);
         }
         
-        public void ResetThis(Vector2 spawnPos)
+        public void GetPauseInput()
+        {
+            if (!InputProfile.PauseAction.WasPerformedThisFrame()) return;
+            
+            Debug.Log("GamePaused Event => Invoke()");
+            SEventBus.GamePaused?.Invoke(InputProfile);
+        }
+        
+        public void ResetOnRound(Vector2 spawnPos)
         {
             _rig.velocity = Vector2.zero;
             _moveInputAxis = Vector2.zero;
             _desiredVelocity = Vector2.zero;
             _velocity = Vector2.zero;
             transform.position = spawnPos;
-            _gun.ResetThis();
+            _gun.ResetOnRound();
+        }
+
+        public void Pause()
+        {
+            _rig.velocity = Vector2.zero;
+            _moveInputAxis = Vector2.zero;
+            _desiredVelocity = Vector2.zero;
+            _velocity = Vector2.zero;
         }
 
         private void MovePlayer()
@@ -176,11 +201,11 @@ namespace Inversus.Game
         private void SyncMovePlayer()
         {
             _rig.position = Vector2.MoveTowards(
-                _rig.position, _networkPosition, Time.fixedDeltaTime * LerpValue
+                _rig.position, _networkPosition, _networkPositionLerpSpeed * Time.fixedDeltaTime
             );
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
             InputProfile.DisableInGameInputs();
         }

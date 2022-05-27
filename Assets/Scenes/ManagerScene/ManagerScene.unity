@@ -167,7 +167,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &105657200
 MonoBehaviour:
@@ -295,7 +295,7 @@ MonoBehaviour:
   GameResumed:
     m_PersistentCalls:
       m_Calls: []
-  RetryLocalGameRequested:
+  PlayAgainGameRequested:
     m_PersistentCalls:
       m_Calls: []
   PlayerHit:
@@ -347,6 +347,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   MasterClientSwitched:
+    m_PersistentCalls:
+      m_Calls: []
+  PlayerLeftRoom:
     m_PersistentCalls:
       m_Calls: []
 --- !u!4 &381360517
@@ -528,7 +531,7 @@ GameObject:
   - component: {fileID: 2025717175}
   - component: {fileID: 2025717176}
   m_Layer: 0
-  m_Name: OnlineGameManager
+  m_Name: OnlineManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -547,7 +550,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2025717176
 MonoBehaviour:
@@ -618,7 +621,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8551757185623881138
 MonoBehaviour:

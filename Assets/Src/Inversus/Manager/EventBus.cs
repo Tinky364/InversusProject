@@ -30,7 +30,7 @@ namespace Inversus.Manager
         [ReadOnly]
         public UnityEvent GameResumed;
         [ReadOnly]
-        public UnityEvent RetryLocalGameRequested;
+        public UnityEvent PlayAgainGameRequested;
         [ReadOnly]
         public UnityEvent<PlayerController> PlayerHit;
         
@@ -70,5 +70,7 @@ namespace Inversus.Manager
         public UnityEvent RoomLeaveFailed;
         [ReadOnly]
         public UnityEvent<Player> MasterClientSwitched;
+        [ReadOnly]
+        public UnityEvent<Player> PlayerLeftRoom;
     }
 }

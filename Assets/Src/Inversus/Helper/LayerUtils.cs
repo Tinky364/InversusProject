@@ -2,7 +2,7 @@
 
 namespace Inversus.Helper
 {
-    public static class HelperMethods
+    public static class LayerUtils
     {
         public static int LayerMaskToLayer(int bitmask)
         {

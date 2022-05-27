@@ -1,11 +1,11 @@
 using UnityEngine;
 
 using Inversus.Manager;
-using Inversus.UI;
+using Inversus.UI.MainMenuScene;
 
 using static Inversus.Facade;
 
-namespace Inversus.Game
+namespace Inversus.UI
 {
     public class MainMenuCanvasManager : CanvasManager
     {
@@ -34,13 +34,14 @@ namespace Inversus.Game
         {
             base.Awake();
             
-            _foregroundPanel.SetDisplay(false);
-            MainMenuPanel.SetDisplay(true);
+            BackgroundPanel.SetDisplay(true);
+            ForegroundPanel.SetDisplay(false);
             PlayPanel.SetDisplay(false);
             PlayLocallyPanel.SetDisplay(false);
             PlayOnlinePanel.SetDisplay(false);
             RoomPanel.SetDisplay(false);
             RoomListPanel.SetDisplay(false);
+            MainMenuPanel.SetDisplay(true);
         }
         
         public void SetStatePlayLocallyMenu()

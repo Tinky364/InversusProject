@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 
 using Inversus.Helper;
 using Inversus.Data;
 using Inversus.UI;
-using UnityEngine.InputSystem;
+
 using static Inversus.Facade;
 
 namespace Inversus.Manager
@@ -14,31 +15,33 @@ namespace Inversus.Manager
     {
         [SerializeField]
         private EventSystem _eventSystem;
-        public EventSystem EventSystem => _eventSystem;
-
         [SerializeField]
-        protected Panel _foregroundPanel;
+        private Panel _backgroundPanel;
+        [SerializeField]
+        private Panel _foregroundPanel;
 
-        public InputSystemUIInputModule InputSystemUIInputModule { get; private set; }
-
+        public Panel BackgroundPanel => _backgroundPanel;
+        public Panel ForegroundPanel => _foregroundPanel;
+        
+        private InputSystemUIInputModule _inputSystemUIInputModule;
         private GameObject _lastSelectedGameObject;
         
         protected override void Awake()
         {
             base.Awake();
             
-            InputSystemUIInputModule = _eventSystem.GetComponent<InputSystemUIInputModule>();
+            _inputSystemUIInputModule = _eventSystem.GetComponent<InputSystemUIInputModule>();
         }
 
         public void SetUiInputModule(PlayerInput playerInput)
         {
-            playerInput.uiInputModule = InputSystemUIInputModule;
+            playerInput.uiInputModule = _inputSystemUIInputModule;
         }
 
         public void SetSelectedGameObject(GameObject element)
         {
-            if (EventSystem == null) return;
-            EventSystem.SetSelectedGameObject(element);
+            if (_eventSystem == null) return;
+            _eventSystem.SetSelectedGameObject(element);
         }
         
         public void LoadScene(SceneData targetSceneData)
@@ -50,13 +53,13 @@ namespace Inversus.Manager
         {
             if (isActive)
             {
-               EventSystem.SetSelectedGameObject(_lastSelectedGameObject);
+               _eventSystem.SetSelectedGameObject(_lastSelectedGameObject);
                 _foregroundPanel.SetDisplay(false);
             }
             else
             {
-                _lastSelectedGameObject = EventSystem.currentSelectedGameObject;
-                EventSystem.SetSelectedGameObject(null);
+                _lastSelectedGameObject = _eventSystem.currentSelectedGameObject;
+                _eventSystem.SetSelectedGameObject(null);
                 _foregroundPanel.SetDisplay(true);
             }
         }

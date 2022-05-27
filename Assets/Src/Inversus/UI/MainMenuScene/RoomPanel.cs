@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
 
@@ -10,7 +10,7 @@ using Inversus.Manager;
 
 using static Inversus.Facade;
 
-namespace Inversus.UI
+namespace Inversus.UI.MainMenuScene
 {
     public class RoomPanel : Panel
     {
@@ -79,13 +79,12 @@ namespace Inversus.UI
         
         private void Update()
         {
-            if (_playerCount != PhotonNetwork.CurrentRoom.PlayerCount)
-            {
-                _playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
-                _playerCountText.SetText(
-                    $"Player Count: {_playerCount}/{PhotonNetwork.CurrentRoom.MaxPlayers}"
-                );
-            }
+            if (_playerCount == PhotonNetwork.CurrentRoom.PlayerCount) return;
+            
+            _playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
+            _playerCountText.SetText(
+                $"Player Count: {_playerCount}/{PhotonNetwork.CurrentRoom.MaxPlayers}"
+            );
         }
         
         public void EnableInputProfileManager(int maxPlayerCount)

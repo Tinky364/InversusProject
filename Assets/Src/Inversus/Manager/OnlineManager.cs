@@ -6,9 +6,9 @@ using static Inversus.Facade;
 
 namespace Inversus.Manager
 {
-    public class OnlineGameManager : MonoBehaviourPunCallbacks
+    public class OnlineManager : MonoBehaviourPunCallbacks
     {
-        public static OnlineGameManager Instance { get; private set; }
+        public static OnlineManager Instance { get; private set; }
 
         private bool _isConnected;
         public bool IsConnected => _isConnected && PhotonNetwork.IsConnectedAndReady;
@@ -166,6 +166,8 @@ namespace Inversus.Manager
         public override void OnPlayerLeftRoom(Player otherPlayer)
         {
             Debug.Log($"Player named {otherPlayer.NickName} left the room.");
+            
+            SEventBus.PlayerLeftRoom?.Invoke(otherPlayer);
         }
 
         public override void OnMasterClientSwitched(Player newMasterClient)

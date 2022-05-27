@@ -54,7 +54,6 @@ MonoBehaviour:
   _maxSpeed: 10
   _maxAmmo: 5
   _ammoLoadDuration: 0.6
-  LerpValue: 2
 --- !u!114 &6552692025624883969
 MonoBehaviour:
   m_ObjectHideFlags: 0

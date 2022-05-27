@@ -58,7 +58,7 @@ namespace Inversus.Manager
             if (InputProfileCount >= MaxPlayerCount) return;
 
             if (SMainManager.State == States.PlayLocallyMenu ||
-                (SMainManager.State == States.PlayOnlineMenu && SOnlineGameManager.InRoom))
+                (SMainManager.State == States.PlayOnlineMenu && SOnlineManager.InRoom))
             {
                 _playerInputManager.JoinPlayerFromActionIfNotAlreadyJoined(context);
             }

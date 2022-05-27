@@ -60,6 +60,8 @@ MonoBehaviour:
   - Inform_ClientReady
   - Send_ExpandPool
   - SpawnRPC
+  - PlayAgain
+  - Execute_PlayAgain
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

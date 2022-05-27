@@ -16,7 +16,7 @@ namespace Inversus.Manager
         private PlayerController _prefabPlayerController;
         
         public Side[] Sides { get; private set; }
-        public PlayerController[] PlayerControllers { get; set; }
+        public PlayerController[] PlayerControllers { get; private set; }
         public ColorTheme ColorTheme { get; private set; }
         public Map CurrentMap { get; private set; }
         public int CurrentMapId { get; private set; }
@@ -25,20 +25,20 @@ namespace Inversus.Manager
         public int VictoryScore { get; private set; }
         public int Round { get; private set; }
         public GameType GameType { get; private set; }
-        
-        public PhotonView PhotonView { get; private set; }
 
+        private PhotonView _photonView;
         private bool _isClientReady;
 
         protected override void Awake()
         {
             base.Awake();
 
-            PhotonView = GetComponent<PhotonView>();
+            _photonView = GetComponent<PhotonView>();
+            
             SEventBus.PlayerHit.AddListener(OnPlayerHit);
             SEventBus.StartGameRequested.AddListener(SetGameSettings);
             SEventBus.RoundStartRequested.AddListener(OnRoundStartRequested);
-            SEventBus.RetryLocalGameRequested.AddListener(RetryGame);
+            SEventBus.PlayAgainGameRequested.AddListener(PlayAgainGame);
         }
 
         private void SetGameSettings(int mapId, int victoryScore, int colorThemeId, GameType gameType)
@@ -74,7 +74,7 @@ namespace Inversus.Manager
                     if (PhotonNetwork.IsMasterClient)
                         StartCoroutine(CreateGameOnline()); 
                     else
-                        PhotonView.RPC("Inform_ClientReady", RpcTarget.MasterClient);
+                        _photonView.RPC("Inform_ClientReady", RpcTarget.MasterClient);
                     break;
             }
         }
@@ -102,7 +102,7 @@ namespace Inversus.Manager
                 PlayerControllers[0].PhotonView.ViewID,
                 PlayerControllers[1].PhotonView.ViewID
             };
-            PhotonView.RPC("Send_CreateGame", RpcTarget.Others, data as object);
+            _photonView.RPC("Send_CreateGame", RpcTarget.Others, data as object);
             
             while (!_isClientReady) yield return null;
             _isClientReady = false;
@@ -126,7 +126,7 @@ namespace Inversus.Manager
             
             Round = 0;
             
-            PhotonView.RPC("Inform_ClientReady", RpcTarget.MasterClient);
+            _photonView.RPC("Inform_ClientReady", RpcTarget.MasterClient);
             
             Debug.Log("GameCreated Event => Invoke()");
             SEventBus.GameCreated?.Invoke();
@@ -142,11 +142,11 @@ namespace Inversus.Manager
             ).GetComponent<Map>();
             CurrentMap.Initialize(Sides[0], Sides[1]);
 
-            PlayerControllers[0].ResetThis(CurrentMap.SpawnPosition1);
-            PlayerControllers[1].ResetThis(CurrentMap.SpawnPosition2);
+            PlayerControllers[0].ResetOnRound(CurrentMap.SpawnPosition1);
+            PlayerControllers[1].ResetOnRound(CurrentMap.SpawnPosition2);
 
             object[] data = {CurrentMap.PhotonView.ViewID};
-            PhotonView.RPC("Send_CreateRound", RpcTarget.Others, data as object);
+            _photonView.RPC("Send_CreateRound", RpcTarget.Others, data as object);
             
             while (!_isClientReady) yield return null;
             _isClientReady = false;
@@ -154,7 +154,6 @@ namespace Inversus.Manager
             Debug.Log("RoundStarted Event => Invoke()");
             SEventBus.RoundStarted?.Invoke();
             
-            Time.timeScale = 1;
             SMainManager.State = States.InGame;
         }
 
@@ -166,15 +165,14 @@ namespace Inversus.Manager
             CurrentMap = PhotonView.Find((int)data[0]).GetComponent<Map>();
             CurrentMap.Initialize(Sides[0], Sides[1]);
             
-            PlayerControllers[0].ResetThis(CurrentMap.SpawnPosition1);
-            PlayerControllers[1].ResetThis(CurrentMap.SpawnPosition2);
+            PlayerControllers[0].ResetOnRound(CurrentMap.SpawnPosition1);
+            PlayerControllers[1].ResetOnRound(CurrentMap.SpawnPosition2);
             
-            PhotonView.RPC("Inform_ClientReady", RpcTarget.MasterClient);
+            _photonView.RPC("Inform_ClientReady", RpcTarget.MasterClient);
 
             Debug.Log("RoundStarted Event => Invoke()");
             SEventBus.RoundStarted?.Invoke();
             
-            Time.timeScale = 1;
             SMainManager.State = States.InGame;
         }
         
@@ -211,64 +209,75 @@ namespace Inversus.Manager
             );
             CurrentMap.Initialize(Sides[0], Sides[1]);
 
-            PlayerControllers[0].ResetThis(CurrentMap.SpawnPosition1);
-            PlayerControllers[1].ResetThis(CurrentMap.SpawnPosition2);
+            PlayerControllers[0].ResetOnRound(CurrentMap.SpawnPosition1);
+            PlayerControllers[1].ResetOnRound(CurrentMap.SpawnPosition2);
 
             Debug.Log("RoundStarted Event => Invoke()");
             SEventBus.RoundStarted?.Invoke();
             
-            Time.timeScale = 1;
             SMainManager.State = States.InGame;
         }
 #endregion
 
-        private void OnPlayerHit(PlayerController playerController)
+        private void OnPlayerHit(PlayerController damagedPlayerController)
         {
-            Time.timeScale = 0;
+            SGameCreator.PlayerControllers[0].Pause();
+            SGameCreator.PlayerControllers[1].Pause();
             SMainManager.State = States.Loading;
-            RoundEnded(playerController);
+            
+            switch (GameType)
+            {
+                case GameType.Local:
+                    EndRound(damagedPlayerController);
+                    break;
+                case GameType.Online:
+                    _photonView.RPC(
+                        "Inform_ClientReady",
+                        PhotonNetwork.IsMasterClient ? RpcTarget.Others : RpcTarget.MasterClient
+                    );
+                    StartCoroutine(OnPlayerHitCor(damagedPlayerController));
+                    break;
+            }
         }
 
-        private void OnRoundStartRequested()
+        private IEnumerator OnPlayerHitCor(PlayerController damagedPlayerController)
         {
-            CreateRoundLocal();
+            while (!_isClientReady) yield return null;
+            _isClientReady = false;
+            
+            EndRound(damagedPlayerController);
         }
-
-        private void RoundEnded(PlayerController playerController)
+        
+        private void EndRound(PlayerController damagedPlayerController)
         {
             string roundWinnerName = "";
-            if (playerController == PlayerControllers[0])
+            if (damagedPlayerController == PlayerControllers[0])
             {
-                roundWinnerName = PlayerControllers[1].InputProfile.name;
+                roundWinnerName = PlayerControllers[1].PlayerName;
                 PlayerControllers[1].Side.Score += 1;
             }
-            else if (playerController == PlayerControllers[1])
+            else if (damagedPlayerController == PlayerControllers[1])
             {
-                roundWinnerName = PlayerControllers[1].InputProfile.name;
+                roundWinnerName = PlayerControllers[0].PlayerName;
                 PlayerControllers[0].Side.Score += 1;
             }
             Debug.Log($"Round Winner: {roundWinnerName}");
 
-            string winnerName;
             if (PlayerControllers[0].Side.Score == VictoryScore)
             {
-                winnerName = PlayerControllers[0].InputProfile.Name;
-                Debug.Log($"Game Winner: {winnerName}");
-                GameEnded(
+                EndGame(
                     PlayerControllers[0].Side.Score, PlayerControllers[1].Side.Score,
-                    winnerName
+                    PlayerControllers[0].PlayerName
                 );
             }
             else if (PlayerControllers[1].Side.Score == VictoryScore)
             {
-                winnerName = PlayerControllers[1].InputProfile.Name;
-                Debug.Log($"Game Winner: {winnerName}");
-                GameEnded(
+                EndGame(
                     PlayerControllers[0].Side.Score, PlayerControllers[1].Side.Score,
-                    winnerName
+                    PlayerControllers[1].PlayerName
                 );
             }
-            else
+            else // There is no winner, start a new round.
             {
                 Debug.Log("RoundEnded Event => Invoke()");
                 SEventBus.RoundEnded?.Invoke(
@@ -278,13 +287,27 @@ namespace Inversus.Manager
             }
         }
 
-        private void GameEnded(int player1Score, int player2Score, string winnerName)
+        private void OnRoundStartRequested()
         {
+            switch (GameType)
+            {
+                case GameType.Local: 
+                    CreateRoundLocal();
+                    break;
+                case GameType.Online: 
+                    if (PhotonNetwork.IsMasterClient) StartCoroutine(CreateRoundOnline());
+                    break;
+            }
+        }
+
+        private void EndGame(int player1Score, int player2Score, string winnerName)
+        {
+            Debug.Log($"Game Winner: {winnerName}");
             Debug.Log("GameEnded Event => Invoke()");
             SEventBus.GameEnded?.Invoke(player1Score, player2Score, winnerName);
         }
 
-        private void RetryGame()
+        private void PlayAgainGame()
         {
             PlayerControllers[0].Side.Score = 0;
             PlayerControllers[1].Side.Score = 0;
@@ -297,7 +320,7 @@ namespace Inversus.Manager
             SEventBus.PlayerHit.RemoveListener(OnPlayerHit);
             SEventBus.StartGameRequested.RemoveListener(SetGameSettings);
             SEventBus.RoundStartRequested.RemoveListener(OnRoundStartRequested);
-            SEventBus.RetryLocalGameRequested.RemoveListener(RetryGame);
+            SEventBus.PlayAgainGameRequested.RemoveListener(PlayAgainGame);
         }
     }
 }

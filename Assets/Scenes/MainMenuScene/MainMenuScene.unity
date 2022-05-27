@@ -4478,7 +4478,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.24207903, g: 0.38273802, b: 0.6037736, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -18011,6 +18011,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _eventSystem: {fileID: 173473904}
+  _backgroundPanel: {fileID: 1714166452}
   _foregroundPanel: {fileID: 220777104}
   _mainMenuPanel: {fileID: 1771276887}
   _playPanel: {fileID: 1444316972}

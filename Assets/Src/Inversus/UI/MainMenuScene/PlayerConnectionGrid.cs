@@ -1,8 +1,8 @@
-﻿using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
-namespace Inversus.UI
+namespace Inversus.UI.MainMenuScene
 {
     public class PlayerConnectionGrid : MonoBehaviour
     {

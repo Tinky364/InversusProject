@@ -3,7 +3,7 @@ using UnityEngine;
 
 using static Inversus.Facade;
 
-namespace Inversus.UI
+namespace Inversus.UI.MainMenuScene
 {
     public class PlayPanel : Panel
     {
@@ -19,7 +19,7 @@ namespace Inversus.UI
             float duration = 0;
             while (duration < 10f)
             {
-                if (SOnlineGameManager.IsConnected)
+                if (SOnlineManager.IsConnected)
                 {
                     SCanvasManager.SetUiInput(true);
                     SMainMenuCanvasManager.PlayOnlinePanel.SetDisplay(true);

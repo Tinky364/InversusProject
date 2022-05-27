@@ -19,8 +19,6 @@ namespace Inversus.Game
         
         public void Initialize()
         {
-            _pool = new Dictionary<int, Bullet>();
-
             switch (SGameCreator.GameType)
             {
                 case GameType.Local:
@@ -44,6 +42,7 @@ namespace Inversus.Game
         private void Awake()
         {
             PhotonView = GetComponent<PhotonView>();
+            _pool = new Dictionary<int, Bullet>();
         }
         
         public void UnSpawn(Bullet bullet)

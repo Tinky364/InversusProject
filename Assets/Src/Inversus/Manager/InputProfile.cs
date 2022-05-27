@@ -1,10 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
-using Inversus.Game;
-
-using static Inversus.Facade;
-
 namespace Inversus.Manager
 {
     [RequireComponent(typeof(PlayerInput))]
@@ -21,14 +17,6 @@ namespace Inversus.Manager
         public InputAction PauseAction { get; private set; }
 
         private PlayerInput _playerInput;
-
-        private void Update()
-        {
-            if (SMainManager.State == States.InGame)
-            {
-                GetPauseInput();
-            }
-        }
 
         public void Initialize(int id, string profileName)
         {
@@ -65,15 +53,6 @@ namespace Inversus.Manager
             UpFireAction.Disable();
             DownFireAction.Disable();
             PauseAction.Disable();
-        }
-        
-        private void GetPauseInput()
-        {
-            if (PauseAction.WasPerformedThisFrame())
-            {
-                Debug.Log("GamePaused Event => Invoke()");
-                SEventBus.GamePaused?.Invoke(this);
-            }
         }
     }
 }

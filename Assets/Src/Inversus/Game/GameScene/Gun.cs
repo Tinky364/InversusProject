@@ -6,20 +6,19 @@ namespace Inversus.Game
 {
     public class Gun : MonoBehaviour
     {
-        public float CurrentAmmo
+        private float _loadAmmoTimeElapsed = 0;
+        private float _maxAmmo;
+        private float _currentAmmo;
+        private float CurrentAmmo
         {
             get => _currentAmmo;
-            private set
+            set
             {
                 if (value < 0) _currentAmmo = value;
                 else if (value > _maxAmmo) _currentAmmo = _maxAmmo;
                 else _currentAmmo = value;
             }
         }
-        
-        private float _currentAmmo;
-        private float _loadAmmoTimeElapsed = 0;
-        private float _maxAmmo;
 
         public void Initialize(float maxAmmo)
         {
@@ -27,7 +26,7 @@ namespace Inversus.Game
             CurrentAmmo = _maxAmmo;
         }
 
-        public void ResetThis()
+        public void ResetOnRound()
         {
             CurrentAmmo = _maxAmmo;
         }

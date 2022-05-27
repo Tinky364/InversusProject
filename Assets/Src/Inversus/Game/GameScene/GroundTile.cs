@@ -1,5 +1,4 @@
-﻿using Photon.Pun;
-using UnityEngine;
+﻿using UnityEngine;
 
 using static Inversus.Facade;
 
