@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using Photon.Pun;
+using UnityEngine;
 
 using static Inversus.Facade;
 
@@ -7,8 +9,14 @@ namespace Inversus.Game
     public class GroundTile : MonoBehaviour
     {
         public Side Side { get; private set; }
-        
+
+        private PhotonView _photonView;
         private SpriteRenderer _spriteRenderer;
+
+        private void Awake()
+        {
+            _photonView = GetComponent<PhotonView>();
+        }
 
         public void Initialize(string tileName, Side side1, Side side2)
         {
@@ -33,20 +41,38 @@ namespace Inversus.Game
             if (SMainManager.State != States.InGame) return;
             if (!col.CompareTag("Bullet")) return;
 
-            switch (Side.Id)
+            switch (SGameCreator.GameType)
             {
-                case 0:
-                    SetSide(SGameCreator.Sides[1]);
+                case GameType.Local: 
+                    switch (Side.Id)
+                    {
+                        case 0:
+                            SetSide(1);
+                            break;
+                        case 1:
+                            SetSide(0);
+                            break;
+                    }
                     break;
-                case 1:
-                    SetSide(SGameCreator.Sides[0]);
+                case GameType.Online:
+                    if (!PhotonNetwork.IsMasterClient) return;
+                    switch (Side.Id)
+                    {
+                        case 0:
+                            _photonView.RPC("SetSide", RpcTarget.All, 1);
+                            break;
+                        case 1:
+                            _photonView.RPC("SetSide", RpcTarget.All, 0);
+                            break;
+                    }
                     break;
             }
         }
 
-        private void SetSide(Side newSide)
+        [PunRPC]
+        private void SetSide(int id)
         {
-            Side = newSide;
+            Side = SGameCreator.Sides[id];
             SetLayer(Side.Layer);
             SetColor(Side.TileColor);
         }

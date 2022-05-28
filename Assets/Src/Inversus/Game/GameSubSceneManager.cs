@@ -36,7 +36,6 @@ namespace Inversus.Game
         {
             _camera.backgroundColor = SGameCreator.ColorTheme.BackgroundColor;
             SGameCreator.CreateGame();
-            _bulletPool.Initialize();
         }
 
         private void OnGamePaused(InputProfile inputProfile)

@@ -29,6 +29,9 @@ namespace Inversus.Manager
         {
             base.Awake();
 
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
             _playerInputManager = GetComponent<PlayerInputManager>();
             _playerInputManager.playerPrefab = _prefabInputProfile.gameObject;
 

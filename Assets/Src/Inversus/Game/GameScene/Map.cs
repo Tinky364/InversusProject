@@ -18,7 +18,7 @@ namespace Inversus.Game
         public Vector2 SpawnPosition1 => _spawnPosition1;
         public Vector2 SpawnPosition2 => _spawnPosition2;
 
-        private Dictionary<string, GroundTile> _tiles;
+        private Dictionary<string, GroundTile> _groundTiles;
 
         private void Awake()
         {
@@ -27,19 +27,19 @@ namespace Inversus.Game
 
         public void Initialize(Side side1, Side side2)
         {
-            _tiles = new Dictionary<string, GroundTile>();
+            _groundTiles = new Dictionary<string, GroundTile>();
             foreach (GroundTile tile in GetComponentsInChildren<GroundTile>())
             {
                 Vector2 pos = tile.transform.localPosition;
                 string tileName = $"{pos.x},{pos.y}";
                 tile.Initialize(tileName, side1, side2);
-                _tiles.Add(tileName, tile);
+                _groundTiles.Add(tileName, tile);
             }
         }
 
         public GroundTile GetTile(string key)
         {
-            if (_tiles.TryGetValue(key, out GroundTile tile)) return tile;
+            if (_groundTiles.TryGetValue(key, out GroundTile tile)) return tile;
             
             Debug.LogWarning($"Tile with key:{key} is not exist!");
             return null;

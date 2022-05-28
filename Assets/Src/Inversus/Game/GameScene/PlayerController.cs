@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Photon.Pun;
 
 using Inversus.Manager;
@@ -139,11 +140,24 @@ namespace Inversus.Game
         private void OnTriggerEnter2D(Collider2D col)
         {
             if (SMainManager.State != States.InGame) return;
+            if (!col.CompareTag("Bullet")) return;
 
-            if (col.CompareTag("Bullet"))
+            switch (SGameCreator.GameType)
             {
-                SEventBus.PlayerHit?.Invoke(this);
+                case GameType.Local:
+                    Execute_PlayerHit();
+                    break;
+                case GameType.Online:
+                    if (PhotonNetwork.IsMasterClient)
+                        PhotonView.RPC("Execute_PlayerHit", RpcTarget.All);
+                    break;
             }
+        }
+
+        [PunRPC]
+        private void Execute_PlayerHit()
+        {
+            SEventBus.PlayerHit?.Invoke(this);
         }
 
         private void GetMoveInputAxis()

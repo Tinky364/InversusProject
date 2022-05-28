@@ -59,9 +59,21 @@ namespace Inversus.Game
         {
             if (SMainManager.State != States.InGame) return;
             if (!HasSpawned) return;
+
             
             if (col.CompareTag("Wall") || col.CompareTag("Player") || col.CompareTag("Bullet"))
-                StartCoroutine(UnSpawnOnCollision());
+            {
+                switch (SGameCreator.GameType)
+                {
+                    case GameType.Local:
+                        StartCoroutine(UnSpawnOnCollision());
+                        break;
+                    case GameType.Online:
+                        if (PhotonNetwork.IsMasterClient)
+                            PhotonView.RPC("Execute_UnSpawnOnCollision", RpcTarget.All);
+                        break;
+                }
+            }
         }
 
         public void SpawnLocal(Vector2 position, Vector2Int direction, Side side)
@@ -83,11 +95,11 @@ namespace Inversus.Game
         public void SpawnOnline(Vector2 position, Vector2Int direction, Side side)
         {
             object[] data = {position, (Vector2)direction, side.Id};
-            PhotonView.RPC("SpawnRPC", RpcTarget.All, data as object);
+            PhotonView.RPC("Execute_Spawn", RpcTarget.All, data as object);
         }
-
+       
         [PunRPC]
-        private void SpawnRPC(object[] data)
+        private void Execute_Spawn(object[] data)
         {
             HasSpawned = true;
 
@@ -117,6 +129,12 @@ namespace Inversus.Game
             gameObject.SetActive(false);
             
             SGameSubSceneManager.BulletPool.UnSpawn(this);
+        }
+        
+        [PunRPC]
+        private void Execute_UnSpawnOnCollision()
+        {
+            StartCoroutine(UnSpawnOnCollision());
         }
 
         private IEnumerator UnSpawnOnCollision()

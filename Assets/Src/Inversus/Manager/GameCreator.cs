@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 
@@ -69,12 +70,11 @@ namespace Inversus.Manager
             {
                 case GameType.Local: 
                     CreateGameLocal();
+                    SGameSubSceneManager.BulletPool.Initialize();
                     break;
                 case GameType.Online:
-                    if (PhotonNetwork.IsMasterClient)
-                        StartCoroutine(CreateGameOnline()); 
-                    else
-                        _photonView.RPC("Inform_ClientReady", RpcTarget.MasterClient);
+                    if (PhotonNetwork.IsMasterClient) StartCoroutine(CreateGameOnline()); 
+                    else _photonView.RPC("Inform_ClientReady", RpcTarget.MasterClient);
                     break;
             }
         }
@@ -84,6 +84,8 @@ namespace Inversus.Manager
          {
             while (!_isClientReady) yield return null;
             _isClientReady = false;
+            
+            SGameSubSceneManager.BulletPool.Initialize();
 
             PlayerControllers[0] = PhotonNetwork.Instantiate(
             "PlayerControllerOnline", Vector3.zero, Quaternion.identity
@@ -135,7 +137,7 @@ namespace Inversus.Manager
         private IEnumerator CreateRoundOnline()
         {
             Round += 1;
-            
+
             if (CurrentMap != null) PhotonNetwork.Destroy(CurrentMap.gameObject);
             CurrentMap = PhotonNetwork.Instantiate(
                 SDatabase.GetMap(CurrentMapId).name, Vector2.zero, Quaternion.identity
@@ -312,7 +314,16 @@ namespace Inversus.Manager
             PlayerControllers[0].Side.Score = 0;
             PlayerControllers[1].Side.Score = 0;
             Round = 0;
-            CreateRoundLocal();
+
+            switch (GameType)
+            {
+                case GameType.Local:
+                    CreateRoundLocal();
+                    break;
+                case GameType.Online: 
+                    if (PhotonNetwork.IsMasterClient) StartCoroutine(CreateRoundOnline());
+                    break;
+            }
         }
         
         private void OnDestroy()

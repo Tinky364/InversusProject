@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
-
+using Unity.VisualScripting;
 using static Inversus.Facade;
 
 namespace Inversus.UI.GameScene
@@ -22,14 +22,17 @@ namespace Inversus.UI.GameScene
         [SerializeField]
         private Button _mainMenuButton;
 
+        private TextMeshProUGUI _playAgainButtonText;
         private PhotonView _photonView;
         private WaitForSeconds _waitForSeconds1;
-        private bool _isMasterReady;
-        private bool _isClientReady;
+        private int _readyCount;
+        private bool _isReadyCountChanged = true;
+        private bool _isPlayAgainClicked;
 
         private void Awake()
         {
             _photonView = GetComponent<PhotonView>();
+            _playAgainButtonText = _playAgainButton.GetComponentInChildren<TextMeshProUGUI>();
             
             _waitForSeconds1 = new WaitForSeconds(1);
             
@@ -56,14 +59,14 @@ namespace Inversus.UI.GameScene
         private void Update()
         {
             if (SGameCreator.GameType != GameType.Online) return;
-            if (!PhotonNetwork.IsMasterClient) return;
+            if (!_isReadyCountChanged) return;
             
-            if (_isClientReady && _isMasterReady)
-            {
-                _isClientReady = false;
-                _isMasterReady = false;
-                _photonView.RPC("Execute_PlayAgain", RpcTarget.All);
-            }
+            _isReadyCountChanged = false;
+            _playAgainButtonText.SetText($"Play Again ({_readyCount}/2)");
+
+            if (_readyCount != 2) return;
+            if (!PhotonNetwork.IsMasterClient) return;
+            _photonView.RPC("Execute_PlayAgain", RpcTarget.All);
         }
 
         private void OnGameEnded(int player1Score, int player2Score, string winnerName)
@@ -80,8 +83,7 @@ namespace Inversus.UI.GameScene
         
         private void OnRoomLeft()
         {
-            _isClientReady = false;
-            _isMasterReady = false;
+            _readyCount = 0;
             SSceneCreator.LoadScene("MainMenuScene", SubSceneLoadMode.Single);
         }
 
@@ -98,21 +100,26 @@ namespace Inversus.UI.GameScene
                     Execute_PlayAgain();
                     break;
                 case GameType.Online:
-                    if (PhotonNetwork.IsMasterClient) _isMasterReady = true;
-                    else _photonView.RPC("Inform_ClientReady", RpcTarget.MasterClient);
+                    if (_isPlayAgainClicked) return;
+                    _isPlayAgainClicked = true;
+                    _photonView.RPC("Inform_Ready", RpcTarget.All);
                     break;
             }
         }
 
         [PunRPC]
-        private void Inform_ClientReady()
+        private void Inform_Ready()
         {
-            _isClientReady = true;
+            _isReadyCountChanged = true;
+            _readyCount += 1;
         }
 
         [PunRPC]
         private void Execute_PlayAgain()
         {
+            _isPlayAgainClicked = false;
+            _isReadyCountChanged = true;
+            _readyCount = 0;
             StartCoroutine(PlayAgainCor());
         }
         

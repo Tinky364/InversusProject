@@ -31,6 +31,7 @@ namespace Inversus.UI.MainMenuScene
 
         private PhotonView _photonView;
         private int _playerCount;
+        private bool _isMasterReady;
 
         private void Awake()
         {
@@ -99,10 +100,11 @@ namespace Inversus.UI.MainMenuScene
             _victoryScoreDropdown.interactable = value;
             _colorsDropdown.interactable = value;
         }
-       
+        
 #region CALLBACKS
         private void OnInputProfileJoined(InputProfile inputProfile)
         {
+            _isMasterReady = true;
             _photonView.RPC(
                 "PlayerConnectionGridDisplay", RpcTarget.AllBuffered,
                 PhotonNetwork.IsMasterClient ? 0 : 1,
@@ -120,7 +122,7 @@ namespace Inversus.UI.MainMenuScene
                     ? _mapIdDropdown.gameObject
                     : _backButton.gameObject
             );
-            if (PhotonNetwork.CurrentRoom.PlayerCount >= 2 && PhotonNetwork.IsMasterClient)
+            if (_isMasterReady && PhotonNetwork.CurrentRoom.PlayerCount >= 2 && PhotonNetwork.IsMasterClient)
                 _startGameButton.interactable = true;
         }
 
@@ -137,7 +139,7 @@ namespace Inversus.UI.MainMenuScene
         { 
             _playerConnectionGrids[id].Hide();
             
-            if (PhotonNetwork.CurrentRoom.PlayerCount < 2 && PhotonNetwork.IsMasterClient)
+            if (PhotonNetwork.IsMasterClient)
                 _startGameButton.interactable = false;
         }
 
@@ -151,7 +153,8 @@ namespace Inversus.UI.MainMenuScene
         private void OnServerDisconnected()
         {
             if (SMainManager.State != States.PlayOnlineMenu) return;
-            
+
+            _isMasterReady = false;
             SInputProfileManager.RemoveAllInputProfiles();
             SMainMenuCanvasManager.PlayPanel.SetDisplay(true);
             SetDisplay(false);
@@ -160,6 +163,7 @@ namespace Inversus.UI.MainMenuScene
 
         private void OnRoomLeft()
         {
+            _isMasterReady = false;
             SCanvasManager.SetUiInput(true);
             SMainMenuCanvasManager.PlayOnlinePanel.SetDisplay(true);
             SetDisplay(false);
