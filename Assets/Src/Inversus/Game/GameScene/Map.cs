@@ -25,7 +25,7 @@ namespace Inversus.Game
             PhotonView = GetComponent<PhotonView>();
         }
 
-        public void Initialize(Side side1, Side side2)
+        public void Initialize(Side side1, Side side2, Color backgroundColor)
         {
             _groundTiles = new Dictionary<string, GroundTile>();
             foreach (GroundTile tile in GetComponentsInChildren<GroundTile>())
@@ -34,6 +34,10 @@ namespace Inversus.Game
                 string tileName = $"{pos.x},{pos.y}";
                 tile.Initialize(tileName, side1, side2);
                 _groundTiles.Add(tileName, tile);
+            }
+            foreach (WallTile tile in GetComponentsInChildren<WallTile>())
+            {
+                tile.Initialize(backgroundColor);
             }
         }
 

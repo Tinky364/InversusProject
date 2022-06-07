@@ -16,12 +16,11 @@ namespace Inversus.Game
         private void Awake()
         {
             _photonView = GetComponent<PhotonView>();
+            _spriteRenderer = GetComponent<SpriteRenderer>();
         }
 
         public void Initialize(string tileName, Side side1, Side side2)
         {
-            _spriteRenderer = GetComponent<SpriteRenderer>();
-
             gameObject.name = tileName;
 
             if (gameObject.layer == side1.Layer)

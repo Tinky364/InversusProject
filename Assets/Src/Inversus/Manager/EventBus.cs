@@ -20,6 +20,8 @@ namespace Inversus.Manager
         [ReadOnly]
         public UnityEvent RoundStartRequested;
         [ReadOnly]
+        public UnityEvent RoundCreated;
+        [ReadOnly]
         public UnityEvent RoundStarted;
         [ReadOnly]
         public UnityEvent<int, int, string> RoundEnded;

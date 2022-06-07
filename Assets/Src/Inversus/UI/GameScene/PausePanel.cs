@@ -12,11 +12,11 @@ namespace Inversus.UI.GameScene
         [SerializeField]
         private GameObject[] _children;
 
-        private WaitForSeconds _waitForSeconds1;
+        private WaitForSeconds _wfs_1;
 
         private void Awake()
         {
-            _waitForSeconds1 = new WaitForSeconds(1);
+            _wfs_1 = new WaitForSeconds(1);
             
             SEventBus.GamePaused.AddListener(OnGamePaused);
         }
@@ -49,7 +49,7 @@ namespace Inversus.UI.GameScene
             SetDisplayChildren(false);
             Debug.Log("GameResumed Event => Invoke()");
             SEventBus.GameResumed?.Invoke();
-            yield return _waitForSeconds1;
+            yield return _wfs_1;
             SGameCanvasManager.BackgroundPanel.SetDisplay(false);
             SetDisplayChildren(true);
             SetDisplay(false);

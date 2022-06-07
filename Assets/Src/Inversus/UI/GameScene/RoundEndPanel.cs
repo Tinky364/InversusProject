@@ -19,11 +19,11 @@ namespace Inversus.UI.GameScene
         [SerializeField]
         private TextMeshProUGUI _countText;
         
-        private WaitForSeconds _waitForSeconds1;
+        private WaitForSeconds _wfs_1;
 
         private void Awake()
         {
-            _waitForSeconds1 = new WaitForSeconds(1);
+            _wfs_1 = new WaitForSeconds(1);
             
             SEventBus.RoundEnded.AddListener(OnRoundEnded);
             SEventBus.RoundStartRequested.AddListener(OnRoundStartRequested);
@@ -50,15 +50,15 @@ namespace Inversus.UI.GameScene
         private IEnumerator OnRoundEndedCor()
         {
             SetCountText("5");
-            yield return _waitForSeconds1;
+            yield return _wfs_1;
             SetCountText("4");
-            yield return _waitForSeconds1;
+            yield return _wfs_1;
             SetCountText("3");
-            yield return _waitForSeconds1;
+            yield return _wfs_1;
             SetCountText("2");
-            yield return _waitForSeconds1;
+            yield return _wfs_1;
             SetCountText("1");
-            yield return _waitForSeconds1;
+            yield return _wfs_1;
         }
 
         private void OnRoundStartRequested()

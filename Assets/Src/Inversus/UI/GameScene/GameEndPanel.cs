@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
-using Unity.VisualScripting;
+
 using static Inversus.Facade;
 
 namespace Inversus.UI.GameScene
@@ -24,7 +24,7 @@ namespace Inversus.UI.GameScene
 
         private TextMeshProUGUI _playAgainButtonText;
         private PhotonView _photonView;
-        private WaitForSeconds _waitForSeconds1;
+        private WaitForSeconds _wfs_1;
         private int _readyCount;
         private bool _isReadyCountChanged = true;
         private bool _isPlayAgainClicked;
@@ -34,7 +34,7 @@ namespace Inversus.UI.GameScene
             _photonView = GetComponent<PhotonView>();
             _playAgainButtonText = _playAgainButton.GetComponentInChildren<TextMeshProUGUI>();
             
-            _waitForSeconds1 = new WaitForSeconds(1);
+            _wfs_1 = new WaitForSeconds(1);
             
             SEventBus.GameEnded.AddListener(OnGameEnded);
         }
@@ -126,7 +126,7 @@ namespace Inversus.UI.GameScene
         private IEnumerator PlayAgainCor()
         {
             SetDisplayChildren(false);
-            yield return _waitForSeconds1;
+            yield return _wfs_1;
             Debug.Log("PlayAgainGameRequested Event => Invoke()");
             SEventBus.PlayAgainGameRequested?.Invoke();
             SGameCanvasManager.BackgroundPanel.SetDisplay(false);

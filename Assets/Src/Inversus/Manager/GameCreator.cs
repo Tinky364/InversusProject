@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 
@@ -142,7 +141,7 @@ namespace Inversus.Manager
             CurrentMap = PhotonNetwork.Instantiate(
                 SDatabase.GetMap(CurrentMapId).name, Vector2.zero, Quaternion.identity
             ).GetComponent<Map>();
-            CurrentMap.Initialize(Sides[0], Sides[1]);
+            CurrentMap.Initialize(Sides[0], Sides[1], ColorTheme.BackgroundColor);
 
             PlayerControllers[0].ResetOnRound(CurrentMap.SpawnPosition1);
             PlayerControllers[1].ResetOnRound(CurrentMap.SpawnPosition2);
@@ -153,10 +152,8 @@ namespace Inversus.Manager
             while (!_isClientReady) yield return null;
             _isClientReady = false;
             
-            Debug.Log("RoundStarted Event => Invoke()");
-            SEventBus.RoundStarted?.Invoke();
-            
-            SMainManager.State = States.InGame;
+            Debug.Log("RoundReady Event => Invoke()");
+            SEventBus.RoundCreated?.Invoke();
         }
 
         [PunRPC]
@@ -165,17 +162,15 @@ namespace Inversus.Manager
             Round += 1;
             
             CurrentMap = PhotonView.Find((int)data[0]).GetComponent<Map>();
-            CurrentMap.Initialize(Sides[0], Sides[1]);
+            CurrentMap.Initialize(Sides[0], Sides[1], ColorTheme.BackgroundColor);
             
             PlayerControllers[0].ResetOnRound(CurrentMap.SpawnPosition1);
             PlayerControllers[1].ResetOnRound(CurrentMap.SpawnPosition2);
             
             _photonView.RPC("Inform_ClientReady", RpcTarget.MasterClient);
 
-            Debug.Log("RoundStarted Event => Invoke()");
-            SEventBus.RoundStarted?.Invoke();
-            
-            SMainManager.State = States.InGame;
+            Debug.Log("RoundCreated Event => Invoke()");
+            SEventBus.RoundCreated?.Invoke();
         }
         
         [PunRPC]
@@ -209,15 +204,13 @@ namespace Inversus.Manager
             CurrentMap = Instantiate(
                 SDatabase.GetMap(CurrentMapId), Vector2.zero, Quaternion.identity
             );
-            CurrentMap.Initialize(Sides[0], Sides[1]);
+            CurrentMap.Initialize(Sides[0], Sides[1], ColorTheme.BackgroundColor);
 
             PlayerControllers[0].ResetOnRound(CurrentMap.SpawnPosition1);
             PlayerControllers[1].ResetOnRound(CurrentMap.SpawnPosition2);
-
-            Debug.Log("RoundStarted Event => Invoke()");
-            SEventBus.RoundStarted?.Invoke();
             
-            SMainManager.State = States.InGame;
+            Debug.Log("RoundCreated Event => Invoke()");
+            SEventBus.RoundCreated?.Invoke();
         }
 #endregion
 

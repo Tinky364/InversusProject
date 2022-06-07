@@ -9,7 +9,11 @@ namespace Inversus.Game
         public void Awake()
         {
             _spriteRenderer = GetComponent<SpriteRenderer>();
-            _spriteRenderer.color = new Color(1, 1, 1, 0);
+        }
+
+        public void Initialize(Color color)
+        {
+            _spriteRenderer.color = color;
         }
     }
 }

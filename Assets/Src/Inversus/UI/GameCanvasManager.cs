@@ -9,12 +9,15 @@ namespace Inversus.UI
     {
         [Header("PANELS")]
         [SerializeField]
+        private ReadyPanel _readyPanel;
+        [SerializeField]
         private PausePanel _pausePanel;
         [SerializeField]
         private RoundEndPanel _roundEndPanel;
         [SerializeField]
         private GameEndPanel _gameEndPanel;
 
+        public ReadyPanel ReadyPanel => _readyPanel;
         public PausePanel PausePanel => _pausePanel;
         public RoundEndPanel RoundEndPanel => _roundEndPanel;
         public GameEndPanel GameEndPanel => _gameEndPanel;
@@ -24,7 +27,8 @@ namespace Inversus.UI
             base.Awake();
             
             BackgroundPanel.SetDisplay(false);
-            ForegroundPanel.SetDisplay(false);
+            ForegroundPanel.SetDisplay(true);
+            ReadyPanel.SetDisplay(false);
             PausePanel.SetDisplay(false);
             RoundEndPanel.SetDisplay(false);
             GameEndPanel.SetDisplay(false);
