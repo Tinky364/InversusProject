@@ -46,9 +46,17 @@ namespace Inversus.Manager
         [ReadOnly]
         public UnityEvent ServerConnectionRequested;
         [ReadOnly]
+        public UnityEvent JoinLobbyRequested;
+        [ReadOnly]
+        public UnityEvent LeaveLobbyRequested;
+        [ReadOnly]
         public UnityEvent ServerConnected;
         [ReadOnly]
         public UnityEvent ServerDisconnected;
+        [ReadOnly]
+        public UnityEvent LobbyJoined;
+        [ReadOnly]
+        public UnityEvent LobbyLeft;
         
         [ReadOnly]
         public UnityEvent<string, int> CreateRoomRequested;
@@ -58,7 +66,7 @@ namespace Inversus.Manager
         public UnityEvent RoomCreateFailed;
 
         [ReadOnly]
-        public UnityEvent JoinRoomRequested;
+        public UnityEvent<string> JoinRoomRequested;
         [ReadOnly]
         public UnityEvent RoomJoined;
         [ReadOnly]

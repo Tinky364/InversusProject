@@ -22,7 +22,8 @@ namespace Inversus.Manager
 
         public Panel BackgroundPanel => _backgroundPanel;
         public Panel ForegroundPanel => _foregroundPanel;
-        
+        public GameObject LastSelectedGameObject => _lastSelectedGameObject;
+
         private InputSystemUIInputModule _inputSystemUIInputModule;
         private GameObject _lastSelectedGameObject;
         

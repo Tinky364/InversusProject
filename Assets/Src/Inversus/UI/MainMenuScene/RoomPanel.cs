@@ -80,6 +80,7 @@ namespace Inversus.UI.MainMenuScene
         
         private void Update()
         {
+            if (!SOnlineManager.InRoom) return;
             if (_playerCount == PhotonNetwork.CurrentRoom.PlayerCount) return;
             
             _playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
@@ -157,8 +158,8 @@ namespace Inversus.UI.MainMenuScene
             _isMasterReady = false;
             SInputProfileManager.RemoveAllInputProfiles();
             SMainMenuCanvasManager.PlayPanel.SetDisplay(true);
-            SetDisplay(false);
             SInputProfileManager.InstantiateDefaultInputProfile();
+            SetDisplay(false);
         }
 
         private void OnRoomLeft()
@@ -166,8 +167,8 @@ namespace Inversus.UI.MainMenuScene
             _isMasterReady = false;
             SCanvasManager.SetUiInput(true);
             SMainMenuCanvasManager.PlayOnlinePanel.SetDisplay(true);
-            SetDisplay(false);
             SInputProfileManager.InstantiateDefaultInputProfile();
+            SetDisplay(false);
         }
 #endregion
 

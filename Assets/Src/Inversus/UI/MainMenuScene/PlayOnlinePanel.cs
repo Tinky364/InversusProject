@@ -34,20 +34,34 @@ namespace Inversus.UI.MainMenuScene
         private IEnumerator CreateRoomButton_ClickCor()
         {
             SCanvasManager.SetUiInput(false);
-            SEventBus.CreateRoomRequested?.Invoke("Room1", 2);
+            
+            SEventBus.JoinLobbyRequested?.Invoke();
             float duration = 0f;
             while (duration < 5f)
             {
-                if (SOnlineManager.InRoom)
-                {
-                    SCanvasManager.SetUiInput(true);
-                    SMainMenuCanvasManager.RoomPanel.SetDisplay(true);
-                    SetDisplay(false);
-                    yield break;
-                }
+                if (SOnlineManager.InLobby) break;
                 duration += Time.deltaTime;
                 yield return null;
             }
+
+            if (SOnlineManager.InLobby)
+            {
+                SEventBus.CreateRoomRequested?.Invoke("Room1", 2);
+                duration = 0f;
+                while (duration < 5f)
+                {
+                    if (SOnlineManager.InRoom)
+                    {
+                        SCanvasManager.SetUiInput(true);
+                        SMainMenuCanvasManager.RoomPanel.SetDisplay(true);
+                        SetDisplay(false);
+                        yield break;
+                    }
+                    duration += Time.deltaTime;
+                    yield return null;
+                }
+            }
+            
             SCanvasManager.SetUiInput(true);
         }
 #endregion
@@ -55,8 +69,29 @@ namespace Inversus.UI.MainMenuScene
 #region Join Room
         public void JoinRoomButton_Click()
         {
-            SMainMenuCanvasManager.RoomListPanel.SetDisplay(true);
-            SetDisplay(false);
+            StartCoroutine(JoinRoomButton_ClickCor());
+        }
+
+        private IEnumerator JoinRoomButton_ClickCor()
+        {
+            SCanvasManager.SetUiInput(false);
+
+            SEventBus.JoinLobbyRequested?.Invoke();
+            float duration = 0f;
+            while (duration < 5f)
+            {
+                if (SOnlineManager.InLobby)
+                {
+                    SCanvasManager.SetUiInput(true);
+                    SMainMenuCanvasManager.RoomListPanel.SetDisplay(true);
+                    SetDisplay(false);
+                    yield break;
+                }
+                duration += Time.deltaTime;
+                yield return null;
+            }
+            
+            SCanvasManager.SetUiInput(true);
         }
 #endregion
     }

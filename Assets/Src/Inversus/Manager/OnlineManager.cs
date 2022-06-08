@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 
@@ -12,9 +13,15 @@ namespace Inversus.Manager
 
         private bool _isConnected;
         public bool IsConnected => _isConnected && PhotonNetwork.IsConnectedAndReady;
+        
+        private bool _inLobby;
+        public bool InLobby => _inLobby && PhotonNetwork.InLobby;
 
         private bool _inRoom;
         public bool InRoom => _inRoom && PhotonNetwork.InRoom;
+
+        private List<RoomInfo> _roomList;
+        public List<RoomInfo> RoomList => _roomList;
 
         private void SetSingleton()
         {
@@ -35,6 +42,8 @@ namespace Inversus.Manager
             SetSingleton();
             
             SEventBus.ServerConnectionRequested.AddListener(ConnectToServer);
+            SEventBus.JoinLobbyRequested.AddListener(JoinLobby);
+            SEventBus.LeaveLobbyRequested.AddListener(LeaveLobby);
             SEventBus.CreateRoomRequested.AddListener(CreateRoom);
             SEventBus.JoinRoomRequested.AddListener(JoinRoom);
             SEventBus.LeaveRoomRequested.AddListener(LeaveRoom);
@@ -43,40 +52,50 @@ namespace Inversus.Manager
         private void OnDestroy()
         {
             SEventBus.ServerConnectionRequested.RemoveListener(ConnectToServer);
+            SEventBus.JoinLobbyRequested.RemoveListener(JoinLobby);
+            SEventBus.LeaveLobbyRequested.RemoveListener(LeaveLobby);
             SEventBus.CreateRoomRequested.RemoveListener(CreateRoom);
             SEventBus.JoinRoomRequested.RemoveListener(JoinRoom);
             SEventBus.LeaveRoomRequested.RemoveListener(LeaveRoom);
         }
 
-        public void ConnectToServer()
+        private void ConnectToServer()
         {
             if (IsConnected) return;
 
-            PhotonNetwork.NickName = $"User{Random.Range(0, 9999)}";
+            PhotonNetwork.NickName = $"User{Random.Range(0, 99999)}";
             PhotonNetwork.ConnectUsingSettings();
         }
 
-        public void JoinLobby()
+        private void JoinLobby()
         {
+            if (!IsConnected) return;
+
             PhotonNetwork.JoinLobby();
         }
 
-        public void CreateRoom(string roomName, int maxPlayers)
+        private void LeaveLobby()
         {
-            if (!IsConnected) return;
-            
-            PhotonNetwork.CreateRoom(null, CreateRoomOptions((byte)maxPlayers));
+            PhotonNetwork.LeaveLobby();
         }
 
-        public void JoinRoom()
+        private void CreateRoom(string roomName, int maxPlayers)
         {
             if (!IsConnected) return;
 
-            //PhotonNetwork.JoinRoom(roomName);
-            PhotonNetwork.JoinRandomRoom();
+            PhotonNetwork.CreateRoom(
+                $"{PhotonNetwork.NickName}'s room", CreateRoomOptions((byte)maxPlayers)
+            );
         }
 
-        public void LeaveRoom()
+        private void JoinRoom(string roomName)
+        {
+            if (!IsConnected) return;
+
+            PhotonNetwork.JoinRoom(roomName);
+        }
+
+        private void LeaveRoom()
         {
             PhotonNetwork.LeaveRoom();
         }
@@ -95,7 +114,8 @@ namespace Inversus.Manager
         {
             Debug.Log("Client connected to the server.");
 
-            JoinLobby();
+            _isConnected = true;
+            SEventBus.ServerConnected?.Invoke();
         }
         
         public override void OnDisconnected(DisconnectCause cause)
@@ -103,18 +123,28 @@ namespace Inversus.Manager
             Debug.Log("Client disconnected from the server.");
             
             _isConnected = false;
+            _inLobby = false;
             _inRoom = false;
             SEventBus.ServerDisconnected?.Invoke();
         }
 
         public override void OnJoinedLobby()
         {
-            Debug.Log($"Client joined the lobby.");
-            
-            _isConnected = true;
-            SEventBus.ServerConnected?.Invoke();
+            Debug.Log("Client joined the lobby.");
+
+            _inLobby = true;
+            SEventBus.LobbyJoined?.Invoke();
         }
-        
+
+        public override void OnLeftLobby()
+        {
+            Debug.Log("Client left the lobby.");
+
+            _inLobby = false;
+            _inRoom = false;
+            SEventBus.LobbyLeft?.Invoke();
+        }
+
         public override void OnCreatedRoom()
         {
             Debug.Log(
@@ -152,7 +182,7 @@ namespace Inversus.Manager
         
         public override void OnLeftRoom()
         {
-            Debug.Log("Left the room");
+            Debug.Log("Client left the room.");
 
             _inRoom = false;
             SEventBus.RoomLeft?.Invoke();
@@ -178,7 +208,12 @@ namespace Inversus.Manager
             
             SEventBus.MasterClientSwitched?.Invoke(newMasterClient);
         }
-        
+
+        public override void OnRoomListUpdate(List<RoomInfo> roomList)
+        {
+            if (SMainManager.State != States.PlayOnlineMenu) return;
+            _roomList = roomList;
+        }
 #endregion
     }
 }
