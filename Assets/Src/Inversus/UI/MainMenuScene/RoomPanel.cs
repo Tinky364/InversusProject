@@ -43,7 +43,9 @@ namespace Inversus.UI.MainMenuScene
 
             _mapIdDropdown.AddOptions(new List<string> {"1", "2"});
             _victoryScoreDropdown.AddOptions(new List<string> {"1", "2", "3", "5", "10"});
-            _colorsDropdown.AddOptions(new List<string> {"White - Black", "Red - Blue"});
+            _colorsDropdown.AddOptions(
+                new List<string> {"Red - Blue", "White - Black", "Green - Purple"}
+            );
         }
 
         private void OnEnable()

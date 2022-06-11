@@ -280,6 +280,9 @@ MonoBehaviour:
   RoundStartRequested:
     m_PersistentCalls:
       m_Calls: []
+  RoundCreated:
+    m_PersistentCalls:
+      m_Calls: []
   RoundStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -313,10 +316,22 @@ MonoBehaviour:
   ServerConnectionRequested:
     m_PersistentCalls:
       m_Calls: []
+  JoinLobbyRequested:
+    m_PersistentCalls:
+      m_Calls: []
+  LeaveLobbyRequested:
+    m_PersistentCalls:
+      m_Calls: []
   ServerConnected:
     m_PersistentCalls:
       m_Calls: []
   ServerDisconnected:
+    m_PersistentCalls:
+      m_Calls: []
+  LobbyJoined:
+    m_PersistentCalls:
+      m_Calls: []
+  LobbyLeft:
     m_PersistentCalls:
       m_Calls: []
   CreateRoomRequested:
@@ -450,13 +465,17 @@ MonoBehaviour:
   - {fileID: 8167085398365549614, guid: 010ee65c39f9eaa449317396b4bc8a1a, type: 3}
   _colorThemes:
   - _id: 1
-    _side1Color: {r: 1, g: 1, b: 1, a: 1}
+    _side1Color: {r: 0.25511748, g: 0.7797223, b: 0.8584906, a: 1}
+    _side2Color: {r: 0.8867924, g: 0.1966002, b: 0.1966002, a: 1}
+    _backgroundColor: {r: 0.09803922, g: 0.11764706, b: 0.15294118, a: 1}
+  - _id: 2
+    _side1Color: {r: 0.5520239, g: 1, b: 0.5518868, a: 1}
     _side2Color: {r: 0, g: 0, b: 0, a: 1}
     _backgroundColor: {r: 0.5188679, g: 0.5188679, b: 0.5188679, a: 1}
-  - _id: 2
-    _side1Color: {r: 0.8867924, g: 0.1966002, b: 0.1966002, a: 1}
-    _side2Color: {r: 0.25511748, g: 0.7797223, b: 0.8584906, a: 1}
-    _backgroundColor: {r: 1, g: 0.980219, b: 0.7216981, a: 1}
+  - _id: 3
+    _side1Color: {r: 0.1960784, g: 0.8862745, b: 0.4185615, a: 1}
+    _side2Color: {r: 0.85882354, g: 0.254902, b: 0.63154405, a: 1}
+    _backgroundColor: {r: 0.3448291, g: 0.43394002, b: 0.5943396, a: 1}
 --- !u!4 &1474267559
 Transform:
   m_ObjectHideFlags: 0

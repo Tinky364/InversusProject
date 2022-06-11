@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Inversus.Game;
 using UnityEngine;
 using TMPro;
 
@@ -34,16 +35,14 @@ namespace Inversus.UI.GameScene
             SEventBus.RoundEnded.RemoveListener(OnRoundEnded);
             SEventBus.RoundStartRequested.RemoveListener(OnRoundStartRequested);
         }
-        
-        private void OnRoundEnded(int player1Score, int player2Score, string roundWinnerName)
+
+        private void OnRoundEnded(
+            PlayerController player1, PlayerController player2, PlayerController winner
+        )
         {
             SetDisplay(true);
-            SetRoundEndPanel(
-                SGameCreator.Round, SGameCreator.VictoryScore, player1Score, player2Score,
-                SGameCreator.PlayerControllers[0].PlayerName,
-                SGameCreator.PlayerControllers[1].PlayerName,
-                roundWinnerName
-            );
+            SetRoundEndPanel(player1, player2, winner);
+            _countText.color = winner.Side.PlayerColor;
             StartCoroutine(OnRoundEndedCor());
         }
 
@@ -65,16 +64,18 @@ namespace Inversus.UI.GameScene
         {
             SetDisplay(false);
         }
-        
+
         private void SetRoundEndPanel(
-            int currentRound, int victoryScore, int player1Score, int player2Score, 
-            string player1Name, string player2Name, string roundWinnerName
+            PlayerController player1, PlayerController player2, PlayerController winner
         )
         {
-            _roundText.SetText($"ROUND: {currentRound} - VICTORY SCORE: {victoryScore}");
-            _winnerText.SetText($"Round Winner: {roundWinnerName}");
-            _player1Text.SetText($"{player1Name}<br>Score<br>{player1Score}");
-            _player2Text.SetText($"{player2Name}<br>Score<br>{player2Score}");
+            _roundText.SetText(
+                $"ROUND: {SGameCreator.Round} - VICTORY SCORE: {SGameCreator.VictoryScore}"
+            );
+            _winnerText.SetText($"Round Winner: {winner.PlayerName}");
+            _winnerText.color = winner.Side.PlayerColor;
+            _player1Text.SetText($"{player1.PlayerName}<br><br>Score<br>{player1.Side.Score}");
+            _player2Text.SetText($"{player2.PlayerName}<br><br>Score<br>{player2.Side.Score}");
         }
 
         private void SetCountText(string count)

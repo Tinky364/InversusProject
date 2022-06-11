@@ -71,8 +71,10 @@ namespace Inversus.Game
             SEventBus.RoundStarted?.Invoke();
             SMainManager.State = States.InGame;
         }
-        
-        private void OnRoundEnded(int player1Score, int player2Score, string roundWinnerName)
+
+        private void OnRoundEnded(
+            PlayerController player1, PlayerController player2, PlayerController winner
+        )
         {
             StartCoroutine(OnRoundEndedCor());
         }

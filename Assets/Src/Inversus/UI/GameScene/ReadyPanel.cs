@@ -38,8 +38,10 @@ namespace Inversus.UI.GameScene
         {
             yield return _wfs_0_1;
             _text.SetText("READY");
+            _text.color = SDatabase.GetColorTheme(1).Side1Color;
             yield return _wfs_1;
             _text.SetText("GO!");
+            _text.color = SDatabase.GetColorTheme(1).Side2Color;
             yield return _wfs_1;
             _text.SetText("");
             SetDisplay(false);

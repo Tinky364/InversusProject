@@ -24,9 +24,9 @@ namespace Inversus.Manager
         [ReadOnly]
         public UnityEvent RoundStarted;
         [ReadOnly]
-        public UnityEvent<int, int, string> RoundEnded;
+        public UnityEvent<PlayerController, PlayerController, PlayerController> RoundEnded;
         [ReadOnly]
-        public UnityEvent<int, int, string> GameEnded;
+        public UnityEvent<PlayerController, PlayerController, PlayerController> GameEnded;
         [ReadOnly]
         public UnityEvent<InputProfile> GamePaused;
         [ReadOnly]

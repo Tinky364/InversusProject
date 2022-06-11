@@ -119,7 +119,9 @@ namespace Inversus.Game
             StartCoroutine(_displayLineRendererCor);
         }
 
-        private void UnSpawn(int player1Score, int player2Score, string roundWinnerName)
+        private void UnSpawn(
+            PlayerController player1, PlayerController player2, PlayerController winner
+        )
         {
             if (!HasSpawned) return;
             

@@ -5,6 +5,8 @@ using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
 
+using Inversus.Game;
+
 using static Inversus.Facade;
 
 namespace Inversus.UI.GameScene
@@ -14,14 +16,16 @@ namespace Inversus.UI.GameScene
         [SerializeField]
         private TextMeshProUGUI _endText;
         [SerializeField]
-        private TextMeshProUGUI _player1Text;
+        private Image _player1; 
         [SerializeField]
-        private TextMeshProUGUI _player2Text;
+        private Image _player2;
         [SerializeField]
         private Button _playAgainButton;
         [SerializeField]
         private Button _mainMenuButton;
 
+        private TextMeshProUGUI _player1Text;
+        private TextMeshProUGUI _player2Text;
         private TextMeshProUGUI _playAgainButtonText;
         private PhotonView _photonView;
         private WaitForSeconds _wfs_1;
@@ -32,6 +36,8 @@ namespace Inversus.UI.GameScene
         private void Awake()
         {
             _photonView = GetComponent<PhotonView>();
+            _player1Text = _player1.GetComponentInChildren<TextMeshProUGUI>();
+            _player2Text = _player2.GetComponentInChildren<TextMeshProUGUI>();
             _playAgainButtonText = _playAgainButton.GetComponentInChildren<TextMeshProUGUI>();
             
             _wfs_1 = new WaitForSeconds(1);
@@ -69,16 +75,12 @@ namespace Inversus.UI.GameScene
             _photonView.RPC("Execute_PlayAgain", RpcTarget.All);
         }
 
-        private void OnGameEnded(int player1Score, int player2Score, string winnerName)
+        private void OnGameEnded(
+            PlayerController player1, PlayerController player2, PlayerController winner
+        )
         {
             SetDisplay(true);
-            SGameCanvasManager.BackgroundPanel.SetDisplay(true);
-            SetGameEndPanel(
-                player1Score, player2Score, 
-                SGameCreator.PlayerControllers[0].PlayerName,
-                SGameCreator.PlayerControllers[1].PlayerName,
-                winnerName
-            );
+            SetGameEndPanel(player1, player2, winner);
         }
         
         private void OnRoomLeft()
@@ -129,7 +131,6 @@ namespace Inversus.UI.GameScene
             yield return _wfs_1;
             Debug.Log("PlayAgainGameRequested Event => Invoke()");
             SEventBus.PlayAgainGameRequested?.Invoke();
-            SGameCanvasManager.BackgroundPanel.SetDisplay(false);
             SetDisplayChildren(true);
             SetDisplay(false);
         }
@@ -147,22 +148,22 @@ namespace Inversus.UI.GameScene
                     break;
             }
         }
-        
+
         private void SetGameEndPanel(
-            int playerScore1, int playerScore2, string playerName1, string playerName2,
-            string gameWinnerName
+            PlayerController player1, PlayerController player2, PlayerController winner
         )
         {
-            _endText.SetText($"{gameWinnerName} WINS");
-            _player1Text.SetText($"{playerName1}<br>Score<br>{playerScore1}");
-            _player2Text.SetText($"{playerName2}<br>Score<br>{playerScore2}");
+            _endText.SetText($"{winner.PlayerName} WINS");
+            _endText.color = winner.Side.PlayerColor;
+            _player1Text.SetText($"{player1.PlayerName}<br><br>Score<br>{player1.Side.Score}");
+            _player2Text.SetText($"{player2.PlayerName}<br><br>Score<br>{player2.Side.Score}");
         }
 
         private void SetDisplayChildren(bool value)
         {
             _endText.gameObject.SetActive(value);
-            _player1Text.gameObject.SetActive(value);
-            _player2Text.gameObject.SetActive(value);
+            _player1.gameObject.SetActive(value);
+            _player2.gameObject.SetActive(value);
             _playAgainButton.gameObject.SetActive(value);
             _mainMenuButton.gameObject.SetActive(value);
         }

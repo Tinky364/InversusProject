@@ -245,39 +245,36 @@ namespace Inversus.Manager
         
         private void EndRound(PlayerController damagedPlayerController)
         {
-            string roundWinnerName = "";
+            int roundWinnerId = 0;
             if (damagedPlayerController == PlayerControllers[0])
             {
-                roundWinnerName = PlayerControllers[1].PlayerName;
+                roundWinnerId = 1;
                 PlayerControllers[1].Side.Score += 1;
             }
             else if (damagedPlayerController == PlayerControllers[1])
             {
-                roundWinnerName = PlayerControllers[0].PlayerName;
+                roundWinnerId = 0;
                 PlayerControllers[0].Side.Score += 1;
             }
-            Debug.Log($"Round Winner: {roundWinnerName}");
+            Debug.Log($"Round Winner: {PlayerControllers[roundWinnerId].PlayerName}");
 
             if (PlayerControllers[0].Side.Score == VictoryScore)
             {
                 EndGame(
-                    PlayerControllers[0].Side.Score, PlayerControllers[1].Side.Score,
-                    PlayerControllers[0].PlayerName
+                    PlayerControllers[0], PlayerControllers[1], PlayerControllers[0]
                 );
             }
             else if (PlayerControllers[1].Side.Score == VictoryScore)
             {
                 EndGame(
-                    PlayerControllers[0].Side.Score, PlayerControllers[1].Side.Score,
-                    PlayerControllers[1].PlayerName
+                    PlayerControllers[0], PlayerControllers[1], PlayerControllers[1]
                 );
             }
             else // There is no winner, start a new round.
             {
                 Debug.Log("RoundEnded Event => Invoke()");
                 SEventBus.RoundEnded?.Invoke(
-                    PlayerControllers[0].Side.Score, PlayerControllers[1].Side.Score,
-                    roundWinnerName
+                    PlayerControllers[0], PlayerControllers[1], PlayerControllers[roundWinnerId]
                 );
             }
         }
@@ -295,11 +292,11 @@ namespace Inversus.Manager
             }
         }
 
-        private void EndGame(int player1Score, int player2Score, string winnerName)
+        private void EndGame(PlayerController player1, PlayerController player2, PlayerController winner)
         {
-            Debug.Log($"Game Winner: {winnerName}");
+            Debug.Log($"Game Winner: {winner.PlayerName}");
             Debug.Log("GameEnded Event => Invoke()");
-            SEventBus.GameEnded?.Invoke(player1Score, player2Score, winnerName);
+            SEventBus.GameEnded?.Invoke(player1, player2, winner);
         }
 
         private void PlayAgainGame()
