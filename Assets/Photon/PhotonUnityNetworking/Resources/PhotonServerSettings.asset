@@ -68,6 +68,9 @@ MonoBehaviour:
   - Execute_PlayerHit
   - Execute_Spawn
   - Execute_UnSpawnOnCollision
+  - Send_FillAmount
+  - Execute_AmmoChanged
+  - Execute_InvokeAmmoChanged
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

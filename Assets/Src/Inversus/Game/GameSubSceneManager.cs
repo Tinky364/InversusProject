@@ -3,7 +3,7 @@ using UnityEngine;
 
 using Inversus.Data;
 using Inversus.Manager;
-using JetBrains.Annotations;
+
 using static Inversus.Facade;
 
 namespace Inversus.Game
@@ -18,7 +18,7 @@ namespace Inversus.Game
         public BulletPool BulletPool => _bulletPool;
 
         private WaitForSeconds _wfs_1;
-        private WaitForSeconds _wfs_5;
+        private WaitForSeconds _wfs_3;
         private WaitForSeconds _wfs_2_1;
 
         protected override void Awake()
@@ -26,7 +26,7 @@ namespace Inversus.Game
             base.Awake();
             
             _wfs_1 = new WaitForSeconds(1);
-            _wfs_5 = new WaitForSeconds(5);
+            _wfs_3 = new WaitForSeconds(3);
             _wfs_2_1 = new WaitForSeconds(2.1f);
             
             SEventBus.GamePaused.AddListener(OnGamePaused);
@@ -81,7 +81,7 @@ namespace Inversus.Game
 
         private IEnumerator OnRoundEndedCor()
         {
-            yield return _wfs_5;
+            yield return _wfs_3;
             Debug.Log("RoundStartRequested Event => Invoke()");
             SEventBus.RoundStartRequested?.Invoke();
         }

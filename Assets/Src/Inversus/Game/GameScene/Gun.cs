@@ -1,4 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
+using Photon.Pun;
+
+using Inversus.Attribute;
 
 using static Inversus.Facade;
 
@@ -6,6 +10,11 @@ namespace Inversus.Game
 {
     public class Gun : MonoBehaviour
     {
+        [ReadOnly]
+        public UnityEvent<float, float> AmmoChanged;
+        
+        public PhotonView PhotonView { get; private set; }
+
         private float _loadAmmoTimeElapsed = 0;
         private float _maxAmmo;
         private float _currentAmmo;
@@ -17,9 +26,16 @@ namespace Inversus.Game
                 if (value < 0) _currentAmmo = value;
                 else if (value > _maxAmmo) _currentAmmo = _maxAmmo;
                 else _currentAmmo = value;
+
+                OnAmmoChanged();
             }
         }
 
+        private void Awake()
+        {
+            PhotonView = GetComponent<PhotonView>();
+        }
+        
         public void Initialize(float maxAmmo)
         {
             _maxAmmo = maxAmmo;
@@ -49,10 +65,39 @@ namespace Inversus.Game
         {
             if (CurrentAmmo <= 0) return;
 
-            _currentAmmo -= 1;
+            CurrentAmmo -= 1;
             SGameSubSceneManager.BulletPool.Spawn(
                 CalculateSpawnPositionOfBullet(spawnerPos, direction), direction, side
             );
+        }
+        
+        private void OnAmmoChanged()
+        {
+            switch (SGameCreator.GameType)
+            {
+                case GameType.Local:
+                    InvokeAmmoChanged(CurrentAmmo, _maxAmmo);
+                    break;
+                case GameType.Online:
+                    if (PhotonView.IsMine)
+                    {
+                        PhotonView.RPC(
+                            "Execute_InvokeAmmoChanged", RpcTarget.All, CurrentAmmo, _maxAmmo
+                        );
+                    }
+                    break;
+            }
+        }
+
+        private void InvokeAmmoChanged(float current, float max)
+        {
+            AmmoChanged?.Invoke(current, max);
+        }
+
+        [PunRPC]
+        private void Execute_InvokeAmmoChanged(float current, float max)
+        {
+            InvokeAmmoChanged(current, max);
         }
         
         /// <summary>

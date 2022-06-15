@@ -48,10 +48,6 @@ namespace Inversus.UI.GameScene
 
         private IEnumerator OnRoundEndedCor()
         {
-            SetCountText("5");
-            yield return _wfs_1;
-            SetCountText("4");
-            yield return _wfs_1;
             SetCountText("3");
             yield return _wfs_1;
             SetCountText("2");
