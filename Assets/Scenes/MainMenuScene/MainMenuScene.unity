@@ -2860,7 +2860,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1411660467}
-        m_TargetAssemblyTypeName: Inversus.UI.PlayOnlinePanel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.PlayOnlinePanel, Assembly-CSharp
         m_MethodName: JoinRoomButton_Click
         m_Mode: 1
         m_Arguments:
@@ -4014,7 +4014,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 496879539}
-        m_TargetAssemblyTypeName: Inversus.UI.RoomPanel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.RoomPanel, Assembly-CSharp
         m_MethodName: EnableInputProfileManager
         m_Mode: 3
         m_Arguments:
@@ -4270,7 +4270,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 853782126}
-        m_TargetAssemblyTypeName: Inversus.Game.MainMenuSubSceneManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.Game.MainMenuSubSceneManager, Assembly-CSharp
         m_MethodName: Quit
         m_Mode: 1
         m_Arguments:
@@ -7173,7 +7173,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1444316972}
-        m_TargetAssemblyTypeName: Inversus.UI.Panel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.Panel, Assembly-CSharp
         m_MethodName: SetDisplay
         m_Mode: 6
         m_Arguments:
@@ -7185,7 +7185,7 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
       - m_Target: {fileID: 1771276887}
-        m_TargetAssemblyTypeName: Inversus.UI.Panel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.Panel, Assembly-CSharp
         m_MethodName: SetDisplay
         m_Mode: 6
         m_Arguments:
@@ -7433,7 +7433,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1771276887}
-        m_TargetAssemblyTypeName: Inversus.UI.Panel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.Panel, Assembly-CSharp
         m_MethodName: SetDisplay
         m_Mode: 6
         m_Arguments:
@@ -7445,7 +7445,7 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
       - m_Target: {fileID: 1444316972}
-        m_TargetAssemblyTypeName: Inversus.UI.Panel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.Panel, Assembly-CSharp
         m_MethodName: SetDisplay
         m_Mode: 6
         m_Arguments:
@@ -8104,7 +8104,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1411660467}
-        m_TargetAssemblyTypeName: Inversus.UI.PlayOnlinePanel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.PlayOnlinePanel, Assembly-CSharp
         m_MethodName: CreateRoomButton_Click
         m_Mode: 1
         m_Arguments:
@@ -10462,7 +10462,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2037758684}
-        m_TargetAssemblyTypeName: Inversus.Game.MainMenuCanvasManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.Game.MainMenuCanvasManager, Assembly-CSharp
         m_MethodName: SetStatePlayLocallyMenu
         m_Mode: 1
         m_Arguments:
@@ -10474,7 +10474,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 1132851656}
-        m_TargetAssemblyTypeName: Inversus.UI.PlayLocallyPanel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.PlayLocallyPanel, Assembly-CSharp
         m_MethodName: EnableInputProfileManager
         m_Mode: 3
         m_Arguments:
@@ -11661,7 +11661,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1444316972}
-        m_TargetAssemblyTypeName: Inversus.UI.Panel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.Panel, Assembly-CSharp
         m_MethodName: SetDisplay
         m_Mode: 6
         m_Arguments:
@@ -11673,7 +11673,7 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
       - m_Target: {fileID: 1411660467}
-        m_TargetAssemblyTypeName: Inversus.UI.Panel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.Panel, Assembly-CSharp
         m_MethodName: SetDisplay
         m_Mode: 6
         m_Arguments:
@@ -12246,7 +12246,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2037758684}
-        m_TargetAssemblyTypeName: Inversus.Manager.CanvasManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.Manager.CanvasManager, Assembly-CSharp
         m_MethodName: SetSelectedGameObject
         m_Mode: 2
         m_Arguments:
@@ -12894,7 +12894,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2037758684}
-        m_TargetAssemblyTypeName: Inversus.Manager.CanvasManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.Manager.CanvasManager, Assembly-CSharp
         m_MethodName: SetSelectedGameObject
         m_Mode: 2
         m_Arguments:
@@ -12906,7 +12906,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 2037758684}
-        m_TargetAssemblyTypeName: Inversus.Game.MainMenuCanvasManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.Game.MainMenuCanvasManager, Assembly-CSharp
         m_MethodName: SetStatePlayOnlineMenu
         m_Mode: 1
         m_Arguments:
@@ -13178,7 +13178,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1132851656}
-        m_TargetAssemblyTypeName: Inversus.UI.Panel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.Panel, Assembly-CSharp
         m_MethodName: SetDisplay
         m_Mode: 6
         m_Arguments:
@@ -13190,7 +13190,7 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
       - m_Target: {fileID: 1444316972}
-        m_TargetAssemblyTypeName: Inversus.UI.Panel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.Panel, Assembly-CSharp
         m_MethodName: SetDisplay
         m_Mode: 6
         m_Arguments:
@@ -13323,7 +13323,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2037758684}
-        m_TargetAssemblyTypeName: Inversus.Manager.CanvasManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.Manager.CanvasManager, Assembly-CSharp
         m_MethodName: SetSelectedGameObject
         m_Mode: 2
         m_Arguments:
@@ -13335,7 +13335,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 2037758684}
-        m_TargetAssemblyTypeName: Inversus.Game.MainMenuCanvasManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.Game.MainMenuCanvasManager, Assembly-CSharp
         m_MethodName: SetStateMainMenu
         m_Mode: 1
         m_Arguments:
@@ -13722,7 +13722,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1444316972}
-        m_TargetAssemblyTypeName: Inversus.UI.Panel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.Panel, Assembly-CSharp
         m_MethodName: SetDisplay
         m_Mode: 6
         m_Arguments:
@@ -13734,7 +13734,7 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
       - m_Target: {fileID: 1132851656}
-        m_TargetAssemblyTypeName: Inversus.UI.Panel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.Panel, Assembly-CSharp
         m_MethodName: SetDisplay
         m_Mode: 6
         m_Arguments:
@@ -13746,7 +13746,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 1132851656}
-        m_TargetAssemblyTypeName: Inversus.UI.PlayLocallyPanel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.PlayLocallyPanel, Assembly-CSharp
         m_MethodName: DisableInputProfileManager
         m_Mode: 1
         m_Arguments:
@@ -14534,7 +14534,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1345681373}
-        m_TargetAssemblyTypeName: Inversus.UI.MainMenuScene.RoomListPanel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.MainMenuScene.RoomListPanel, Assembly-CSharp
         m_MethodName: RefreshButton_Click
         m_Mode: 1
         m_Arguments:
@@ -14824,7 +14824,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1345681373}
-        m_TargetAssemblyTypeName: Inversus.UI.MainMenuScene.RoomListPanel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.MainMenuScene.RoomListPanel, Assembly-CSharp
         m_MethodName: BackButton_Click
         m_Mode: 1
         m_Arguments:
@@ -16636,7 +16636,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2037758684}
-        m_TargetAssemblyTypeName: Inversus.Manager.CanvasManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.Manager.CanvasManager, Assembly-CSharp
         m_MethodName: SetSelectedGameObject
         m_Mode: 2
         m_Arguments:
@@ -19189,7 +19189,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 496879539}
-        m_TargetAssemblyTypeName: Inversus.UI.RoomPanel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.RoomPanel, Assembly-CSharp
         m_MethodName: BackButton_Click
         m_Mode: 1
         m_Arguments:
@@ -19352,7 +19352,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1444316972}
-        m_TargetAssemblyTypeName: Inversus.UI.PlayPanel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.PlayPanel, Assembly-CSharp
         m_MethodName: PlayOnlineButton_Click
         m_Mode: 1
         m_Arguments:

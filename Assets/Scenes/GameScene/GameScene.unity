@@ -475,7 +475,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2037758684}
-        m_TargetAssemblyTypeName: Inversus.Manager.CanvasManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.Manager.CanvasManager, Assembly-CSharp
         m_MethodName: SetSelectedGameObject
         m_Mode: 2
         m_Arguments:
@@ -2004,7 +2004,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 58224475}
-        m_TargetAssemblyTypeName: Inversus.UI.PausePanel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.PausePanel, Assembly-CSharp
         m_MethodName: ResumeButton_Click
         m_Mode: 1
         m_Arguments:
@@ -2159,7 +2159,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1835432589}
-        m_TargetAssemblyTypeName: Inversus.UI.GameEndPanel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.GameEndPanel, Assembly-CSharp
         m_MethodName: PlayAgainButton_Click
         m_Mode: 1
         m_Arguments:
@@ -2293,7 +2293,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1835432589}
-        m_TargetAssemblyTypeName: Inversus.UI.GameEndPanel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.GameEndPanel, Assembly-CSharp
         m_MethodName: MainMenuButton_Click
         m_Mode: 1
         m_Arguments:
@@ -2945,7 +2945,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 58224475}
-        m_TargetAssemblyTypeName: Inversus.UI.GameScene.PausePanel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.GameScene.PausePanel, Assembly-CSharp
         m_MethodName: MainMenuButton_Click
         m_Mode: 1
         m_Arguments:
@@ -4199,7 +4199,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2037758684}
-        m_TargetAssemblyTypeName: Inversus.Manager.CanvasManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.Manager.CanvasManager, Assembly-CSharp
         m_MethodName: SetSelectedGameObject
         m_Mode: 2
         m_Arguments:
