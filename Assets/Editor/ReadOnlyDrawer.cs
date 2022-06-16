@@ -1,9 +1,8 @@
 using UnityEngine;
 using UnityEditor;
+using Oppositum.Attribute;
 
-using Inversus.Attribute;
-
-namespace Inversus.Editor
+namespace Oppositum.Editor
 {
     [CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
     public class ReadOnlyDrawer : PropertyDrawer

@@ -2,10 +2,9 @@ using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using Oppositum.Attribute;
 
-using Inversus.Attribute;
-
-namespace Inversus.Editor
+namespace Oppositum.Editor
 {
     /// <summary>
     /// Draws the property field for any field marked with ExpandableAttribute.
