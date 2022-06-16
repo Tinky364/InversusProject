@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using Photon.Pun;
-
+using Oppositum.Data;
 using static Oppositum.Facade;
 
 namespace Oppositum.Game
@@ -10,6 +10,12 @@ namespace Oppositum.Game
     {
         [SerializeField]
         private float _speed = 12;
+        [Header("AUDIO"), SerializeField]
+        private AudioData _hitBulletAudioData;
+        [SerializeField]
+        private AudioData _hitWallAudioData;
+        [SerializeField]
+        private AudioData _fireAudioData;
 
         public int Id { get; private set; }
         
@@ -21,7 +27,7 @@ namespace Oppositum.Game
         private Rigidbody2D _rig;
         private BoxCollider2D _collider;
         private LineRenderer _lineRenderer;
-        
+        private AudioSource _audioSource;
         private IEnumerator _displayLineRendererCor;
         private Vector2 _moveDirection;
         private Vector2 _velocity;
@@ -39,6 +45,7 @@ namespace Oppositum.Game
             _rig = GetComponent<Rigidbody2D>();
             _collider = GetComponent<BoxCollider2D>();
             _lineRenderer = GetComponentInChildren<LineRenderer>();
+            _audioSource = GetComponent<AudioSource>();
             
             SEventBus.RoundEnded.AddListener(UnSpawn);
             SEventBus.GameEnded.AddListener(UnSpawn);
@@ -60,17 +67,16 @@ namespace Oppositum.Game
             if (SMainManager.State != States.InGame) return;
             if (!HasSpawned) return;
 
-            
             if (col.CompareTag("Wall") || col.CompareTag("Player") || col.CompareTag("Bullet"))
             {
                 switch (SGameCreator.GameType)
                 {
                     case GameType.Local:
-                        StartCoroutine(UnSpawnOnCollision());
+                        StartCoroutine(UnSpawnOnCollision(col.tag));
                         break;
                     case GameType.Online:
                         if (PhotonNetwork.IsMasterClient)
-                            PhotonView.RPC("Execute_UnSpawnOnCollision", RpcTarget.All);
+                            PhotonView.RPC("Execute_UnSpawnOnCollision", RpcTarget.All, col.tag);
                         break;
                 }
             }
@@ -90,6 +96,8 @@ namespace Oppositum.Game
             if (_displayLineRendererCor != null) StopCoroutine(_displayLineRendererCor);
             _displayLineRendererCor = DisplayLineRendererTail(0, -4, 0.4f);
             StartCoroutine(_displayLineRendererCor);
+            
+            _fireAudioData.Play(_audioSource);
         }
 
         public void SpawnOnline(Vector2 position, Vector2Int direction, Side side)
@@ -117,6 +125,8 @@ namespace Oppositum.Game
             if (_displayLineRendererCor != null) StopCoroutine(_displayLineRendererCor);
             _displayLineRendererCor = DisplayLineRendererTail(0, -4, 0.4f);
             StartCoroutine(_displayLineRendererCor);
+            
+            _fireAudioData.Play(_audioSource);
         }
 
         private void UnSpawn(
@@ -134,18 +144,26 @@ namespace Oppositum.Game
         }
         
         [PunRPC]
-        private void Execute_UnSpawnOnCollision()
+        private void Execute_UnSpawnOnCollision(string colliderTag)
         {
-            StartCoroutine(UnSpawnOnCollision());
+            StartCoroutine(UnSpawnOnCollision(colliderTag));
         }
 
-        private IEnumerator UnSpawnOnCollision()
+        private IEnumerator UnSpawnOnCollision(string colliderTag)
         {
             if (!HasSpawned) yield break;
             
             HasSpawned = false;
             SetLayer(0); 
             _rig.velocity = Vector2.zero;
+
+            switch (colliderTag)
+            {
+                case "Wall": _hitWallAudioData.Play(_audioSource);
+                    break;
+                case "Bullet": _hitBulletAudioData.Play(_audioSource);
+                    break;
+            }
             
             if (_displayLineRendererCor != null) StopCoroutine(_displayLineRendererCor);
             _displayLineRendererCor = DisplayLineRendererTail(

@@ -12,9 +12,12 @@ namespace Oppositum.Game
         private Camera _camera;
         [SerializeField]
         private BulletPool _bulletPool;
+        [SerializeField]
+        private AudioData _gameAudioData;
         
         public BulletPool BulletPool => _bulletPool;
 
+        private AudioSource _audioSource;
         private WaitForSeconds _wfs_1;
         private WaitForSeconds _wfs_3;
         private WaitForSeconds _wfs_2_1;
@@ -22,7 +25,8 @@ namespace Oppositum.Game
         protected override void Awake()
         {
             base.Awake();
-            
+
+            _audioSource = GetComponent<AudioSource>();
             _wfs_1 = new WaitForSeconds(1);
             _wfs_3 = new WaitForSeconds(3);
             _wfs_2_1 = new WaitForSeconds(2.1f);
@@ -37,6 +41,7 @@ namespace Oppositum.Game
         {
             _camera.backgroundColor = SGameCreator.ColorTheme.BackgroundColor;
             SGameCreator.CreateGame();
+            _gameAudioData.Play(_audioSource);
         }
 
         private void OnGamePaused(InputProfile inputProfile)

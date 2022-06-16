@@ -2,7 +2,7 @@
 
 namespace Oppositum.Data
 {
-    [CreateAssetMenu(fileName = "Scene Data", menuName = "Oppositum/Scene Data", order = 0)]
+    [CreateAssetMenu(fileName = "SceneData", menuName = "Oppositum/Scene Data", order = 0)]
     public class SceneData : ScriptableObject
     {
         [SerializeField] 

@@ -14,9 +14,8 @@ namespace Oppositum.Game
         
         [ReadOnly]
         public UnityEvent<float, float> AmmoChanged;
-        
-        public PhotonView PhotonView { get; private set; }
 
+        private PhotonView _photonView;
         private float _loadAmmoTimeElapsed = 0;
         private float _maxAmmo;
         private float _currentAmmo;
@@ -35,7 +34,7 @@ namespace Oppositum.Game
         
         private void Awake()
         {
-            PhotonView = GetComponent<PhotonView>();
+            _photonView = GetComponent<PhotonView>();
         }
 
         private void OnEnable()
@@ -92,9 +91,9 @@ namespace Oppositum.Game
                     InvokeAmmoChanged(CurrentAmmo, _maxAmmo);
                     break;
                 case GameType.Online:
-                    if (PhotonView.IsMine)
+                    if (_photonView.IsMine)
                     {
-                        PhotonView.RPC(
+                        _photonView.RPC(
                             "Execute_InvokeAmmoChanged", RpcTarget.All, CurrentAmmo, _maxAmmo
                         );
                     }

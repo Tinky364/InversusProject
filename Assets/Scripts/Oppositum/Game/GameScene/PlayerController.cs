@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Photon.Pun;
+using Oppositum.Data;
 using Oppositum.Manager;
 using static Oppositum.Facade;
 
@@ -11,19 +12,18 @@ namespace Oppositum.Game
     [RequireComponent(typeof(AmmoController))]
     public class PlayerController : MonoBehaviour, IPunObservable
     {
-        [Header("Movement")]
-        [SerializeField, Min(0)]
+        [Header("MOVEMENT"), SerializeField, Min(0)]
         private float _acceleration = 50f;
         [SerializeField, Min(0)]
         private float _maxSpeed = 6f;
-        [Header("Gun")]
-        [SerializeField, Min(0)]
+        [Header("GUN"), SerializeField, Min(0)]
         private int _maxAmmo = 5;
         [SerializeField, Min(0)]
         private float _ammoLoadDuration = 0.6f;
+        [Header("AUDIO"), SerializeField]
+        private AudioData _hitAudioData;
 
         public Side Side { get; private set; }
-        public InputProfile InputProfile { get; private set; }
         public PhotonView PhotonView { get; private set; }
         public string PlayerName
         {
@@ -32,13 +32,15 @@ namespace Oppositum.Game
                 if (SGameCreator == null) 
                     return "null";
                 if (SGameCreator.GameType == GameType.Local)
-                    return InputProfile == null ? "null" : InputProfile.Name;
+                    return _inputProfile == null ? "null" : _inputProfile.Name;
                 if (SGameCreator.GameType == GameType.Online)
                     return PhotonView == null ? "null" : PhotonView.Controller.NickName;
                 return "null";
             }
         }
 
+        private AudioSource _audioSource;
+        private InputProfile _inputProfile;
         private SpriteRenderer _spriteRenderer;
         private Rigidbody2D _rig;
         private AmmoController _ammoController;
@@ -54,14 +56,15 @@ namespace Oppositum.Game
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _rig = GetComponent<Rigidbody2D>();
             _ammoController = GetComponent<AmmoController>();
+            _audioSource = GetComponent<AudioSource>();
             
             PhotonNetwork.SerializationRate = 30;
         }
         
         public void Initialize(Side side, InputProfile inputProfile)
         {
-            InputProfile = inputProfile;
-            InputProfile.EnableInGameInputs();
+            _inputProfile = inputProfile;
+            _inputProfile.EnableInGameInputs();
 
             Side = side;
             _ammoController.Initialize(Side, _maxAmmo);
@@ -154,32 +157,33 @@ namespace Oppositum.Game
         [PunRPC]
         private void Execute_PlayerHit()
         {
+            _hitAudioData.Play(_audioSource);
             SEventBus.PlayerHit?.Invoke(this);
         }
 
         private void GetMoveInputAxis()
         {
-            _moveInputAxis = InputProfile.MoveAction.ReadValue<Vector2>();
+            _moveInputAxis = _inputProfile.MoveAction.ReadValue<Vector2>();
         }
 
         private void GetFireInputs()
         {
-            if (InputProfile.RightFireAction.WasPerformedThisFrame()) 
+            if (_inputProfile.RightFireAction.WasPerformedThisFrame()) 
                 _ammoController.FireBullet(transform.position, Vector2Int.right, Side);
-            else if (InputProfile.LeftFireAction.WasPerformedThisFrame()) 
+            else if (_inputProfile.LeftFireAction.WasPerformedThisFrame()) 
                 _ammoController.FireBullet(transform.position, Vector2Int.left, Side);
-            else if (InputProfile.UpFireAction.WasPerformedThisFrame()) 
+            else if (_inputProfile.UpFireAction.WasPerformedThisFrame()) 
                 _ammoController.FireBullet(transform.position, Vector2Int.up, Side);
-            else if (InputProfile.DownFireAction.WasPerformedThisFrame())
+            else if (_inputProfile.DownFireAction.WasPerformedThisFrame())
                 _ammoController.FireBullet(transform.position, Vector2Int.down, Side);
         }
-        
-        public void GetPauseInput()
+
+        private void GetPauseInput()
         {
-            if (!InputProfile.PauseAction.WasPerformedThisFrame()) return;
+            if (!_inputProfile.PauseAction.WasPerformedThisFrame()) return;
             
             Debug.Log("GamePaused Event => Invoke()");
-            SEventBus.GamePaused?.Invoke(InputProfile);
+            SEventBus.GamePaused?.Invoke(_inputProfile);
         }
         
         public void ResetOnRound(Vector2 spawnPos)
@@ -218,7 +222,7 @@ namespace Oppositum.Game
 
         private void OnDestroy()
         {
-            InputProfile.DisableInGameInputs();
+            _inputProfile.DisableInGameInputs();
         }
     }
 }
