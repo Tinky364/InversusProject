@@ -26,15 +26,12 @@ namespace Oppositum.UI.MainMenuScene
         private void Awake()
         {
             _mapIdDropdown.ClearOptions();
-            _mapIdDropdown.AddOptions(new List<string> {"1", "2"});
-            
             _victoryScoreDropdown.ClearOptions();
-            _victoryScoreDropdown.AddOptions(new List<string> {"1", "2", "3", "5", "10"});
-            
             _colorsDropdown.ClearOptions();
-            _colorsDropdown.AddOptions(
-                new List<string> {"Blue - Red", "White - Black", "Green - Purple"}
-            );
+
+            _mapIdDropdown.AddOptions(SDatabase.GetMapNames());
+            _victoryScoreDropdown.AddOptions(SDatabase.GetVictoryScoreNames());
+            _colorsDropdown.AddOptions(SDatabase.GetColorThemeNames());
         }
 
         private void OnEnable()

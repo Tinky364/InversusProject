@@ -2,12 +2,16 @@
 using UnityEngine.Events;
 using Photon.Pun;
 using Oppositum.Attribute;
+using Oppositum.UI.GameScene;
 using static Oppositum.Facade;
 
 namespace Oppositum.Game
 {
-    public class Gun : MonoBehaviour
+    public class AmmoController : MonoBehaviour
     {
+        [SerializeField]
+        private AmmoViewer _ammoViewer;
+        
         [ReadOnly]
         public UnityEvent<float, float> AmmoChanged;
         
@@ -28,14 +32,25 @@ namespace Oppositum.Game
                 OnAmmoChanged();
             }
         }
-
+        
         private void Awake()
         {
             PhotonView = GetComponent<PhotonView>();
         }
-        
-        public void Initialize(float maxAmmo)
+
+        private void OnEnable()
         {
+            AmmoChanged.AddListener(_ammoViewer.CalculateFillAmount);
+        }
+
+        private void OnDisable()
+        {
+            AmmoChanged.RemoveListener(_ammoViewer.CalculateFillAmount);
+        }
+
+        public void Initialize(Side side, float maxAmmo)
+        {
+            _ammoViewer.Initialize(side.TileColor);
             _maxAmmo = maxAmmo;
             CurrentAmmo = _maxAmmo;
         }

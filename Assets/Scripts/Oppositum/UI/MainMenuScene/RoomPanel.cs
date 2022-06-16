@@ -39,11 +39,9 @@ namespace Oppositum.UI.MainMenuScene
             _victoryScoreDropdown.ClearOptions();
             _colorsDropdown.ClearOptions();
 
-            _mapIdDropdown.AddOptions(new List<string> {"1", "2"});
-            _victoryScoreDropdown.AddOptions(new List<string> {"1", "2", "3", "5", "10"});
-            _colorsDropdown.AddOptions(
-                new List<string> {"Red - Blue", "White - Black", "Green - Purple"}
-            );
+            _mapIdDropdown.AddOptions(SDatabase.GetMapNames());
+            _victoryScoreDropdown.AddOptions(SDatabase.GetVictoryScoreNames());
+            _colorsDropdown.AddOptions(SDatabase.GetColorThemeNames());
         }
 
         private void OnEnable()

@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 3462503085603846233}
   - component: {fileID: 7961848971357630971}
-  - component: {fileID: 8611463680488140942}
   - component: {fileID: 722115779102159314}
+  - component: {fileID: 8611463680488140942}
   m_Layer: 6
-  m_Name: Ammo
+  m_Name: AmmoViewer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,6 +47,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 535732642954006142}
   m_CullTransparentMesh: 1
+--- !u!114 &722115779102159314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 535732642954006142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92852d29946d4cfba6ac9e2a695e1f1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &8611463680488140942
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,7 +73,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -77,19 +89,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &722115779102159314
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 535732642954006142}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92852d29946d4cfba6ac9e2a695e1f1e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _gun: {fileID: 6552692025624883969}
 --- !u!1 &5469848873218382467
 GameObject:
   m_ObjectHideFlags: 0
@@ -155,6 +154,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 719c4a8521c34bf9a1366583b54bb141, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ammoViewer: {fileID: 722115779102159314}
+  AmmoChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!212 &93683449977991891
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Oppositum.Attribute;
 using Oppositum.Data;
@@ -20,7 +21,11 @@ namespace Oppositum.Manager
         [Header("COLOR THEMES")]
         [SerializeField]
         private List<ColorTheme> _colorThemes = new();
-
+        
+        [Header("VICTORY SCORES")]
+        [SerializeField]
+        private List<int> _victoryScores = new();
+        
         public SceneData GetSceneData(int id)
         {
             if (id >= 0 && id < _sceneDataList.Count) return _sceneDataList[id];
@@ -61,5 +66,13 @@ namespace Oppositum.Manager
             
             return _colorThemes[id - 1];
         }
+
+        public List<string> GetMapNames() => _maps.Select(map => map.Id.ToString()).ToList();
+
+        public List<string> GetVictoryScoreNames() =>
+            _victoryScores.Select(score => score.ToString()).ToList();
+
+        public List<string> GetColorThemeNames() =>
+            _colorThemes.Select(theme => theme.UiName).ToList();
     }
 }

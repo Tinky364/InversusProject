@@ -9,6 +9,8 @@ namespace Oppositum.Data
         [SerializeField]
         private int _id;
         [SerializeField]
+        private string _uiName;
+        [SerializeField]
         private Color _side1Color;
         [SerializeField]
         private Color _side2Color;
@@ -16,6 +18,7 @@ namespace Oppositum.Data
         private Color _backgroundColor;
 
         public int Id => _id;
+        public string UiName => _uiName;
         public Color Side1Color => _side1Color;
         public Color Side2Color => _side2Color;
         public Color BackgroundColor => _backgroundColor;

@@ -8,7 +8,7 @@ namespace Oppositum.Game
     [RequireComponent(typeof(SpriteRenderer))]
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(BoxCollider2D))]
-    [RequireComponent(typeof(Gun))]
+    [RequireComponent(typeof(AmmoController))]
     public class PlayerController : MonoBehaviour, IPunObservable
     {
         [Header("Movement")]
@@ -41,7 +41,7 @@ namespace Oppositum.Game
 
         private SpriteRenderer _spriteRenderer;
         private Rigidbody2D _rig;
-        private Gun _gun;
+        private AmmoController _ammoController;
         private Vector2 _moveInputAxis;
         private Vector2 _desiredVelocity;
         private Vector2 _velocity;
@@ -53,7 +53,7 @@ namespace Oppositum.Game
             PhotonView = GetComponent<PhotonView>();
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _rig = GetComponent<Rigidbody2D>();
-            _gun = GetComponent<Gun>();
+            _ammoController = GetComponent<AmmoController>();
             
             PhotonNetwork.SerializationRate = 30;
         }
@@ -63,8 +63,8 @@ namespace Oppositum.Game
             InputProfile = inputProfile;
             InputProfile.EnableInGameInputs();
 
-            _gun.Initialize(_maxAmmo);
             Side = side;
+            _ammoController.Initialize(Side, _maxAmmo);
             gameObject.name = "PlayerController";
             gameObject.layer = Side.Layer;
             _spriteRenderer.color = Side.PlayerColor;
@@ -80,7 +80,7 @@ namespace Oppositum.Game
                     GetPauseInput();
                     GetMoveInputAxis();
                     GetFireInputs();
-                    _gun.LoadAmmoEverySecond(_ammoLoadDuration);
+                    _ammoController.LoadAmmoEverySecond(_ammoLoadDuration);
                     break;
                 case GameType.Online:
                 {
@@ -88,7 +88,7 @@ namespace Oppositum.Game
                     {
                         GetMoveInputAxis();
                         GetFireInputs();
-                        _gun.LoadAmmoEverySecond(_ammoLoadDuration);
+                        _ammoController.LoadAmmoEverySecond(_ammoLoadDuration);
                     }
                     break;
                 }
@@ -165,13 +165,13 @@ namespace Oppositum.Game
         private void GetFireInputs()
         {
             if (InputProfile.RightFireAction.WasPerformedThisFrame()) 
-                _gun.FireBullet(transform.position, Vector2Int.right, Side);
+                _ammoController.FireBullet(transform.position, Vector2Int.right, Side);
             else if (InputProfile.LeftFireAction.WasPerformedThisFrame()) 
-                _gun.FireBullet(transform.position, Vector2Int.left, Side);
+                _ammoController.FireBullet(transform.position, Vector2Int.left, Side);
             else if (InputProfile.UpFireAction.WasPerformedThisFrame()) 
-                _gun.FireBullet(transform.position, Vector2Int.up, Side);
+                _ammoController.FireBullet(transform.position, Vector2Int.up, Side);
             else if (InputProfile.DownFireAction.WasPerformedThisFrame())
-                _gun.FireBullet(transform.position, Vector2Int.down, Side);
+                _ammoController.FireBullet(transform.position, Vector2Int.down, Side);
         }
         
         public void GetPauseInput()
@@ -189,7 +189,7 @@ namespace Oppositum.Game
             _desiredVelocity = Vector2.zero;
             _velocity = Vector2.zero;
             transform.position = spawnPos;
-            _gun.ResetOnRound();
+            _ammoController.ResetOnRound();
         }
 
         public void Pause()
