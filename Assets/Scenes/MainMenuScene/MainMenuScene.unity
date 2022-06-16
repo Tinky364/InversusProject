@@ -6897,12 +6897,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1132851656}
-        m_TargetAssemblyTypeName: Inversus.UI.PlayLocallyPanel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.MainMenuScene.PlayLocallyPanel, Assembly-CSharp
         m_MethodName: StartGameButton_Click
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 969e49e3137d17847bf52454881caa42, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Inversus.Data.SceneData, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: Oppositum.Data.SceneData, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -14345,12 +14345,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 496879539}
-        m_TargetAssemblyTypeName: Inversus.UI.RoomPanel, Assembly-CSharp
+        m_TargetAssemblyTypeName: Oppositum.UI.MainMenuScene.RoomPanel, Assembly-CSharp
         m_MethodName: StartGameButton_Click
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 969e49e3137d17847bf52454881caa42, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Inversus.Data.SceneData, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: Oppositum.Data.SceneData, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
