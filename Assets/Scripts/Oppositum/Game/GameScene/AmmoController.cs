@@ -2,6 +2,7 @@
 using UnityEngine.Events;
 using Photon.Pun;
 using Oppositum.Attribute;
+using Oppositum.Data;
 using Oppositum.UI.GameScene;
 using static Oppositum.Facade;
 
@@ -11,10 +12,13 @@ namespace Oppositum.Game
     {
         [SerializeField]
         private AmmoViewer _ammoViewer;
+        [SerializeField, Expandable]
+        private AudioData _ammoZeroAudioData;
         
         [ReadOnly]
         public UnityEvent<float, float> AmmoChanged;
 
+        private AudioSource _audioSource;
         private PhotonView _photonView;
         private float _loadAmmoTimeElapsed = 0;
         private float _maxAmmo;
@@ -34,6 +38,7 @@ namespace Oppositum.Game
         
         private void Awake()
         {
+            _audioSource = GetComponent<AudioSource>();
             _photonView = GetComponent<PhotonView>();
         }
 
@@ -52,6 +57,11 @@ namespace Oppositum.Game
             _ammoViewer.Initialize(side.TileColor);
             _maxAmmo = maxAmmo;
             CurrentAmmo = _maxAmmo;
+        }
+
+        public void ChangeAmmoViewerVisibility(bool isVisible)
+        {
+            _ammoViewer.ChangeVisibility(isVisible);
         }
 
         public void ResetOnRound()
@@ -75,7 +85,11 @@ namespace Oppositum.Game
 
         public void FireBullet(Vector2 spawnerPos, Vector2Int direction, Side side)
         {
-            if (CurrentAmmo <= 0) return;
+            if (CurrentAmmo <= 0)
+            {
+                _ammoZeroAudioData.Play(_audioSource);
+                return;
+            }
 
             CurrentAmmo -= 1;
             SGameSubSceneManager.BulletPool.Spawn(

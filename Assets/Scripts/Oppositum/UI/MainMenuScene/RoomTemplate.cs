@@ -1,6 +1,7 @@
 ﻿using Photon.Realtime;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 using static Oppositum.Facade;
@@ -11,6 +12,7 @@ namespace Oppositum.UI.MainMenuScene
     {
         private Button _button;
         private TextMeshProUGUI _text;
+        private EventTrigger _eventTrigger;
 
         private RoomListPanel _roomListPanel;
         private RoomInfo _roomInfo;
@@ -19,16 +21,23 @@ namespace Oppositum.UI.MainMenuScene
         {
             _button = GetComponent<Button>();
             _text = GetComponentInChildren<TextMeshProUGUI>();
+            _eventTrigger = GetComponent<EventTrigger>();
+
+            EventTrigger.Entry entry = new() {eventID = EventTriggerType.Select};
+            entry.callback.AddListener(_ => SCanvasManager.PlayButtonSelectAudio());
+            _eventTrigger.triggers.Add(entry);
         }
 
         private void OnEnable()
         {
             _button.onClick.AddListener(Button_Click);
+            _button.onClick.AddListener(SCanvasManager.PlayButtonClickAudio);
         }
 
         private void OnDisable()
         {
             _button.onClick.RemoveListener(Button_Click);
+            _button.onClick.RemoveListener(SCanvasManager.PlayButtonClickAudio);
         }
 
         private void Update()

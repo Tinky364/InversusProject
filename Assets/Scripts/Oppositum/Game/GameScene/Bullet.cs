@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using Photon.Pun;
+using Oppositum.Attribute;
 using Oppositum.Data;
 using static Oppositum.Facade;
 
@@ -10,15 +11,14 @@ namespace Oppositum.Game
     {
         [SerializeField]
         private float _speed = 12;
-        [Header("AUDIO"), SerializeField]
+        [Header("AUDIO"), SerializeField, Expandable]
         private AudioData _hitBulletAudioData;
-        [SerializeField]
+        [SerializeField, Expandable]
         private AudioData _hitWallAudioData;
-        [SerializeField]
+        [SerializeField, Expandable]
         private AudioData _fireAudioData;
 
         public int Id { get; private set; }
-        
         public PhotonView PhotonView { get; private set; }
         public Side Side { get; private set; }
         public bool HasSpawned { get; private set; }
@@ -32,6 +32,8 @@ namespace Oppositum.Game
         private Vector2 _moveDirection;
         private Vector2 _velocity;
         private float _lineRendererTailPosition;
+        private WaitForSeconds _wfs_2;
+        private bool _shouldMove;
 
         public void Initialize(int id)
         {
@@ -46,6 +48,7 @@ namespace Oppositum.Game
             _collider = GetComponent<BoxCollider2D>();
             _lineRenderer = GetComponentInChildren<LineRenderer>();
             _audioSource = GetComponent<AudioSource>();
+            _wfs_2 = new WaitForSeconds(2f);
             
             SEventBus.RoundEnded.AddListener(UnSpawn);
             SEventBus.GameEnded.AddListener(UnSpawn);
@@ -53,12 +56,11 @@ namespace Oppositum.Game
 
         private void FixedUpdate()
         {
-            if (SMainManager.State == States.InGame)
+            if (SMainManager.State != States.InGame) return;
+            
+            if (HasSpawned && _shouldMove)
             {
-                if (HasSpawned)
-                {
-                    MoveBullet();
-                }
+                MoveBullet();
             }
         }
         
@@ -66,19 +68,19 @@ namespace Oppositum.Game
         {
             if (SMainManager.State != States.InGame) return;
             if (!HasSpawned) return;
-
-            if (col.CompareTag("Wall") || col.CompareTag("Player") || col.CompareTag("Bullet"))
+            if (!col.CompareTag("Wall") && !col.CompareTag("Player") && !col.CompareTag("Bullet")) 
+                return;
+            
+            switch (SGameCreator.GameType)
             {
-                switch (SGameCreator.GameType)
-                {
-                    case GameType.Local:
-                        StartCoroutine(UnSpawnOnCollision(col.tag));
-                        break;
-                    case GameType.Online:
-                        if (PhotonNetwork.IsMasterClient)
-                            PhotonView.RPC("Execute_UnSpawnOnCollision", RpcTarget.All, col.tag);
-                        break;
-                }
+                case GameType.Local:
+                    if (col.CompareTag("Bullet")) _hitBulletAudioData.Play(_audioSource);
+                    StartCoroutine(UnSpawnOnCollision());
+                    break;
+                case GameType.Online:
+                    if (PhotonNetwork.IsMasterClient)
+                        PhotonView.RPC("Execute_UnSpawnOnCollision", RpcTarget.All, col.tag);
+                    break;
             }
         }
 
@@ -98,6 +100,8 @@ namespace Oppositum.Game
             StartCoroutine(_displayLineRendererCor);
             
             _fireAudioData.Play(_audioSource);
+            
+            _shouldMove = true;
         }
 
         public void SpawnOnline(Vector2 position, Vector2Int direction, Side side)
@@ -127,6 +131,8 @@ namespace Oppositum.Game
             StartCoroutine(_displayLineRendererCor);
             
             _fireAudioData.Play(_audioSource);
+            
+            _shouldMove = true;
         }
 
         private void UnSpawn(
@@ -134,45 +140,38 @@ namespace Oppositum.Game
         )
         {
             if (!HasSpawned) return;
-            
+            _shouldMove = false;
             HasSpawned = false;
             _rig.velocity = Vector2.zero;
             if (_displayLineRendererCor != null) StopCoroutine(_displayLineRendererCor);
             gameObject.SetActive(false);
-            
+            ChangeVisibility(true);
             SGameSubSceneManager.BulletPool.UnSpawn(this);
         }
         
         [PunRPC]
         private void Execute_UnSpawnOnCollision(string colliderTag)
         {
-            StartCoroutine(UnSpawnOnCollision(colliderTag));
+            if (colliderTag.Equals("Bullet")) _hitBulletAudioData.Play(_audioSource);
+            StartCoroutine(UnSpawnOnCollision());
         }
 
-        private IEnumerator UnSpawnOnCollision(string colliderTag)
+        private IEnumerator UnSpawnOnCollision()
         {
             if (!HasSpawned) yield break;
-            
-            HasSpawned = false;
+            ChangeVisibility(false);
             SetLayer(0); 
+            _shouldMove = false;
             _rig.velocity = Vector2.zero;
-
-            switch (colliderTag)
-            {
-                case "Wall": _hitWallAudioData.Play(_audioSource);
-                    break;
-                case "Bullet": _hitBulletAudioData.Play(_audioSource);
-                    break;
-            }
-            
             if (_displayLineRendererCor != null) StopCoroutine(_displayLineRendererCor);
             _displayLineRendererCor = DisplayLineRendererTail(
                 _lineRenderer.GetPosition(1).x, 0, 0.5f
             );
             yield return StartCoroutine(_displayLineRendererCor);
-
+            yield return _wfs_2;
+            ChangeVisibility(true);
+            HasSpawned = false;
             gameObject.SetActive(false);
-            
             SGameSubSceneManager.BulletPool.UnSpawn(this);
         }
 
@@ -246,6 +245,11 @@ namespace Oppositum.Game
         { 
             _velocity = _moveDirection * _speed;
             _rig.velocity = _velocity;
+        }
+
+        private void ChangeVisibility(bool isVisible)
+        {
+            _spriteRenderer.enabled = isVisible;
         }
         
         private void OnDestroy()

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2318bec59d9a4b559e5508ca81d91f0e, type: 3}
   m_Name: PlayerHitAudioData
   m_EditorClassIdentifier: 
-  _clip: {fileID: 0}
+  _clip: {fileID: 8300000, guid: 118abdb55e99bd34dbd81473fca8ab52, type: 3}
   _defaultVolume: 0.5
   _minVolume: 0
   _maxVolume: 1

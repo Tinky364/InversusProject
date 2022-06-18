@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2318bec59d9a4b559e5508ca81d91f0e, type: 3}
   m_Name: MainMenuAudioData
   m_EditorClassIdentifier: 
-  _clip: {fileID: 0}
-  _defaultVolume: 0.5
+  _clip: {fileID: 8300000, guid: be6e4b74783b6e34cab803bb9d301f4d, type: 3}
+  _defaultVolume: 0.2
   _minVolume: 0
   _maxVolume: 1
   _defaultPitch: 1

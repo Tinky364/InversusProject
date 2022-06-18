@@ -1,4 +1,5 @@
 using UnityEngine;
+using Oppositum.Attribute;
 using Oppositum.Data;
 using Oppositum.Manager;
 using static Oppositum.Facade;
@@ -7,7 +8,7 @@ namespace Oppositum.Game
 {
     public class MainMenuSubSceneManager : SubSceneManager
     {
-        [SerializeField]
+        [SerializeField, Expandable]
         private AudioData _mainMenuAudioData;
 
         private AudioSource _audioSource;

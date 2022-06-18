@@ -27,5 +27,10 @@ namespace Oppositum.UI.GameScene
             float fillAmount = current / max;
             _img.fillAmount = fillAmount;
         }
+
+        public void ChangeVisibility(bool isVisible)
+        {
+            _img.enabled = isVisible;
+        }
     }
 }

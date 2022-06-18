@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Photon.Pun;
+using Oppositum.Attribute;
 using Oppositum.Data;
 using Oppositum.Manager;
 using static Oppositum.Facade;
@@ -20,7 +21,7 @@ namespace Oppositum.Game
         private int _maxAmmo = 5;
         [SerializeField, Min(0)]
         private float _ammoLoadDuration = 0.6f;
-        [Header("AUDIO"), SerializeField]
+        [Header("AUDIO"), SerializeField, Expandable]
         private AudioData _hitAudioData;
 
         public Side Side { get; private set; }
@@ -48,7 +49,7 @@ namespace Oppositum.Game
         private Vector2 _desiredVelocity;
         private Vector2 _velocity;
         private Vector3 _networkPosition;
-        private float _networkPositionLerpSpeed = 2f;
+        private const float NetworkPositionLerpSpeed = 2f;
 
         private void Awake()
         {
@@ -157,6 +158,8 @@ namespace Oppositum.Game
         [PunRPC]
         private void Execute_PlayerHit()
         {
+            _spriteRenderer.enabled = false;
+            _ammoController.ChangeAmmoViewerVisibility(false);
             _hitAudioData.Play(_audioSource);
             SEventBus.PlayerHit?.Invoke(this);
         }
@@ -188,6 +191,8 @@ namespace Oppositum.Game
         
         public void ResetOnRound(Vector2 spawnPos)
         {
+            _spriteRenderer.enabled = true;
+            _ammoController.ChangeAmmoViewerVisibility(true);
             _rig.velocity = Vector2.zero;
             _moveInputAxis = Vector2.zero;
             _desiredVelocity = Vector2.zero;
@@ -216,7 +221,7 @@ namespace Oppositum.Game
         private void SyncMovePlayer()
         {
             _rig.position = Vector2.MoveTowards(
-                _rig.position, _networkPosition, _networkPositionLerpSpeed * Time.fixedDeltaTime
+                _rig.position, _networkPosition, NetworkPositionLerpSpeed * Time.fixedDeltaTime
             );
         }
 

@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using TMPro;
 using UnityEngine;
-
+using Oppositum.Attribute;
+using Oppositum.Data;
 using static Oppositum.Facade;
 
 namespace Oppositum.UI.GameScene
@@ -10,14 +11,18 @@ namespace Oppositum.UI.GameScene
     {
         [SerializeField]
         private TextMeshProUGUI _text;
+        [SerializeField, Expandable]
+        private AudioData _readyGoAudioData;
 
+        private AudioSource _audioSource;
         private WaitForSeconds _wfs_1;
-        private WaitForSeconds _wfs_0_1;
+        private WaitForSeconds _wfs_1_6;
 
         private void Awake()
         {
-            _wfs_1 = new WaitForSeconds(1);
-            _wfs_0_1 = new WaitForSeconds(0.1f);
+            _audioSource = GetComponent<AudioSource>();
+            _wfs_1 = new WaitForSeconds(1f);
+            _wfs_1_6 = new WaitForSeconds(1.6f);
 
             SEventBus.RoundCreated.AddListener(DisplayReadyPanel);
         }
@@ -36,10 +41,10 @@ namespace Oppositum.UI.GameScene
 
         private IEnumerator DisplayReadyPanelCor()
         {
-            yield return _wfs_0_1;
+            _readyGoAudioData.Play(_audioSource);
             _text.SetText("READY");
             _text.color = SDatabase.GetColorTheme(1).Side1Color;
-            yield return _wfs_1;
+            yield return _wfs_1_6;
             _text.SetText("GO!");
             _text.color = SDatabase.GetColorTheme(1).Side2Color;
             yield return _wfs_1;

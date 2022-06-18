@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using Oppositum.Attribute;
 using Oppositum.Data;
 using Oppositum.Manager;
 using static Oppositum.Facade;
@@ -12,7 +13,7 @@ namespace Oppositum.Game
         private Camera _camera;
         [SerializeField]
         private BulletPool _bulletPool;
-        [SerializeField]
+        [SerializeField, Expandable]
         private AudioData _gameAudioData;
         
         public BulletPool BulletPool => _bulletPool;
@@ -20,16 +21,16 @@ namespace Oppositum.Game
         private AudioSource _audioSource;
         private WaitForSeconds _wfs_1;
         private WaitForSeconds _wfs_3;
-        private WaitForSeconds _wfs_2_1;
+        private WaitForSeconds _wfs_2_6;
 
         protected override void Awake()
         {
             base.Awake();
 
             _audioSource = GetComponent<AudioSource>();
-            _wfs_1 = new WaitForSeconds(1);
-            _wfs_3 = new WaitForSeconds(3);
-            _wfs_2_1 = new WaitForSeconds(2.1f);
+            _wfs_1 = new WaitForSeconds(1f);
+            _wfs_3 = new WaitForSeconds(3f);
+            _wfs_2_6 = new WaitForSeconds(2.6f);
             
             SEventBus.GamePaused.AddListener(OnGamePaused);
             SEventBus.GameResumed.AddListener(OnGameResumed);
@@ -69,7 +70,7 @@ namespace Oppositum.Game
 
         private IEnumerator OnRoundCreatedCor()
         {
-            yield return _wfs_2_1;
+            yield return _wfs_2_6;
             Debug.Log("RoundStarted Event => Invoke()");
             SEventBus.RoundStarted?.Invoke();
             SMainManager.State = States.InGame;
