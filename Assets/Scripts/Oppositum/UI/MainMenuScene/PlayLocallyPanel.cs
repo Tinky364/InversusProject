@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Oppositum.Data;
@@ -67,7 +66,13 @@ namespace Oppositum.UI.MainMenuScene
                     break;
             }
 
-            if (SInputProfileManager.InputProfileCount >= 2) _startGameButton.interactable = true;
+            if (SInputProfileManager.InputProfileCount >= 2)
+            {
+                Navigation navigation = _mapIdDropdown.navigation;
+                navigation.selectOnUp = _startGameButton;
+                _mapIdDropdown.navigation = navigation;
+                _startGameButton.interactable = true;
+            }
         }
 
         private void OnInputProfileLeft(InputProfile inputProfile)
@@ -80,7 +85,13 @@ namespace Oppositum.UI.MainMenuScene
                     break;
             }
 
-            if (SInputProfileManager.InputProfileCount < 2) _startGameButton.interactable = false;
+            if (SInputProfileManager.InputProfileCount < 2)
+            {
+                Navigation navigation = _mapIdDropdown.navigation;
+                navigation.selectOnUp = null;
+                _mapIdDropdown.navigation = navigation;
+                _startGameButton.interactable = false;
+            }
         }
 
         public void EnableInputProfileManager(int maxPlayerCount)

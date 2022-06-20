@@ -11,6 +11,18 @@ namespace Oppositum.Manager
     {
         public static OnlineManager Instance { get; private set; }
 
+        private string _nickName;
+        public string NickName
+        {
+            get => _nickName;
+            set
+            {
+                _nickName = value;
+                PlayerPrefs.SetString("NickName", _nickName);
+                PhotonNetwork.NickName = _nickName;
+            }
+        }
+
         private bool _isConnected;
         public bool IsConnected => _isConnected && PhotonNetwork.IsConnectedAndReady;
         
@@ -40,7 +52,9 @@ namespace Oppositum.Manager
         private void Awake()
         {
             SetSingleton();
-            
+
+            NickName = PlayerPrefs.GetString("NickName", $"User{Random.Range(0, 99999)}");
+           
             SEventBus.ServerConnectionRequested.AddListener(ConnectToServer);
             SEventBus.JoinLobbyRequested.AddListener(JoinLobby);
             SEventBus.LeaveLobbyRequested.AddListener(LeaveLobby);
@@ -63,7 +77,7 @@ namespace Oppositum.Manager
         {
             if (IsConnected) return;
 
-            PhotonNetwork.NickName = $"User{Random.Range(0, 99999)}";
+            PhotonNetwork.NickName = NickName;
             PhotonNetwork.ConnectUsingSettings();
         }
 
@@ -191,6 +205,8 @@ namespace Oppositum.Manager
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
             Debug.Log($"Player named {newPlayer.NickName} entered the room.");
+            
+            SEventBus.PlayerEnteredRoom?.Invoke(newPlayer);
         }
 
         public override void OnPlayerLeftRoom(Player otherPlayer)

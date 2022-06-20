@@ -80,6 +80,9 @@ namespace Oppositum.Manager
         [ReadOnly]
         public UnityEvent<Player> MasterClientSwitched;
         [ReadOnly]
+        public UnityEvent<Player> PlayerEnteredRoom;
+        [ReadOnly]
         public UnityEvent<Player> PlayerLeftRoom;
+       
     }
 }

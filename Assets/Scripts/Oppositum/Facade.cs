@@ -13,6 +13,7 @@ namespace Oppositum
         public static GameCreator SGameCreator => GameCreator.Instance;
         public static Database SDatabase => Database.Instance;
         public static OnlineManager SOnlineManager => OnlineManager.Instance;
+        public static SettingManager SSettingManager => SettingManager.Instance;
 
         public static SubSceneManager SSubSceneManager => SubSceneManager.Instance;
         public static MainMenuSubSceneManager SMainMenuSubSceneManager => 

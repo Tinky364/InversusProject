@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Photon.Pun;
@@ -58,6 +57,18 @@ namespace Oppositum.UI.MainMenuScene
            
             SetUiElementsInteractable(PhotonNetwork.IsMasterClient);
             _startGameButton.interactable = false;
+            if (PhotonNetwork.IsMasterClient)
+            {
+                Navigation navigation = _backButton.navigation;
+                navigation.selectOnUp = _colorsDropdown;
+                _backButton.navigation = navigation;
+            }
+            else
+            {
+                Navigation navigation = _backButton.navigation;
+                navigation.selectOnUp = null;
+                _backButton.navigation = navigation;
+            }
         }
 
         private void OnDisable()
@@ -75,7 +86,7 @@ namespace Oppositum.UI.MainMenuScene
             _playerConnectionGrids[0].Hide();
             _playerConnectionGrids[1].Hide();
         }
-        
+
         private void Update()
         {
             if (!SOnlineManager.InRoom) return;
@@ -86,7 +97,7 @@ namespace Oppositum.UI.MainMenuScene
                 $"Player Count: {_playerCount}/{PhotonNetwork.CurrentRoom.MaxPlayers}"
             );
         }
-        
+
         public void EnableInputProfileManager(int maxPlayerCount)
         {
             SInputProfileManager.Enable(maxPlayerCount);
@@ -121,8 +132,15 @@ namespace Oppositum.UI.MainMenuScene
                     ? _mapIdDropdown.gameObject
                     : _backButton.gameObject
             );
-            if (_isMasterReady && PhotonNetwork.CurrentRoom.PlayerCount >= 2 && PhotonNetwork.IsMasterClient)
+            
+            if (_isMasterReady && PhotonNetwork.CurrentRoom.PlayerCount >= 2 &&
+                PhotonNetwork.IsMasterClient)
+            {
+                Navigation navigation = _mapIdDropdown.navigation;
+                navigation.selectOnUp = _startGameButton;
+                _mapIdDropdown.navigation = navigation;
                 _startGameButton.interactable = true;
+            }
         }
 
         private void OnInputProfileLeft(InputProfile inputProfile)
@@ -137,9 +155,15 @@ namespace Oppositum.UI.MainMenuScene
         public void PlayerConnectionGridHide(int id)
         { 
             _playerConnectionGrids[id].Hide();
-            
+
             if (PhotonNetwork.IsMasterClient)
+            {
+                Navigation navigation = _mapIdDropdown.navigation;
+                navigation.mode = Navigation.Mode.Explicit;
+                navigation.selectOnUp = null;
+                _mapIdDropdown.navigation = navigation;
                 _startGameButton.interactable = false;
+            }
         }
 
         private void OnMasterClientSwitched(Player newMasterClient)

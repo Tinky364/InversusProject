@@ -35,42 +35,27 @@ MonoBehaviour:
   StartInOfflineMode: 0
   RpcList:
   - ClickRpc
+  - ColorsDropdownUpdate
   - DestroyRpc
   - DestroySpaceship
-  - Fire
-  - RespawnSpaceship
-  - MapIdDropdown_ValueChange
-  - MapIdDropdownUpdate
-  - ColorsDropdownUpdate
-  - VictoryScoreDropdownUpdate
-  - PlayerConnectionGridDisplay
-  - PlayerConnectionGridHide
-  - LoadScene
-  - InitializeOnlineRPC
-  - InitializeRPC
-  - ResetThisRPC
-  - SetSideRPC
-  - SendCreateGameData
-  - SendCreateRoundData
-  - SendClientReadyData
-  - InformClientReady
-  - Send_CreateGameData
-  - Send_CreateRound
-  - Send_CreateGame
-  - Inform_ClientReady
-  - Send_ExpandPool
-  - SpawnRPC
-  - PlayAgain
+  - Execute_InvokeAmmoChanged
   - Execute_PlayAgain
-  - SetSide
-  - Inform_MasterReady
-  - Inform_Ready
   - Execute_PlayerHit
   - Execute_Spawn
   - Execute_UnSpawnOnCollision
-  - Send_FillAmount
-  - Execute_AmmoChanged
-  - Execute_InvokeAmmoChanged
+  - Fire
+  - Inform_ClientReady
+  - Inform_Ready
+  - LoadScene
+  - MapIdDropdownUpdate
+  - PlayerConnectionGridDisplay
+  - PlayerConnectionGridHide
+  - RespawnSpaceship
+  - Send_CreateGame
+  - Send_CreateRound
+  - Send_ExpandPool
+  - SetSide
+  - VictoryScoreDropdownUpdate
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

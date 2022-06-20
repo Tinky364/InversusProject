@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
-using Oppositum.Data;
 using Oppositum.Helper;
+using static Oppositum.Facade;
 
 namespace Oppositum.Manager
 {
@@ -9,22 +9,72 @@ namespace Oppositum.Manager
     {
         [SerializeField] 
         private FrameRate _frameRate = FrameRate.Default;
-        [SerializeField] 
-        private DisplayData displayData;
+        [SerializeField, Min(0)] 
+        private int _resolutionIndex = 0;
+        [SerializeField, Min(0)] 
+        private int _displayModeIndex = 0;
+        [SerializeField, Range(0,1)]
+        private float _volume = 1;
+
+        public int ResolutionIndex => _resolutionIndex;
+        public int DisplayModeIndex => _displayModeIndex;
         
+        private Vector2Int _resolution;
+        private FullScreenMode _displayMode;
+
+        public float Volume
+        {
+            get => _volume;
+            private set
+            {
+                _volume = value switch
+                {
+                    > 1 => 1,
+                    < 0 => 0,
+                    _ => value
+                };
+            }
+        }
+
         protected override void Awake()
         {
             base.Awake();
-            
-            ChangeFrameRate(_frameRate);
-            Screen.SetResolution(
-                displayData.Resolution.x, displayData.Resolution.y, displayData.FullScreenMode
-            );
+
+            Volume = PlayerPrefs.GetFloat("Volume", 1);
+            _resolutionIndex = PlayerPrefs.GetInt("Resolution", 0);
+            _displayModeIndex = PlayerPrefs.GetInt("DisplayMode", 0);
+            SetVolume(Volume);
+            SetResolution(_resolutionIndex);
+            SetDisplayMode(_displayModeIndex);
+            SetFrameRate(_frameRate);
+        }
+        
+        public void SetVolume(float volume)
+        {
+            Volume = volume;
+            AudioListener.volume = volume;
+            PlayerPrefs.SetFloat("Volume", Volume);
         }
 
-        private void ChangeFrameRate(FrameRate newFrameRate)
+        public void SetResolution(int index)
         {
-            switch (newFrameRate)
+            _resolutionIndex = index;
+            _resolution =  SDatabase.GetResolution(_resolutionIndex);
+            Screen.SetResolution(_resolution.x, _resolution.y, _displayMode);
+            PlayerPrefs.SetInt("Resolution", _resolutionIndex);
+        }
+
+        public void SetDisplayMode(int index)
+        {
+            _displayModeIndex = index;
+            _displayMode = SDatabase.GetDisplayMode(_displayModeIndex);
+            Screen.SetResolution(_resolution.x, _resolution.y, _displayMode);
+            PlayerPrefs.SetInt("DisplayMode", _displayModeIndex);
+        }
+
+        private void SetFrameRate(FrameRate frameRate)
+        {
+            switch (frameRate)
             {
                 case FrameRate.Default:
                     SetFrameRate();
@@ -34,13 +84,13 @@ namespace Oppositum.Manager
                 case FrameRate.Rate60:
                 case FrameRate.Rate100:
                 case FrameRate.Rate120:
-                    SetFrameRate((int)newFrameRate);
+                    SetFrameRate((int)frameRate);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            Debug.Log($"New Frame Rate: {newFrameRate}");
+            Debug.Log($"New Frame Rate: {frameRate}");
         }
 
         private static void SetFrameRate()

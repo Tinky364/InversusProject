@@ -27,7 +27,7 @@ namespace Oppositum.UI.GameScene
         private TextMeshProUGUI _playAgainButtonText;
         private PhotonView _photonView;
         private WaitForSeconds _wfs_1;
-        private int _readyCount;
+        private int _readyCount = 0;
         private bool _isReadyCountChanged = true;
         private bool _isPlayAgainClicked;
 
@@ -46,18 +46,6 @@ namespace Oppositum.UI.GameScene
         private void OnDestroy()
         {
             SEventBus.GameEnded.RemoveListener(OnGameEnded);
-        }
-
-        private void OnEnable()
-        {
-            SEventBus.RoomLeft.AddListener(OnRoomLeft);
-            SEventBus.PlayerLeftRoom.AddListener(OnPlayerLeftRoom);
-        }
-
-        private void OnDisable()
-        {
-            SEventBus.RoomLeft.RemoveListener(OnRoomLeft);
-            SEventBus.PlayerLeftRoom.RemoveListener(OnPlayerLeftRoom);
         }
 
         private void Update()
@@ -79,17 +67,6 @@ namespace Oppositum.UI.GameScene
         {
             SetDisplay(true);
             SetGameEndPanel(player1, player2, winner);
-        }
-        
-        private void OnRoomLeft()
-        {
-            _readyCount = 0;
-            SSceneCreator.LoadScene("MainMenuScene", SubSceneLoadMode.Single);
-        }
-
-        private void OnPlayerLeftRoom(Player otherPlayer)
-        {
-            MainMenuButton_Click();
         }
         
         public void PlayAgainButton_Click()

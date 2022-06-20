@@ -20,7 +20,7 @@ namespace Oppositum.Manager
         private Panel _foregroundPanel;
         [Header("AUDIO"), SerializeField, Expandable]
         private AudioData _buttonSelectAudioData;
-        [SerializeField]
+        [SerializeField, Expandable]
         private AudioData _buttonClickAudioData;
 
         public Panel BackgroundPanel => _backgroundPanel;
